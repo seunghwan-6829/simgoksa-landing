@@ -158,6 +158,7 @@ body{
   word-break:keep-all;
 }
 .dialog .line.on{opacity:1;transform:none;filter:blur(0)}
+.dialog .line.gone{opacity:0;transform:translateY(-12px);filter:blur(6px);transition:opacity .7s ease,transform .7s ease,filter .7s ease}
 .dialog .line em{font-style:normal;color:var(--blood-bright)}
 .dialog .line.whisper{font-size:14px;color:var(--ink-dim);letter-spacing:.12em;text-shadow:0 1px 2px rgba(0,0,0,.98),0 2px 8px rgba(0,0,0,.95),0 3px 20px rgba(0,0,0,.9)}
 .dialog .line em{text-shadow:0 1px 2px rgba(0,0,0,.98),0 2px 8px rgba(0,0,0,.95),0 0 22px rgba(164,22,26,.45)}
@@ -271,12 +272,12 @@ body{
 #loading .load-bg{
   position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
   width:100%;max-width:480px;height:100%;object-fit:cover;
-  filter:brightness(.3) saturate(.75);
-  opacity:.85;
+  filter:brightness(.52) saturate(.8);
+  opacity:.95;
 }
 #loading .load-veil{
   position:absolute;inset:0;
-  background:radial-gradient(80% 60% at 50% 50%,rgba(2,2,2,.25) 0%,rgba(2,2,2,.9) 100%);
+  background:radial-gradient(85% 65% at 50% 50%,rgba(2,2,2,.18) 0%,rgba(2,2,2,.78) 100%);
 }
 #loading .load-ring,#loading #loadtext{position:relative;z-index:2}
 .load-ring{
@@ -337,7 +338,7 @@ body{
   text-shadow:0 0 40px rgba(164,22,26,.4);
 }
 .p-dim{
-  margin-top:26px;color:var(--ink-dim);font-size:14.5px;line-height:2.1;word-break:keep-all;
+  margin-top:26px;color:var(--ink-dim);font-size:15.5px;line-height:2.1;word-break:keep-all;
 }
 .p-body{
   margin-top:26px;font-size:16px;line-height:2.15;word-break:keep-all;
@@ -348,12 +349,12 @@ body{
   background:linear-gradient(180deg,transparent,var(--blood),transparent);
 }
 /* checklist */
-.chk{margin-top:34px;display:flex;flex-direction:column;gap:14px;text-align:left}
+.chk{margin-top:34px;display:flex;flex-direction:column;gap:15px;text-align:center}
 .chk li{
-  list-style:none;display:flex;gap:12px;align-items:flex-start;
-  font-size:14.5px;line-height:1.8;color:var(--ink);word-break:keep-all;
+  list-style:none;display:flex;gap:10px;align-items:baseline;justify-content:center;
+  font-size:15.5px;line-height:1.8;color:var(--ink);word-break:keep-all;
 }
-.chk li::before{content:"✔";color:var(--blood-bright);font-size:13px;margin-top:3px}
+.chk li::before{content:"✔";color:var(--blood-bright);font-size:13px}
 /* ---------- 원국 차트 ---------- */
 .chart-frame{
   margin-top:34px;position:relative;border-radius:6px;overflow:hidden;
@@ -394,7 +395,7 @@ body{
   box-shadow:0 0 16px rgba(164,22,26,.8);
   animation:corepulse 2s ease-in-out infinite;
 }
-.chart-note{margin-top:18px;font-size:11.5px;color:var(--ink-dim);letter-spacing:.1em;line-height:1.9}
+.chart-note{margin-top:18px;font-size:13px;color:var(--ink-dim);letter-spacing:.1em;line-height:1.9}
 .chart-note b{color:var(--blood-bright);font-weight:400}
 /* ---------- 흉살 진단 카드 ---------- */
 .sal-card{
@@ -412,12 +413,12 @@ body{
 }
 .sal-card .sal-name{font-size:16px;font-weight:700;color:var(--paper)}
 .sal-card .sal-name small{display:block;font-size:11px;color:var(--ink-dim);letter-spacing:.15em;margin-top:3px;font-weight:300}
-.sal-card .sal-lv{
+.sal-card .sal-lv{white-space:nowrap;
   margin-left:auto;font-size:11px;letter-spacing:.12em;color:#fff;
   background:var(--blood);padding:5px 10px;border-radius:2px;
 }
 .sal-card .sal-body{padding:16px 18px 18px}
-.sal-card .sal-body p{font-size:13.5px;line-height:2;color:var(--ink);word-break:keep-all}
+.sal-card .sal-body p{font-size:14.5px;line-height:2;color:var(--ink);word-break:keep-all}
 .sal-card .sal-lock{
   margin-top:12px;position:relative;border-radius:3px;overflow:hidden;
 }
@@ -452,11 +453,11 @@ body{
   display:flex;gap:10px;align-items:baseline;padding:15px 16px;
 }
 .lockitem .li-no{font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:12px;white-space:nowrap;letter-spacing:.05em}
-.lockitem .li-title{font-size:14px;font-weight:700;color:var(--paper);line-height:1.65;word-break:keep-all}
+.lockitem .li-title{font-size:15px;font-weight:700;color:var(--paper);line-height:1.65;word-break:keep-all}
 .lockitem .li-body{
   padding:0 16px 14px;position:relative;
 }
-.lockitem .li-body p{font-size:12.5px;line-height:1.9;color:var(--ink-dim);filter:blur(5px);user-select:none}
+.lockitem .li-body p{font-size:13.5px;line-height:1.9;color:var(--ink-dim);filter:blur(5px);user-select:none}
 .lockitem .li-veil{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font-size:11.5px;letter-spacing:.18em;color:rgba(232,224,216,.75);
@@ -473,14 +474,14 @@ body{
 }
 .card h4{font-size:16px;margin-bottom:14px;color:var(--paper)}
 .card h4 span{color:var(--blood-bright)}
-.card p{font-size:13.5px;line-height:2;color:var(--ink-dim);word-break:keep-all}
+.card p{font-size:14.5px;line-height:2;color:var(--ink-dim);word-break:keep-all}
 .timeline{margin-top:26px;display:flex;flex-direction:column;gap:2px;text-align:left}
 .timeline .row{
   display:flex;gap:14px;align-items:center;background:rgba(20,14,12,.7);
   border-left:2px solid var(--blood);padding:15px 16px;
 }
 .timeline .yr{font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-weight:800;font-size:15px;min-width:44px}
-.timeline .tx{font-size:13.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
+.timeline .tx{font-size:14.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
 .timeline .tx b{color:var(--blood-bright)}
 /* before / after */
 .ba{margin-top:30px;display:flex;flex-direction:column;gap:20px}
@@ -490,7 +491,7 @@ body{
 .ba h5{font-size:14px;letter-spacing:.15em;margin-bottom:12px}
 .ba .b h5{color:var(--ink-dim)}
 .ba .a h5{color:var(--blood-bright)}
-.ba p{font-size:13.5px;line-height:2;color:var(--ink-dim);word-break:keep-all}
+.ba p{font-size:14.5px;line-height:2;color:var(--ink-dim);word-break:keep-all}
 .ba .a p{color:var(--ink)}
 /* toc */
 .toc{margin-top:30px;display:flex;flex-direction:column;gap:8px;text-align:left}
@@ -499,8 +500,8 @@ body{
   background:rgba(20,14,12,.55);border:1px solid rgba(232,224,216,.07);border-radius:3px;
 }
 .toc .n{font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:12px;font-weight:700;letter-spacing:.05em;white-space:nowrap}
-.toc .x{font-size:13.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
-.toc-note{margin-top:16px;font-size:12.5px;color:var(--ink-dim);letter-spacing:.05em}
+.toc .x{font-size:14.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
+.toc-note{margin-top:16px;font-size:14px;color:var(--ink-dim);letter-spacing:.05em}
 /* reviews */
 .review{
   margin-top:26px;text-align:left;background:rgba(20,14,12,.7);
@@ -513,7 +514,7 @@ body{
 }
 .review .who{font-size:12px;color:var(--ink-dim);letter-spacing:.1em;margin-bottom:10px}
 .review .quote{font-size:15px;font-weight:700;color:var(--blood-bright);margin-bottom:10px;line-height:1.7;word-break:keep-all}
-.review p{font-size:13.5px;line-height:2;color:var(--ink);word-break:keep-all}
+.review p{font-size:14.5px;line-height:2;color:var(--ink);word-break:keep-all}
 .review-src{margin-top:18px;font-size:11.5px;color:#5c534c;letter-spacing:.1em}
 /* pricing */
 .price-strike{
@@ -569,9 +570,8 @@ body{
   font-family:inherit;font-size:17px;font-weight:700;letter-spacing:.12em;
   padding:20px 10px;border-radius:3px;border:1px solid rgba(255,255,255,.14);
   box-shadow:0 6px 34px rgba(164,22,26,.4);
-  animation:beat 2.4s ease-in-out infinite;
 }
-@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.018)}}
+body.insales .grain{animation:none}
 .cta-note{margin-top:14px;font-size:12px;color:var(--ink-dim);letter-spacing:.08em}
 #sticky{
   position:fixed;left:50%;transform:translate(-50%,110%);
@@ -733,7 +733,7 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 2.5 : 인적사항 문답 ═══════════ -->
   <section class="scene hidden-scene" id="sceneAsk" style="display:none">
-    <video class="bg" id="askBg" src="../assets/candles.mp4" muted loop playsinline preload="none" poster="../assets/seated.jpg"></video>
+    <video class="bg" id="askBg" src="../assets/candles.mp4" muted loop playsinline preload="none" poster="../assets/ritual.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">問</span>
     <div class="dialog" data-scene="ask">
@@ -812,7 +812,7 @@ footer b{color:#7a6f66}
       <div class="veil2"></div>
       <div class="inner">
         <p class="h-red rv" id="pTag">— 심곡사 살(殺) 감정 —</p>
-        <h2 class="h-big rv" id="pHead" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 4px 20px rgba(0,0,0,.9)">네 사주,<br><span class="r">심상치 않다</span></h2>
+        <h2 class="h-big rv" id="pHead" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 4px 20px rgba(0,0,0,.9)">쯧쯧…<br><span class="r">너, 심상치 않다</span></h2>
         <p class="p-body rv" id="pSub" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px rgba(0,0,0,.9)">"여든세 번째 무녀로서 말한다.<br>지금부터— <em>네 원국(原局)</em>이다."</p>
       </div>
     </section>
@@ -861,12 +861,12 @@ footer b{color:#7a6f66}
       <h2 class="h-big rv">뭘 해도 <span class="r">안 풀리지?"</span></h2>
       <div class="h-hanja rv">凶殺</div>
       <p class="p-body rv">사주 속 <em>흉살(凶殺)</em>이<br>네 운을 가로막고 있다.</p>
-      <ul class="chk rv">
-        <li>사람을 쉽게 믿었다가, 꼭 데이고</li>
-        <li>애는 네가 쓰는데, 인정은 남이 받고</li>
-        <li>미루면 놓치고, 결정하면 이미 늦고</li>
-        <li>시작만 하면, 꼭 변수가 터지고</li>
-        <li>열심히 사는데— 인생은 멈춰 있고</li>
+      <ul class="chk">
+        <li class="rv" style="transition-delay:.05s">사람을 쉽게 믿었다가, 꼭 데이고</li>
+        <li class="rv" style="transition-delay:.25s">애는 네가 쓰는데, 인정은 남이 받고</li>
+        <li class="rv" style="transition-delay:.45s">미루면 놓치고, 결정하면 이미 늦고</li>
+        <li class="rv" style="transition-delay:.65s">시작만 하면, 꼭 변수가 터지고</li>
+        <li class="rv" style="transition-delay:.85s">열심히 사는데— 인생은 멈춰 있고</li>
       </ul>
       <p class="p-dim rv">"운이 나빴다"고 넘겨 왔겠지.<br>아니야.<br><b style="color:var(--ink)">흐름을 모르고 있었을 뿐이다.</b></p>
     </section>
@@ -889,15 +889,14 @@ footer b{color:#7a6f66}
       <video class="bg" src="../assets/walkin.mp4" muted loop playsinline preload="none" poster="../assets/distant.jpg"></video>
       <div class="veil2"></div>
       <div class="inner">
-        <p class="h-red rv">숲 속 깊은 산사, 심곡사</p>
-        <h2 class="h-big rv">여든세 번째로<br>산을 지키는 무녀, <span class="r">묘담</span></h2>
-        <p class="p-body rv" style="text-shadow:0 2px 12px #000">
+        <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">숲 속 깊은 산사, 심곡사</p>
+        <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">여든세 번째로<br>산을 지키는 무녀, <span class="r">묘담</span></h2>
+        <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">
           강원도 이름 없는 산 중턱,<br>83대째 <em>만세력과 신살(神殺)의 기록</em>을<br>지켜 온 집안.<br><br>
           12년,<br><em>5,000명</em>의 사주를 풀었다.
         </p>
-        <p class="p-dim rv" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px #000">
-          신점(神占)이 아니다.<br>정통 명리학 · 만세력 기반의 사주 풀이다.<br><br>
-          사주팔자 명리심리상담사 1급<br>부부심리상담사 1급
+        <p class="p-dim rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">
+          신점(神占)이 아니다.<br>정통 명리학 · 만세력 기반의 사주 풀이다.
         </p>
       </div>
     </section>
@@ -925,8 +924,8 @@ footer b{color:#7a6f66}
           </circle>
         </svg>
         <div class="graph-tags">
-          <span class="gtag bad"><b>재물은 위기일 때</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
-          <span class="gtag good"><b>재물은 기회일 때</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
+          <span class="gtag bad"><b>줄줄 새는 해</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
+          <span class="gtag good"><b>크게 터지는 해</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
         </div>
       </div>
       <p class="toc-note rv">재물이 폭발하는 해와, 줄줄 새는 해.<br>정확한 연도는— 풀이에서 보여주마.</p>
@@ -1015,20 +1014,20 @@ footer b{color:#7a6f66}
       <img class="bg" src="../assets/book.jpg" alt="">
       <div class="veil2"></div>
       <div class="inner">
-        <p class="h-red rv">네가 받을 것</p>
-        <h2 class="h-big rv">100페이지,<br><span class="r">운명 사용설명서</span></h2>
-        <p class="p-dim rv" id="bookOwner" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px #000">네 이름이 적힌, 단 한 권의 기록.<br>평생 소장하는 PDF 상세 분석서.</p>
+        <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">네가 받을 것</p>
+        <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">아흔아홉 장,<br><span class="r">운명 사용설명서</span></h2>
+        <p class="p-dim rv" id="bookOwner" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">네 이름이 적힌, 단 한 권의 기록.<br>평생 소장하는 PDF 상세 분석서.</p>
         <div class="toc rv">
-          <div class="t"><span class="n">PART 1</span><span class="x">나의 사주팔자 상세분석 — 원국·음양오행·기질</span></div>
-          <div class="t"><span class="n">PART 2</span><span class="x">내 인생의 황금기 — 고점과 저점, 조심할 암흑기</span></div>
-          <div class="t"><span class="n">PART 3</span><span class="x">연애운과 배우자운 — 운명의 상대, 최적의 시기</span></div>
-          <div class="t"><span class="n">PART 4</span><span class="x">재물운 분석 — 돈이 불어날 때와 새는 곳</span></div>
-          <div class="t"><span class="n">PART 5</span><span class="x">직업과 성공 — 사업가의 팔자인가, 직장인의 팔자인가</span></div>
-          <div class="t"><span class="n">PART 6</span><span class="x">건강과 체질 — 유의해야 할 시기와 대처법</span></div>
-          <div class="t"><span class="n">PART 7</span><span class="x">운명의 귀인 — 나를 돕는 사람의 특징과 시기</span></div>
-          <div class="t"><span class="n">PART 8</span><span class="x">운명을 바꾸는 방법 — 운의 물길을 트는 전략</span></div>
-          <div class="t"><span class="n">PART 9</span><span class="x">2026 신년 월별 상세 운명분석</span></div>
-          <div class="t"><span class="n">PART 10</span><span class="x">앞으로 10년(2026–2035) 운명 분석</span></div>
+          <div class="t"><span class="n">壹</span><span class="x">원국(原局) — 네가 타고난 판부터 펼친다</span></div>
+          <div class="t"><span class="n">貳</span><span class="x">살(殺) — 네 발목을 잡아 온 것들의 정체</span></div>
+          <div class="t"><span class="n">參</span><span class="x">오르막과 내리막 — 내달릴 해, 엎드릴 해</span></div>
+          <div class="t"><span class="n">肆</span><span class="x">인연 — 올 사람의 얼굴, 걸러낼 사람의 낌새</span></div>
+          <div class="t"><span class="n">伍</span><span class="x">재물 — 돈이 고이는 자리, 새는 구멍</span></div>
+          <div class="t"><span class="n">陸</span><span class="x">업(業) — 네 밥벌이의 생김새</span></div>
+          <div class="t"><span class="n">柒</span><span class="x">몸 — 살이 파고드는 자리와 지키는 법</span></div>
+          <div class="t"><span class="n">捌</span><span class="x">귀인 — 결국 네 편에 설 얼굴들</span></div>
+          <div class="t"><span class="n">玖</span><span class="x">열두 달 — 다가올 한 해, 달마다 짚는다</span></div>
+          <div class="t"><span class="n">拾</span><span class="x">십 년 — 대운의 능선을 미리 그려 준다</span></div>
         </div>
       </div>
     </section>
@@ -1067,7 +1066,7 @@ footer b{color:#7a6f66}
       <p class="p-body rv" style="margin-top:50px"><span style="font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-size:22px">기간 한정, 특별 혜택가</span></p>
 
       <div class="plan hot rv">
-        <div class="head"><span>1차 얼리버드 · 심층 종합 살풀이</span><span class="tag">01</span></div>
+        <div class="head"><span>얼리버드 · 묘담의 심층 살풀이</span><span class="tag">한정</span></div>
         <div class="body">
           <div class="row1">
             <div>
@@ -1077,29 +1076,16 @@ footer b{color:#7a6f66}
             <div class="off">83<small>%</small></div>
           </div>
           <ul>
-            <li>약 100페이지 상세 분석서 (PDF, 평생 소장)</li>
-            <li>흉살 분석 + 대운·세운 흐름 + 직업·재물·인연·건강</li>
-            <li>추가 질문 무제한</li>
-            <li>2인 이상 신청 시 궁합 분석 무료</li>
+            <li>묘담이 네 원국을 직접 짚고, 직접 적는다</li>
+            <li>아흔아홉 장 분석서 (PDF, 평생 소장)</li>
+            <li>흉살의 뿌리 — 시기·강도·다스리는 법까지</li>
+            <li>대운·세운 흐름 + 재물·인연·업·몸</li>
           </ul>
         </div>
       </div>
 
-      <div class="plan mid rv soldout">
-        <div class="head"><span>2차 얼리버드</span><span class="tag">02</span></div>
-        <div class="body">
-          <div class="row1">
-            <div>
-              <div class="amount">69,000<small>원</small></div>
-              <div class="was"><s>정가 229,000원</s></div>
-            </div>
-            <div class="off">70<small>%</small></div>
-          </div>
-        </div>
-      </div>
-
       <div class="plan base rv">
-        <div class="head"><span>정가</span><span class="tag">03</span></div>
+        <div class="head"><span>정가</span><span class="tag">기간 후</span></div>
         <div class="body">
           <div class="row1">
             <div>
@@ -1109,13 +1095,13 @@ footer b{color:#7a6f66}
         </div>
       </div>
 
-      <p class="toc-note rv" style="margin-top:20px">🌟 실제 신청자 10명 중 9명은 심층 풀이를 선택합니다.</p>
+      <p class="toc-note rv" style="margin-top:20px">한 번 적은 풀이는, 평생 네 것이다.</p>
 
       <div class="guarantee rv">
-        <h5>군말 없는 100% 환불 보장</h5>
-        <p>풀이가 불성실하다고 느끼시면, 이유를 묻지 않고
-        전액 환불해 드립니다.<br>신청 후 24시간 이내, 이메일로
-        「운명 사용설명서」가 도착합니다.</p>
+        <h5>군말 없는 100% 환불</h5>
+        <p>풀이가 성에 안 차면— 이유는 묻지 않는다.
+        전액 돌려준다.<br>대신 하루만 기다려라. 신청 후 24시간 안에,
+        네 「운명 사용설명서」가 도착한다.</p>
       </div>
 
       <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 사주 속 살(殺) 확인하기</a>
@@ -1200,16 +1186,28 @@ let hesitated = false;
 
 function playScene(dialog, root){
   const scope = root || dialog;
-  const lines = scope.querySelectorAll('.line');
+  const lines = Array.from(scope.querySelectorAll('.line'))
+    .filter(l => !(l.hasAttribute('data-hesitate-line') && !hesitated));
   const choices = scope.querySelectorAll('.choice');
+  const FADE = 700;
   let t = 400;
-  lines.forEach(l => {
-    if (l.hasAttribute('data-hesitate-line') && !hesitated) return;
+  lines.forEach((l, i) => {
+    const last = i === lines.length - 1;
+    const hold = Math.min(3400, Math.max(1900, (l.innerText || '').length * 62));
     setTimeout(()=>{
+      l.style.display = '';
+      l.classList.remove('gone');
       l.classList.add('on');
       if (l.hasAttribute('data-quake')) { quake(); }
     }, t);
-    t += 1400;
+    if (!last){
+      // 한 줄씩: 머물렀다가 사라진 뒤 다음 줄 등장
+      setTimeout(()=>l.classList.add('gone'), t + hold);
+      setTimeout(()=>{ l.style.display = 'none'; }, t + hold + FADE);
+      t += hold + FADE + 150;
+    } else {
+      t += 1100;
+    }
   });
   choices.forEach(c => setTimeout(()=>c.classList.add('on'), t + 300));
   scope.querySelectorAll('.ask-field,.ask-opt').forEach((el,i) => {
@@ -1326,12 +1324,12 @@ function prepScene3(){
 const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const SAL_POOL = [
-  {h:'鬼', name:'귀문관살', hanja:'鬼門關殺', lv:'매우 위험', desc:'정신과 영(靈)의 경계가 좁아진 자리. 까닭 없는 불면과 예민함, 반복되는 가위눌림으로 작동합니다.', lock:'이 살이 특히 강하게 작동하는 연령대와 이를 다스리는 방위는 당신의 경우'},
-  {h:'白', name:'백호살', hanja:'白虎殺', lv:'위험', desc:'피와 구설을 부르는 살. 가까운 사람과의 갈등, 예기치 못한 사고수로 나타납니다.', lock:'백호가 움직이는 해는 정해져 있으며 당신의 원국에서는 특히'},
-  {h:'怨', name:'원진살', hanja:'怨嗔殺', lv:'주의', desc:'까닭 없이 서로를 미워하게 만드는 살. 인연이 늘 같은 지점에서 어긋나는 이유입니다.', lock:'상대의 띠와 오행에 따라 원진이 발동하는 조합이 있는데 당신은'},
-  {h:'孤', name:'고신살', hanja:'孤辰殺', lv:'주의', desc:'군중 속에서도 혼자가 되는 살. 관계가 깊어질수록 오히려 거리를 두게 만듭니다.', lock:'이 살이 풀리는 시기는 대운의 전환점과 맞물리며 그 해는'},
-  {h:'驛', name:'역마살', hanja:'驛馬殺', lv:'주의', desc:'한 곳에 뿌리내리지 못하게 흔드는 살. 이직·이사·이별이 잦은 근본 원인입니다.', lock:'역마가 재물과 만나면 오히려 대박의 씨앗이 되는데 그 조건은'},
-  {h:'桃', name:'도화살', hanja:'桃花殺', lv:'양면', desc:'사람을 끌어당기는 힘이자, 구설을 부르는 칼. 다루는 법을 모르면 늘 관계가 시끄럽습니다.', lock:'도화를 무기로 바꾸는 방법이 있으며 당신의 일지 기준으로는'}
+  {h:'鬼', name:'귀문관살', hanja:'鬼門關殺', lv:'매우 위험', desc:'정신과 영(靈)의 경계가 좁아진 자리다. 까닭 없는 불면, 예민함, 반복되는 가위눌림— 전부 이 살의 짓이다.', lock:'이 살이 가장 사납게 움직이는 나이와, 다스리는 방위는 네 경우'},
+  {h:'白', name:'백호살', hanja:'白虎殺', lv:'위험', desc:'피와 구설을 부르는 살이다. 가까운 사람과의 갈등, 예기치 못한 사고수— 그 뿌리가 여기다.', lock:'백호가 움직이는 해는 정해져 있다. 네 원국에서는 특히'},
+  {h:'怨', name:'원진살', hanja:'怨嗔殺', lv:'주의', desc:'까닭 없이 서로를 미워하게 만드는 살이다. 네 인연이 늘 같은 자리에서 어긋난 이유— 이거다.', lock:'상대의 띠와 오행에 따라 원진이 터지는 조합이 있다. 너는'},
+  {h:'孤', name:'고신살', hanja:'孤辰殺', lv:'주의', desc:'군중 속에서도 혼자가 되는 살이다. 관계가 깊어질수록 네가 먼저 거리를 둔 것— 네 탓이 아니다.', lock:'이 살이 풀리는 때는 대운의 전환점과 맞물린다. 그 해는'},
+  {h:'驛', name:'역마살', hanja:'驛馬殺', lv:'주의', desc:'한 곳에 뿌리내리지 못하게 흔드는 살이다. 이직, 이사, 이별이 잦았던 근본— 여기 있다.', lock:'역마가 재물과 만나면 오히려 대박의 씨앗이 된다. 그 조건은'},
+  {h:'桃', name:'도화살', hanja:'桃花殺', lv:'양면', desc:'사람을 끌어당기는 힘이자, 구설을 부르는 칼이다. 다룰 줄 모르면— 늘 관계가 시끄럽지.', lock:'도화를 무기로 바꾸는 법이 있다. 네 일지 기준으로는'}
 ];
 function hashUser(){
   const s = user.name + (user.birth ? user.birth.y+''+user.birth.m+''+user.birth.d : '') + user.gender;
@@ -1342,7 +1340,7 @@ function hashUser(){
 function fillSales(){
   const nm = user.name ? esc(user.name) : '';
   if (nm){
-    document.getElementById('pHead').innerHTML = nm + '.<br><span class="r">네 사주, 심상치 않다</span>';
+    document.getElementById('pHead').innerHTML = nm + '. 쯧쯧…<br><span class="r">너, 심상치 않다</span>';
     document.getElementById('chartOwner').textContent = user.name + ' — 四柱原局';
     document.getElementById('graphOwner').textContent = user.name + ' — 財物運 흐름도';
     document.getElementById('stickyText').textContent = nm + ', 네 살(殺)의 풀이 — 오늘 83% 할인';
@@ -1432,6 +1430,8 @@ function enterLoading(){
 
 function enterSales(){
   fillSales();
+  document.body.classList.add('insales');
+  document.getElementById('app').classList.remove('shake');
   document.getElementById('sales').style.display = 'block';
   window.scrollTo(0,0);
   document.getElementById('sticky').classList.add('on');
