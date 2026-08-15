@@ -2,13 +2,13 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>심곡사(深谷寺) — 당신의 인생이 풀리지 않는 이유</title>
-<meta name="description" content="숲 속 깊은 곳, 83대째 이어져 온 산사(山寺). 무녀 묘담이 당신의 사주 속 흉살(凶殺)을 풀어드립니다.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>심곡사(深谷寺) — 숲이 감춘 술사들</title>
+<meta name="description" content="지도에 없는 산사, 심곡사. 살풀이·재물·인연 — 숲이 감춘 술사들이 당신을 기다립니다.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="심곡사(深谷寺) — 당신의 인생이 풀리지 않는 이유">
-<meta property="og:description" content="지도에도 나오지 않는 산사. 여든세 번째 무녀가 당신을 기다립니다.">
-<meta property="og:image" content="assets/hero.jpg">
+<meta property="og:title" content="심곡사(深谷寺) — 숲이 감춘 술사들">
+<meta property="og:description" content="여든세 번째 무녀 묘담, 그리고 산이 숨겨 둔 술사들.">
+<meta property="og:image" content="/assets/hero.jpg">
 <meta name="theme-color" content="#050404">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,1350 +27,293 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{
-  background:#000;
+  background:var(--bg);
   color:var(--ink);
   font-family:'Noto Serif KR','Nanum Myeongjo',serif;
   overflow-x:hidden;
-}
-#app{
-  position:relative;
-  max-width:480px;
-  margin:0 auto;
-  background:var(--bg);
   min-height:100dvh;
-  box-shadow:0 0 80px rgba(0,0,0,.9);
 }
-/* ---------- film grain ---------- */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(120% 70% at 50% 0%,rgba(164,22,26,.08),transparent 55%),var(--bg);
+}
 .grain{
-  pointer-events:none;
-  position:fixed;
-  inset:-100%;
-  width:300%;height:300%;
+  pointer-events:none;position:fixed;inset:-100%;width:300%;height:300%;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  opacity:.07;
-  z-index:90;
-  animation:grain .9s steps(4) infinite;
+  opacity:.06;z-index:90;animation:grain .9s steps(4) infinite;
 }
 @keyframes grain{
   0%{transform:translate(0,0)}25%{transform:translate(-2%,1%)}
   50%{transform:translate(1%,-1%)}75%{transform:translate(-1%,2%)}100%{transform:translate(2%,-2%)}
 }
-/* ---------- candle flicker vignette ---------- */
-.flicker-veil{
-  pointer-events:none;position:fixed;inset:0;z-index:85;
-  background:radial-gradient(120% 90% at 50% 55%,transparent 55%,rgba(0,0,0,.5) 100%);
-  animation:cflick 3.4s ease-in-out infinite;
-}
-@keyframes cflick{
-  0%,100%{opacity:.85}18%{opacity:.65}25%{opacity:.9}41%{opacity:.7}
-  55%{opacity:.95}70%{opacity:.75}86%{opacity:.88}
-}
-/* ---------- sound gate (도입) ---------- */
-#gate{
-  position:fixed;inset:0;z-index:200;
-  background:#000;
-  display:flex;align-items:center;justify-content:center;
-  transition:opacity 1.8s ease;
-  cursor:pointer;overflow:hidden;
-}
-#gate.off{opacity:0;pointer-events:none}
-#gate .gate-bg{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  filter:brightness(.62) saturate(.85);
-  transform:scale(1.06);
-  animation:gatezoom 22s ease-in-out infinite alternate;
-}
-@keyframes gatezoom{from{transform:scale(1.06)}to{transform:scale(1.14)}}
-#gate .gate-veil{
-  position:absolute;inset:0;
-  background:radial-gradient(90% 70% at 50% 46%,transparent 30%,rgba(0,0,0,.82) 100%),
-             linear-gradient(180deg,rgba(0,0,0,.5),transparent 30%,transparent 62%,rgba(0,0,0,.92));
-}
-#gate .gate-inner{
-  position:relative;z-index:2;max-width:480px;width:100%;height:100dvh;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 64px);
-}
-#gate .gate-brand{
-  position:absolute;top:14%;left:0;right:0;text-align:center;
-}
-#gate .gate-hanja{
-  font-family:'Nanum Myeongjo',serif;font-weight:800;
-  font-size:46px;letter-spacing:.34em;text-indent:.34em;color:var(--paper);
-  text-shadow:0 0 34px rgba(0,0,0,.95),0 0 70px rgba(164,22,26,.4);
-  opacity:0;animation:ghostin 2.6s ease .5s forwards;
-}
-#gate .gate-sub{
-  margin-top:12px;font-size:12px;letter-spacing:.55em;text-indent:.55em;color:var(--ink-dim);
-  opacity:0;animation:ghostin 2.6s ease 1.3s forwards;
-}
-#gate .gate-warn{
-  font-size:13px;letter-spacing:.3em;color:var(--ink-dim);line-height:2.3;text-align:center;
-  opacity:0;animation:ghostin 2.4s ease 2s forwards;
-  margin-bottom:26px;
-}
-#gate .gate-warn b{color:var(--ink);font-weight:400}
-#gate .gate-btn{
-  appearance:none;font-family:inherit;cursor:pointer;
-  background:rgba(5,4,4,.5);backdrop-filter:blur(4px);
-  border:1px solid rgba(229,56,59,.55);color:var(--paper);
-  font-size:15px;letter-spacing:.28em;text-indent:.28em;
-  padding:17px 44px;border-radius:2px;
-  box-shadow:0 0 30px rgba(164,22,26,.25), inset 0 0 18px rgba(164,22,26,.12);
-  opacity:0;animation:ghostin 2.4s ease 2.7s forwards, gatebeat 2.6s ease-in-out 5s infinite;
-}
-@keyframes gatebeat{0%,100%{box-shadow:0 0 30px rgba(164,22,26,.25),inset 0 0 18px rgba(164,22,26,.12)}50%{box-shadow:0 0 48px rgba(164,22,26,.5),inset 0 0 26px rgba(164,22,26,.22)}}
-#gate .gate-note{
-  margin-top:18px;font-size:10.5px;letter-spacing:.22em;color:#544c46;
-  opacity:0;animation:ghostin 2s ease 3.4s forwards;
-}
-@keyframes ghostin{from{opacity:0;transform:translateY(14px);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
-/* ---------- story scenes ---------- */
-.scene{
-  position:relative;
-  min-height:100dvh;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  overflow:hidden;
-  isolation:isolate;
-}
-.scene .bg,.scene video.bg{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;
-  filter:brightness(.82) saturate(.85);
-}
-.scene .veil{
-  position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 32%,rgba(0,0,0,.15) 60%,rgba(5,4,4,.96) 100%);
-}
-.dialog{
-  padding:0 26px 40px;
-  display:flex;flex-direction:column;gap:18px;
-}
-.dialog .line{
-  font-size:17.5px;line-height:1.95;
-  color:var(--ink);
-  text-shadow:0 2px 14px rgba(0,0,0,.95);
-  opacity:0;transform:translateY(16px);filter:blur(7px);
-  transition:opacity 1.2s ease,transform 1.2s ease,filter 1.2s ease;
-  word-break:keep-all;
-}
-.dialog .line.on{opacity:1;transform:none;filter:blur(0)}
-.dialog .line em{font-style:normal;color:var(--blood-bright)}
-.dialog .line.whisper{font-size:14px;color:var(--ink-dim);letter-spacing:.12em}
-.dialog .line.voice{font-weight:700}
-.choices{display:flex;flex-direction:column;gap:12px;padding-top:8px}
-.choice{
-  appearance:none;border:1px solid rgba(232,224,216,.3);
-  background:rgba(5,4,4,.55);backdrop-filter:blur(3px);
-  color:var(--ink);font-family:inherit;font-size:15px;letter-spacing:.06em;
-  padding:15px 18px;border-radius:2px;cursor:pointer;
-  opacity:0;transform:translateY(10px);
-  transition:opacity .9s ease .2s,transform .9s ease .2s,background .3s,border-color .3s;
-  word-break:keep-all;
-}
-.choice.on{opacity:1;transform:none}
-.choice:active{background:rgba(164,22,26,.25);border-color:var(--blood)}
-.skip{
-  position:absolute;top:calc(env(safe-area-inset-top, 0px) + 18px);right:18px;
-  color:rgba(232,224,216,.45);font-size:12px;letter-spacing:.15em;
-  background:none;border:none;font-family:inherit;cursor:pointer;z-index:5;
-}
-.scene-tag{
-  position:absolute;top:calc(env(safe-area-inset-top, 0px) + 18px);left:20px;
-  font-size:11px;letter-spacing:.4em;color:rgba(232,224,216,.4);z-index:5;
-}
-/* ---------- hero title (글자 하나씩 등장) ---------- */
-#hero .title-wrap{
-  position:absolute;top:13%;left:0;right:0;text-align:center;z-index:2;
-}
-#hero .hanja{
-  font-family:'Nanum Myeongjo',serif;font-weight:800;
-  font-size:54px;letter-spacing:.26em;text-indent:.26em;
-  color:var(--paper);
-  text-shadow:0 0 30px rgba(0,0,0,.9),0 0 60px rgba(164,22,26,.35);
-}
-#hero .hanja span{
-  display:inline-block;opacity:0;transform:translateY(20px) scale(1.15);filter:blur(10px);
-}
-#hero .title-wrap.go .hanja span{animation:charin 1.6s cubic-bezier(.2,.7,.3,1) forwards}
-#hero .title-wrap.go .hanja span:nth-child(1){animation-delay:.7s}
-#hero .title-wrap.go .hanja span:nth-child(2){animation-delay:1.15s}
-#hero .title-wrap.go .hanja span:nth-child(3){animation-delay:1.6s}
-@keyframes charin{to{opacity:1;transform:none;filter:blur(0)}}
-#hero .sub{
-  margin-top:14px;font-size:13px;letter-spacing:.5em;text-indent:.5em;color:var(--ink-dim);
-  opacity:0;
-}
-#hero .title-wrap.go .sub{animation:ghostin 2.4s ease 2.4s forwards}
-#hero .title-glow{
-  width:150px;height:1px;margin:26px auto 0;
-  background:linear-gradient(90deg,transparent,rgba(229,56,59,.7),transparent);
-  opacity:0;
-}
-#hero .title-wrap.go .title-glow{animation:ghostin 2s ease 3s forwards, glowpulse 3s ease-in-out 5s infinite}
-@keyframes glowpulse{50%{opacity:.35}}
-/* ---------- 인적사항 입력 ---------- */
-.ask-wrap{
-  display:none;flex-direction:column;gap:16px;padding-top:10px;
-}
-.ask-wrap.on{display:flex}
-.ask-field{
-  display:flex;gap:10px;align-items:stretch;
-  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease;
-}
-.ask-field.on{opacity:1;transform:none}
-.ask-input{
-  flex:1;appearance:none;border:1px solid rgba(232,224,216,.35);
-  background:rgba(5,4,4,.6);backdrop-filter:blur(3px);
-  color:var(--paper);font-family:inherit;font-size:16px;letter-spacing:.1em;
-  padding:15px 16px;border-radius:2px;outline:none;text-align:center;
-}
-.ask-input::placeholder{color:#5c534c;letter-spacing:.08em}
-.ask-input:focus{border-color:var(--blood-bright);box-shadow:0 0 18px rgba(164,22,26,.25)}
-.ask-go{
-  appearance:none;border:1px solid rgba(229,56,59,.6);
-  background:rgba(120,0,0,.5);color:var(--paper);
-  font-family:inherit;font-size:14px;letter-spacing:.15em;
-  padding:0 22px;border-radius:2px;cursor:pointer;
-}
-.ask-go:active{background:rgba(164,22,26,.7)}
-.ask-row{display:flex;gap:10px}
-.ask-opt{
-  flex:1;appearance:none;border:1px solid rgba(232,224,216,.3);
-  background:rgba(5,4,4,.55);color:var(--ink);
-  font-family:inherit;font-size:15px;letter-spacing:.2em;text-indent:.2em;
-  padding:15px 0;border-radius:2px;cursor:pointer;
-  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease,background .3s,border-color .3s;
-}
-.ask-opt.on{opacity:1;transform:none}
-.ask-opt:active,.ask-opt.sel{background:rgba(164,22,26,.3);border-color:var(--blood-bright)}
-.ask-err{font-size:12px;color:var(--blood-bright);letter-spacing:.08em;display:none}
-/* ---------- 화면 흔들림 / 붉은 섬광 ---------- */
-.shake{animation:shake .55s ease}
-@keyframes shake{
-  0%,100%{transform:translate(0,0)}15%{transform:translate(-7px,3px)}30%{transform:translate(6px,-4px)}
-  45%{transform:translate(-5px,-3px)}60%{transform:translate(4px,4px)}75%{transform:translate(-3px,1px)}90%{transform:translate(2px,-2px)}
-}
-#redflash{
-  pointer-events:none;position:fixed;inset:0;z-index:95;
-  background:radial-gradient(100% 100% at 50% 50%,rgba(164,22,26,.5),rgba(80,0,0,.25));
-  opacity:0;transition:opacity .25s ease;
-}
-#redflash.on{opacity:1}
-/* ---------- 로딩 오버레이 ---------- */
-#loading{
-  position:fixed;inset:0;z-index:210;background:#020202;
-  display:none;align-items:center;justify-content:center;flex-direction:column;gap:34px;
-}
-#loading.on{display:flex}
-.load-ring{
-  position:relative;width:120px;height:120px;
-}
-.load-ring .ring{
-  position:absolute;inset:0;border-radius:50%;
-  border:1px solid rgba(229,56,59,.18);
-}
-.load-ring .ring2{
-  position:absolute;inset:0;border-radius:50%;
-  border:1px solid transparent;border-top-color:var(--blood-bright);
-  animation:spin 1.6s linear infinite;
-}
-.load-ring .ring3{
-  position:absolute;inset:12px;border-radius:50%;
-  border:1px dashed rgba(232,224,216,.15);
-  animation:spinrev 9s linear infinite;
-}
-.load-ring .core{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:'Nanum Myeongjo',serif;font-size:38px;color:var(--blood-bright);
-  text-shadow:0 0 24px rgba(164,22,26,.7);
-  animation:corepulse 1.8s ease-in-out infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes spinrev{to{transform:rotate(-360deg)}}
-@keyframes corepulse{50%{opacity:.5;text-shadow:0 0 40px rgba(229,56,59,.9)}}
-#loadtext{
-  font-size:14px;letter-spacing:.25em;color:var(--ink-dim);text-align:center;line-height:2.2;
-  min-height:3em;
-  transition:opacity .4s ease;
-}
-#loadtext b{color:var(--paper);font-weight:400}
-/* ---------- sales sections ---------- */
-.sec{
-  position:relative;
-  padding:110px 26px;
-  text-align:center;
-  overflow:hidden;
-}
-.sec.img-sec{padding:0;min-height:88dvh;display:flex;flex-direction:column;justify-content:center}
-.sec.img-sec .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:brightness(.6) saturate(.8)}
-.sec.img-sec video.bg{filter:brightness(.55) saturate(.8)}
-.sec.img-sec .veil2{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,var(--bg) 0%,transparent 25%,transparent 70%,var(--bg) 100%)}
-.sec.img-sec .inner{position:relative;z-index:2;padding:110px 26px}
-.rv{opacity:0;transform:translateY(26px);transition:opacity 1.2s ease,transform 1.2s ease}
-.rv.on{opacity:1;transform:none}
-.h-red{
-  color:var(--blood-bright);font-size:15px;letter-spacing:.25em;margin-bottom:18px;font-weight:600;
-}
-.h-big{
-  font-size:27px;font-weight:900;line-height:1.75;word-break:keep-all;
-}
-.h-big .r{color:var(--blood-bright)}
-.h-hanja{
-  font-family:'Nanum Myeongjo',serif;font-size:64px;font-weight:800;color:var(--blood);margin:34px 0 6px;
-  text-shadow:0 0 40px rgba(164,22,26,.4);
-}
-.p-dim{
-  margin-top:26px;color:var(--ink-dim);font-size:14.5px;line-height:2.1;word-break:keep-all;
-}
-.p-body{
-  margin-top:26px;font-size:16px;line-height:2.15;word-break:keep-all;
-}
-.p-body em{font-style:normal;color:var(--blood-bright);font-weight:700}
-.hr-knife{
-  width:1px;height:72px;margin:0 auto;
-  background:linear-gradient(180deg,transparent,var(--blood),transparent);
-}
-/* checklist */
-.chk{margin-top:34px;display:flex;flex-direction:column;gap:14px;text-align:left}
-.chk li{
-  list-style:none;display:flex;gap:12px;align-items:flex-start;
-  font-size:14.5px;line-height:1.8;color:var(--ink);word-break:keep-all;
-}
-.chk li::before{content:"✔";color:var(--blood-bright);font-size:13px;margin-top:3px}
-/* ---------- 원국 차트 ---------- */
-.chart-frame{
-  margin-top:34px;position:relative;border-radius:6px;overflow:hidden;
-  border:1px solid rgba(208,140,58,.35);
-  background:#0d0906;
-  box-shadow:0 0 44px rgba(164,22,26,.15), inset 0 0 60px rgba(0,0,0,.8);
-}
-.chart-frame .chart-bg{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32;filter:saturate(.8);
-}
-.chart-inner{position:relative;z-index:2;padding:30px 18px 26px}
-.chart-title{
-  font-family:'Nanum Myeongjo',serif;font-size:13px;letter-spacing:.4em;color:var(--ember);
-  margin-bottom:22px;
-}
-.pillars{display:flex;gap:8px;justify-content:center}
-.pillar{
-  flex:1;max-width:88px;border:1px solid rgba(232,224,216,.14);border-radius:4px;
-  background:rgba(5,4,4,.55);padding:14px 4px 12px;position:relative;
-}
-.pillar .plabel{font-size:10.5px;letter-spacing:.25em;color:var(--ink-dim);margin-bottom:10px}
-.pillar .pchar{
-  font-family:'Nanum Myeongjo',serif;font-size:30px;line-height:1.35;color:var(--paper);
-}
-.pillar .pchar div{position:relative}
-.pillar.locked .pchar{filter:blur(7px);opacity:.75}
-.pillar.locked::after{
-  content:"🔒";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:17px;opacity:.85;
-}
-.pillar.cursed{border-color:rgba(229,56,59,.6);box-shadow:0 0 22px rgba(164,22,26,.3)}
-.pillar.cursed .plabel{color:var(--blood-bright)}
-.pillar .curse-mark{
-  position:absolute;top:-9px;right:-7px;
-  font-family:'Nanum Myeongjo',serif;font-size:15px;color:#fff;
-  background:var(--blood);border-radius:50%;width:26px;height:26px;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 16px rgba(164,22,26,.8);
-  animation:corepulse 2s ease-in-out infinite;
-}
-.chart-note{margin-top:18px;font-size:11.5px;color:var(--ink-dim);letter-spacing:.1em;line-height:1.9}
-.chart-note b{color:var(--blood-bright);font-weight:400}
-/* ---------- 흉살 진단 카드 ---------- */
-.sal-card{
-  margin-top:26px;text-align:left;border-radius:5px;overflow:hidden;position:relative;
-  background:linear-gradient(160deg,rgba(40,12,10,.65),rgba(10,6,5,.92));
-  border:1px solid rgba(229,56,59,.35);
-}
-.sal-card .sal-head{
-  display:flex;align-items:center;gap:12px;padding:18px 18px 14px;
-  border-bottom:1px dashed rgba(232,224,216,.12);
-}
-.sal-card .sal-hanja{
-  font-family:'Nanum Myeongjo',serif;font-size:30px;color:var(--blood-bright);
-  text-shadow:0 0 18px rgba(164,22,26,.5);
-}
-.sal-card .sal-name{font-size:16px;font-weight:700;color:var(--paper)}
-.sal-card .sal-name small{display:block;font-size:11px;color:var(--ink-dim);letter-spacing:.15em;margin-top:3px;font-weight:300}
-.sal-card .sal-lv{
-  margin-left:auto;font-size:11px;letter-spacing:.12em;color:#fff;
-  background:var(--blood);padding:5px 10px;border-radius:2px;
-}
-.sal-card .sal-body{padding:16px 18px 18px}
-.sal-card .sal-body p{font-size:13.5px;line-height:2;color:var(--ink);word-break:keep-all}
-.sal-card .sal-lock{
-  margin-top:12px;position:relative;border-radius:3px;overflow:hidden;
-}
-.sal-card .sal-lock p{
-  font-size:13px;line-height:1.95;color:var(--ink-dim);
-  filter:blur(5px);user-select:none;
-}
-.sal-card .sal-lock .lock-tag{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;
-  font-size:12px;letter-spacing:.15em;color:var(--paper);
-  background:rgba(5,4,4,.25);
-}
-/* ---------- 재물 그래프 ---------- */
-.graph-frame{
-  margin-top:30px;border:1px solid rgba(208,140,58,.3);border-radius:6px;
-  background:rgba(10,7,5,.85);padding:24px 14px 18px;position:relative;overflow:hidden;
-}
-.graph-title{font-size:12px;letter-spacing:.3em;color:var(--ember);margin-bottom:16px;font-family:'Nanum Myeongjo',serif}
-.graph-tags{display:flex;justify-content:space-around;margin-top:10px}
-.gtag{font-size:11.5px;letter-spacing:.08em;padding:6px 10px;border-radius:2px}
-.gtag.bad{background:rgba(70,10,10,.8);color:#e6a5a7}
-.gtag.good{background:rgba(120,20,20,.9);color:#ffd9a0}
-.gtag b{display:block;font-size:12px;margin-bottom:2px}
-.gtag .blurline{filter:blur(4px);user-select:none}
-/* ---------- 잠긴 티저 목록 ---------- */
-.locklist{margin-top:30px;display:flex;flex-direction:column;gap:12px;text-align:left}
-.lockitem{
-  position:relative;border:1px solid rgba(232,224,216,.1);border-radius:4px;overflow:hidden;
-  background:rgba(18,12,10,.75);
-}
-.lockitem .li-head{
-  display:flex;gap:10px;align-items:baseline;padding:15px 16px;
-}
-.lockitem .li-no{font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:12px;white-space:nowrap;letter-spacing:.05em}
-.lockitem .li-title{font-size:14px;font-weight:700;color:var(--paper);line-height:1.65;word-break:keep-all}
-.lockitem .li-body{
-  padding:0 16px 14px;position:relative;
-}
-.lockitem .li-body p{font-size:12.5px;line-height:1.9;color:var(--ink-dim);filter:blur(5px);user-select:none}
-.lockitem .li-veil{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:11.5px;letter-spacing:.18em;color:rgba(232,224,216,.75);
-  background:linear-gradient(180deg,transparent,rgba(5,4,4,.3));
-}
-/* steps */
-.stepnum{
-  font-family:'Nanum Myeongjo',serif;font-size:44px;font-weight:800;color:var(--blood-bright);
-}
-.stepline{width:1px;height:46px;background:linear-gradient(180deg,var(--blood),transparent);margin:14px auto}
+/* ── top bar ── */
+header{
+  position:sticky;top:0;z-index:50;
+  background:linear-gradient(180deg,rgba(5,4,4,.97),rgba(5,4,4,.86));
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(232,224,216,.06);
+}
+.bar{
+  max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px 12px;
+}
+.logo{
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:22px;letter-spacing:.18em;
+  color:var(--paper);text-decoration:none;
+  padding:3px 10px;border:1.5px solid var(--blood-bright);
+  box-shadow:0 0 18px rgba(164,22,26,.35), inset 0 0 10px rgba(164,22,26,.12);
+}
+.logo small{font-size:10px;letter-spacing:.3em;color:var(--ink-dim);display:block;margin-top:1px;border:none}
+.menu-btn{
+  appearance:none;background:none;border:none;cursor:pointer;color:var(--ink);
+  font-size:22px;line-height:1;padding:6px;
+}
+/* chips */
+.chips{
+  max-width:1180px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;
+  padding:2px 20px 14px;scrollbar-width:none;
+}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  appearance:none;cursor:pointer;font-family:inherit;white-space:nowrap;
+  font-size:13.5px;letter-spacing:.08em;color:var(--ink-dim);
+  background:rgba(232,224,216,.05);border:1px solid rgba(232,224,216,.14);
+  padding:8px 16px;border-radius:999px;transition:all .25s ease;
+}
+.chip.sel{background:var(--paper);color:#181210;border-color:var(--paper);font-weight:700}
+.chip:not(.sel):hover{border-color:rgba(232,224,216,.35);color:var(--ink)}
+/* ── hero strip ── */
+.hero-strip{
+  max-width:1180px;margin:0 auto;padding:26px 20px 6px;
+}
+.hero-strip h1{
+  font-size:21px;font-weight:900;line-height:1.7;word-break:keep-all;
+}
+.hero-strip h1 em{font-style:normal;color:var(--blood-bright)}
+.hero-strip p{margin-top:8px;font-size:13px;color:var(--ink-dim);letter-spacing:.06em;line-height:1.9;word-break:keep-all}
+/* ── catalog ── */
+.catalog{
+  max-width:1180px;margin:0 auto;
+  padding:18px 20px calc(env(safe-area-inset-bottom,0px) + 140px);
+  display:grid;grid-template-columns:1fr;gap:34px 22px;
+}
+@media (min-width:700px){.catalog{grid-template-columns:1fr 1fr;gap:40px 24px}}
+@media (min-width:1060px){.catalog{grid-template-columns:1fr 1fr 1fr}}
+.shelf{display:flex;flex-direction:column;gap:12px;min-width:0}
+.shelf.hidden{display:none}
+.shelf-cat{font-size:12px;letter-spacing:.14em;color:var(--ink-dim)}
+.shelf-q{font-size:18px;font-weight:900;line-height:1.55;word-break:keep-all}
 .card{
-  margin-top:30px;background:rgba(20,14,12,.75);border:1px solid rgba(164,22,26,.25);
-  border-radius:4px;padding:26px 22px;text-align:left;
+  position:relative;display:block;text-decoration:none;color:inherit;
+  border-radius:10px;overflow:hidden;isolation:isolate;
+  border:1px solid rgba(232,224,216,.09);
+  background:#0a0706;
+  aspect-ratio:3/4.35;
+  transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;
 }
-.card h4{font-size:16px;margin-bottom:14px;color:var(--paper)}
-.card h4 span{color:var(--blood-bright)}
-.card p{font-size:13.5px;line-height:2;color:var(--ink-dim);word-break:keep-all}
-.timeline{margin-top:26px;display:flex;flex-direction:column;gap:2px;text-align:left}
-.timeline .row{
-  display:flex;gap:14px;align-items:center;background:rgba(20,14,12,.7);
-  border-left:2px solid var(--blood);padding:15px 16px;
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 50px rgba(0,0,0,.65),0 0 40px rgba(164,22,26,.14);border-color:rgba(229,56,59,.4)}
+.card img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;
+  filter:brightness(.92) saturate(.9);
+  transition:transform 6s ease, filter .4s ease;
 }
-.timeline .yr{font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-weight:800;font-size:15px;min-width:44px}
-.timeline .tx{font-size:13.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
-.timeline .tx b{color:var(--blood-bright)}
-/* before / after */
-.ba{margin-top:30px;display:flex;flex-direction:column;gap:20px}
-.ba .b,.ba .a{border-radius:4px;padding:24px 20px;text-align:left}
-.ba .b{background:rgba(15,10,10,.85);border:1px solid rgba(232,224,216,.12)}
-.ba .a{background:linear-gradient(160deg,rgba(50,14,14,.5),rgba(20,8,8,.9));border:1px solid rgba(229,56,59,.4)}
-.ba h5{font-size:14px;letter-spacing:.15em;margin-bottom:12px}
-.ba .b h5{color:var(--ink-dim)}
-.ba .a h5{color:var(--blood-bright)}
-.ba p{font-size:13.5px;line-height:2;color:var(--ink-dim);word-break:keep-all}
-.ba .a p{color:var(--ink)}
-/* toc */
-.toc{margin-top:30px;display:flex;flex-direction:column;gap:8px;text-align:left}
-.toc .t{
-  display:flex;gap:14px;align-items:baseline;padding:13px 16px;
-  background:rgba(20,14,12,.55);border:1px solid rgba(232,224,216,.07);border-radius:3px;
+.card:hover img{transform:scale(1.05);filter:brightness(1) saturate(.95)}
+.card .shade{
+  position:absolute;inset:0;z-index:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,transparent 30%,transparent 52%,rgba(3,2,2,.94) 100%);
 }
-.toc .n{font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:12px;font-weight:700;letter-spacing:.05em;white-space:nowrap}
-.toc .x{font-size:13.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
-.toc-note{margin-top:16px;font-size:12.5px;color:var(--ink-dim);letter-spacing:.05em}
-/* reviews */
-.review{
-  margin-top:26px;text-align:left;background:rgba(20,14,12,.7);
-  border:1px solid rgba(232,224,216,.08);border-radius:4px;padding:22px 20px;
-  position:relative;
+.badge{
+  position:absolute;top:14px;left:14px;z-index:2;
+  font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;
+  padding:5px 10px;border-radius:2px;
 }
-.review::after{
-  content:"";position:absolute;inset:0;border-radius:4px;pointer-events:none;
-  box-shadow:0 0 34px rgba(164,22,26,.12) inset;
+.badge.new{background:var(--blood-bright);color:#fff;box-shadow:0 0 16px rgba(229,56,59,.5)}
+.badge.soon{background:rgba(10,8,8,.75);color:var(--ink-dim);border:1px solid rgba(232,224,216,.25)}
+.card .meta{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:18px 18px 16px;
 }
-.review .who{font-size:12px;color:var(--ink-dim);letter-spacing:.1em;margin-bottom:10px}
-.review .quote{font-size:15px;font-weight:700;color:var(--blood-bright);margin-bottom:10px;line-height:1.7;word-break:keep-all}
-.review p{font-size:13.5px;line-height:2;color:var(--ink);word-break:keep-all}
-.review-src{margin-top:18px;font-size:11.5px;color:#5c534c;letter-spacing:.1em}
-/* pricing */
-.price-strike{
-  margin-top:30px;font-size:15px;color:var(--ink-dim);line-height:2.4;
+.card .c-title{
+  font-size:21px;font-weight:900;color:#fff;line-height:1.45;word-break:keep-all;
+  text-shadow:0 2px 12px rgba(0,0,0,.9);
 }
-.price-strike s{color:#6b5f57}
-.plan{
-  margin-top:26px;border-radius:5px;overflow:hidden;text-align:left;
-  border:1px solid rgba(232,224,216,.12);
+.card .c-desc{
+  margin-top:6px;font-size:13px;color:rgba(232,224,216,.85);line-height:1.75;word-break:keep-all;
+  text-shadow:0 1px 8px rgba(0,0,0,.9);
 }
-.plan .head{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 18px;font-size:13px;letter-spacing:.1em;color:#fff;
+.card .c-price{
+  margin-top:10px;font-family:'Noto Sans KR',sans-serif;font-weight:900;font-size:16px;color:#fff;
 }
-.plan.hot .head{background:var(--blood)}
-.plan.mid .head{background:#5c3038}
-.plan.base .head{background:#3a322d}
-.plan .body{background:rgba(240,234,226,.96);color:#181210;padding:20px 18px}
-.plan .row1{display:flex;align-items:center;justify-content:space-between}
-.plan .amount{font-size:30px;font-weight:900;font-family:'Noto Sans KR',sans-serif}
-.plan .amount small{font-size:14px;font-weight:400}
-.plan .off{
-  width:56px;height:56px;border-radius:50%;background:var(--blood);color:#fff;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:18px;
-  font-family:'Noto Sans KR',sans-serif;line-height:1;
+.card .c-price s{font-weight:400;font-size:12px;color:rgba(232,224,216,.5);margin-right:8px}
+.card .c-price .pct{color:var(--blood-bright);font-size:13px;margin-left:6px}
+.card.disabled{cursor:default}
+.card.disabled img{filter:brightness(.55) saturate(.6) grayscale(.25)}
+.card.disabled:hover{transform:none;box-shadow:none;border-color:rgba(232,224,216,.09)}
+.card.disabled:hover img{transform:none}
+/* ── bottom nav pill ── */
+.navpill{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:80;
+  display:flex;gap:6px;align-items:center;
+  background:rgba(12,9,8,.92);backdrop-filter:blur(10px);
+  border:1px solid rgba(232,224,216,.12);border-radius:999px;
+  padding:8px;box-shadow:0 10px 40px rgba(0,0,0,.6);
 }
-.plan.mid .off{background:#5c3038}
-.plan .off small{font-size:10px;font-weight:400;margin-top:2px}
-.plan .was{font-size:13px;color:#7a6f66;margin-top:4px}
-.plan .was s{color:#a4161a}
-.plan ul{margin-top:14px;display:flex;flex-direction:column;gap:8px}
-.plan li{list-style:none;font-size:13px;line-height:1.7;color:#3a322d;display:flex;gap:8px}
-.plan li::before{content:"✅";font-size:11px}
-.plan .tag{font-size:11px;letter-spacing:.15em}
-.soldout{
-  position:relative;
+.navpill button{
+  appearance:none;border:none;cursor:pointer;font-family:inherit;
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;color:var(--ink-dim);font-size:19px;position:relative;
 }
-.soldout::after{
-  content:"마 감";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  background:rgba(5,4,4,.55);color:var(--paper);font-size:20px;letter-spacing:.6em;text-indent:.6em;
-  font-family:'Nanum Myeongjo',serif;
+.navpill button.sel{background:var(--paper);color:#181210}
+.navpill button .dot{
+  position:absolute;top:9px;right:9px;width:7px;height:7px;border-radius:50%;
+  background:var(--blood-bright);
 }
-.guarantee{
-  margin-top:34px;border:1px dashed rgba(229,56,59,.5);border-radius:4px;padding:22px 18px;
-}
-.guarantee h5{color:var(--blood-bright);font-size:15px;margin-bottom:10px;letter-spacing:.1em}
-.guarantee p{font-size:13px;line-height:2;color:var(--ink-dim);word-break:keep-all}
-/* CTA */
-.cta-big{
-  display:block;width:100%;margin-top:40px;
-  background:linear-gradient(160deg,#c1121f,#780000);
-  color:#fff;text-decoration:none;text-align:center;
-  font-family:inherit;font-size:17px;font-weight:700;letter-spacing:.12em;
-  padding:20px 10px;border-radius:3px;border:1px solid rgba(255,255,255,.14);
-  box-shadow:0 6px 34px rgba(164,22,26,.4);
-  animation:beat 2.4s ease-in-out infinite;
-}
-@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.018)}}
-.cta-note{margin-top:14px;font-size:12px;color:var(--ink-dim);letter-spacing:.08em}
-#sticky{
-  position:fixed;left:50%;transform:translate(-50%,110%);
-  bottom:0;width:100%;max-width:480px;z-index:80;
-  padding:10px 14px calc(env(safe-area-inset-bottom, 0px) + 12px);
-  background:linear-gradient(180deg,transparent,rgba(0,0,0,.88) 40%);
-  transition:transform .6s ease;
-}
-#sticky.on{transform:translate(-50%,0)}
-#sticky a{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  background:linear-gradient(160deg,#c1121f,#780000);color:#fff;text-decoration:none;
-  font-size:15.5px;font-weight:700;letter-spacing:.1em;
-  padding:16px;border-radius:3px;border:1px solid rgba(255,255,255,.15);
-  box-shadow:0 4px 24px rgba(164,22,26,.5);
-}
-#sticky .blink{width:7px;height:7px;border-radius:50%;background:#ffd166;animation:bk 1.2s infinite}
-@keyframes bk{50%{opacity:.2}}
-/* footer */
+/* ── footer ── */
 footer{
-  padding:60px 26px calc(env(safe-area-inset-bottom, 0px) + 120px);
-  text-align:center;color:#544c46;font-size:11px;line-height:2;letter-spacing:.05em;
   border-top:1px solid rgba(232,224,216,.06);
+  padding:44px 20px calc(env(safe-area-inset-bottom,0px) + 120px);
+  text-align:center;color:#544c46;font-size:11px;line-height:2;letter-spacing:.05em;
   font-family:'Noto Sans KR',sans-serif;
 }
 footer b{color:#7a6f66}
-.splat{
-  position:absolute;font-family:'Nanum Myeongjo',serif;color:rgba(164,22,26,.12);
-  font-size:150px;font-weight:900;z-index:0;pointer-events:none;user-select:none;
-}
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .9s ease,transform .9s ease}
+.rv.on{opacity:1;transform:none}
 </style>
 </head>
 <body>
 <div class="grain"></div>
-<div class="flicker-veil"></div>
-<div id="redflash"></div>
 
-<!-- ═══════════ 도입 게이트 ═══════════ -->
-<div id="gate">
-  <video class="gate-bg" src="assets/intro.mp4" muted loop playsinline autoplay poster="assets/intro.jpg"></video>
-  <div class="gate-veil"></div>
-  <div class="gate-inner">
-    <div class="gate-brand">
-      <div class="gate-hanja">深谷寺</div>
-      <div class="gate-sub">숲이 감춘, 여든세 번째 신당</div>
-    </div>
-    <p class="gate-warn">방울이 멈춘 자리에서<br><b>당신을 기다리고 있습니다</b></p>
-    <button class="gate-btn" id="enterBtn">신당에 들어선다</button>
-    <p class="gate-note">· 소리와 함께 입장하시길 바랍니다 ·</p>
+<header>
+  <div class="bar">
+    <a class="logo" href="./">深谷寺</a>
+    <button class="menu-btn" aria-label="메뉴" onclick="alert('준비 중입니다.')">☰</button>
   </div>
+  <div class="chips" id="chips">
+    <button class="chip sel" data-cat="all">전체</button>
+    <button class="chip" data-cat="sal">살풀이</button>
+    <button class="chip" data-cat="money">재물</button>
+    <button class="chip" data-cat="love">인연</button>
+  </div>
+</header>
+
+<div class="hero-strip rv">
+  <h1>지도에 없는 산사,<br>숲이 감춘 <em>술사들.</em></h1>
+  <p>강원도 이름 없는 산 중턱 — 심곡사.<br>당신이 여기까지 온 것은, 우연이 아닙니다.</p>
 </div>
 
-<!-- ═══════════ 로딩 오버레이 ═══════════ -->
-<div id="loading">
-  <div class="load-ring">
-    <div class="ring"></div>
-    <div class="ring2"></div>
-    <div class="ring3"></div>
-    <div class="core">殺</div>
-  </div>
-  <p id="loadtext"></p>
-</div>
+<main class="catalog" id="catalog">
 
-<div id="app">
-
-  <!-- ═══════════ SCENE 0 : 히어로 ═══════════ -->
-  <section class="scene" id="hero">
-    <video class="bg" src="assets/hero.mp4" muted loop playsinline preload="auto" poster="assets/hero.jpg"></video>
-    <div class="veil"></div>
-    <div class="title-wrap">
-      <div class="hanja"><span>深</span><span>谷</span><span>寺</span></div>
-      <div class="sub">심 곡 사 · 여든세 번째 무녀</div>
-      <div class="title-glow"></div>
-    </div>
-    <div class="dialog" data-scene="0">
-      <p class="line whisper">— 강원도, 이름 없는 산 중턱 —</p>
-      <p class="line">지도에도 나오지 않는 이 산사(山寺)를,<br>당신이 찾아온 것은 <em>우연이 아니다.</em></p>
-      <div class="choices">
-        <button class="choice" data-next="1">안개 속 불빛을 따라간다</button>
+  <!-- 묘담 · 살풀이 -->
+  <section class="shelf rv" data-cat="sal">
+    <span class="shelf-cat">殺 · 살풀이 사주</span>
+    <h2 class="shelf-q">요즘, 뭘 해도 안 풀린다면?</h2>
+    <a class="card" href="myodam/">
+      <img src="assets/hero.jpg" alt="무녀 묘담" loading="eager">
+      <div class="shade"></div>
+      <span class="badge new">NEW</span>
+      <div class="meta">
+        <div class="c-title">네 사주에 살(殺)이 박혀 있다</div>
+        <div class="c-desc">여든세 번째 무녀 묘담 — 당신의 인생이 풀리지 않는 진짜 이유를 짚는다</div>
+        <div class="c-price"><s>229,000원</s>38,900원<span class="pct">83%↓</span></div>
       </div>
-    </div>
-    <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
+    </a>
   </section>
 
-  <!-- ═══════════ SCENE 1 : 숲길 ═══════════ -->
-  <section class="scene hidden-scene" id="scene1" style="display:none">
-    <video class="bg" src="assets/forest.mp4" muted loop playsinline preload="none" poster="assets/forest.jpg"></video>
-    <div class="veil"></div>
-    <span class="scene-tag">壹</span>
-    <div class="dialog" data-scene="1">
-      <p class="line whisper">발밑에서 젖은 흙냄새가 올라온다.</p>
-      <p class="line">계단 끝, 낡은 문 하나.<br>문틈으로 <em>촛불</em>이 새어 나오고 있다.</p>
-      <p class="line whisper">…안에서, 누군가 방울을 흔든다.</p>
-      <div class="choices">
-        <button class="choice" data-next="2">문을 밀고 들어간다</button>
-        <button class="choice" data-next="2" data-hesitate="1">잠시 망설인다</button>
-      </div>
-    </div>
-    <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
-  </section>
-
-  <!-- ═══════════ SCENE 2 : 무녀와 대면 + 인적사항 ═══════════ -->
-  <section class="scene hidden-scene" id="scene2" style="display:none">
-    <video class="bg" src="assets/ritual.mp4" muted loop playsinline preload="none" poster="assets/ritual.jpg"></video>
-    <div class="veil"></div>
-    <span class="scene-tag">貳</span>
-    <div class="dialog" data-scene="2">
-      <p class="line whisper" data-hesitate-line style="display:none">…망설이는 사이, 문이 저절로 열렸다.</p>
-      <p class="line voice">"기다리고 있었다."</p>
-      <p class="line">촛불 너머, 가면을 쥔 여인이<br>고개도 들지 않고 말한다.</p>
-      <p class="line voice">"이 산에서 <em>여든세 번째</em>다, 내가.<br>너 같은 얼굴… 수천 번은 봤지."</p>
-      <div class="choices">
-        <button class="choice" data-ask="start">"…저를, 아세요?"</button>
-      </div>
-    </div>
-    <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
-  </section>
-
-  <!-- ═══════════ SCENE 2.5 : 인적사항 문답 ═══════════ -->
-  <section class="scene hidden-scene" id="sceneAsk" style="display:none">
-    <img class="bg" src="assets/seated.jpg" alt="">
-    <div class="veil"></div>
-    <span class="scene-tag">問</span>
-    <div class="dialog" data-scene="ask">
-      <!-- step 1 : 이름 -->
-      <div class="ask-step" id="ask1">
-        <p class="line voice">"알다 뿐이냐.<br>허나 <em>네 입으로</em> 말해야 시작된다."</p>
-        <p class="line voice" style="margin-top:12px">"이름이 무엇이냐."</p>
-        <div class="ask-wrap on">
-          <div class="ask-field">
-            <input class="ask-input" id="inName" type="text" maxlength="10" placeholder="이름을 적는다" autocomplete="off">
-            <button class="ask-go" onclick="askName()">말한다</button>
-          </div>
-          <p class="ask-err" id="errName">…이름을 말해야 한다.</p>
-        </div>
-      </div>
-      <!-- step 2 : 생년월일 -->
-      <div class="ask-step" id="ask2" style="display:none">
-        <p class="line voice">"태어난 날을 말하거라.<br><em>해와 달과 날</em>— 하나도 빠짐없이."</p>
-        <div class="ask-wrap on">
-          <div class="ask-field">
-            <input class="ask-input" id="inBirth" type="text" inputmode="numeric" maxlength="10" placeholder="1995.03.14" autocomplete="off">
-            <button class="ask-go" onclick="askBirth()">말한다</button>
-          </div>
-          <p class="ask-err" id="errBirth">…여덟 자리로 말하거라. (예: 1995.03.14)</p>
-        </div>
-      </div>
-      <!-- step 3 : 성별 -->
-      <div class="ask-step" id="ask3" style="display:none">
-        <p class="line voice">"마지막이다."</p>
-        <div class="ask-wrap on">
-          <div class="ask-row">
-            <button class="ask-opt" onclick="askGender('여',this)">女 · 여자</button>
-            <button class="ask-opt" onclick="askGender('남',this)">男 · 남자</button>
-          </div>
-        </div>
-      </div>
-      <!-- step 4 : 반응 -->
-      <div class="ask-step" id="ask4" style="display:none">
-        <p class="line whisper">여인이 만세력을 펼친다.<br>낡은 종이 위로 붓이 멈추지 않는다.</p>
-        <p class="line voice" id="reactLine1">"……"</p>
-        <p class="line voice"><em>"심상치 않군."</em></p>
-        <p class="line whisper">처음으로, 여인이 고개를 들어<br>당신을 똑바로 본다.</p>
-        <div class="choices">
-          <button class="choice" data-next="3">"…뭐가 보이는데요?"</button>
-        </div>
+  <!-- 현월 · 재물 -->
+  <section class="shelf rv" data-cat="money">
+    <span class="shelf-cat">財 · 재물 사주</span>
+    <h2 class="shelf-q">내 팔자에 돈길이 있긴 할까?</h2>
+    <div class="card disabled">
+      <img src="assets/hyunwol.jpg" alt="현월 스님" loading="lazy">
+      <div class="shade"></div>
+      <span class="badge soon">COMING SOON</span>
+      <div class="meta">
+        <div class="c-title">돈이 새는 자리, 고이는 자리</div>
+        <div class="c-desc">장경각을 지키는 스님 현월 — 평생 만질 돈의 최대치와 터지는 해를 계산한다</div>
+        <div class="c-price">준비 중</div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ SCENE 3 : 선고 (가면 벗기) ═══════════ -->
-  <section class="scene hidden-scene" id="scene3" style="display:none">
-    <video class="bg" src="assets/maskoff.mp4" muted loop playsinline preload="none" poster="assets/maskon.jpg"></video>
-    <div class="veil"></div>
-    <span class="scene-tag">參</span>
-    <div class="dialog" data-scene="3">
-      <p class="line voice" id="sorryLine">"그렇게로구나…"</p>
-      <p class="line voice">"<em>그래서 안 된 거였구나.</em>"</p>
-      <p class="line" style="margin-top:8px">여인이 천천히, 가면을 벗는다.</p>
-      <p class="line voice" data-quake>"네 사주에 <em>살(殺)</em>이 박혀 있다."</p>
-      <p class="line">그 한마디에, 등 뒤의 촛불이<br>일제히 흔들렸다.</p>
-      <p class="line voice">"운이 나빴던 게 아니야.<br><em>흐름을 모르고 살았던 것뿐이지.</em>"</p>
-      <p class="line voice" id="showLine">"보여주랴 —<br>네 인생이 안 풀리는 <em>진짜 이유.</em>"</p>
-      <div class="choices">
-        <button class="choice" data-next="sales">"…보여주세요."</button>
+  <!-- 홍단 · 인연 -->
+  <section class="shelf rv" data-cat="love">
+    <span class="shelf-cat">緣 · 인연 사주</span>
+    <h2 class="shelf-q">내 진짜 인연은 어디쯤 오고 있을까?</h2>
+    <div class="card disabled">
+      <img src="assets/hongdan.jpg" alt="홍단 아씨" loading="lazy">
+      <div class="shade"></div>
+      <span class="badge soon">COMING SOON</span>
+      <div class="meta">
+        <div class="c-title">붉은 실이 닿는 곳</div>
+        <div class="c-desc">별당의 아씨 홍단 — 만나는 시기·방향·얼굴까지, 운명의 상대를 그려낸다</div>
+        <div class="c-price">준비 중</div>
       </div>
     </div>
-    <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
   </section>
 
-  <!-- ═══════════ 세일즈 랜딩 (결과지) ═══════════ -->
-  <div id="sales" style="display:none">
-
-    <!-- 개인화 선고 -->
-    <section class="sec" style="padding-top:90px">
-      <span class="splat" style="top:8%;left:-30px">殺</span>
-      <p class="h-red rv" id="pTag">— 심곡사 살(殺) 감정 결과 —</p>
-      <h2 class="h-big rv" id="pHead">당신의 사주,<br><span class="r">심상치 않습니다</span></h2>
-      <p class="p-body rv" id="pSub">여든세 번째 무녀 묘담이<br>당신의 원국(原局)을 직접 짚었습니다.</p>
-    </section>
-
-    <!-- 원국 차트 -->
-    <section class="sec" style="padding-top:0">
-      <div class="chart-frame rv">
-        <img class="chart-bg" src="assets/chart.jpg" alt="">
-        <div class="chart-inner">
-          <div class="chart-title" id="chartOwner">四柱原局</div>
-          <div class="pillars">
-            <div class="pillar locked" id="pillarHour">
-              <div class="plabel">時柱</div>
-              <div class="pchar"><div>甲</div><div>子</div></div>
-            </div>
-            <div class="pillar locked" id="pillarDay">
-              <div class="plabel">日柱</div>
-              <div class="pchar"><div>丙</div><div>午</div></div>
-            </div>
-            <div class="pillar locked cursed" id="pillarMonth">
-              <span class="curse-mark">凶</span>
-              <div class="plabel">月柱</div>
-              <div class="pchar"><div>庚</div><div>申</div></div>
-            </div>
-            <div class="pillar" id="pillarYear">
-              <div class="plabel">年柱</div>
-              <div class="pchar"><div id="yStem">乙</div><div id="yBranch">亥</div></div>
-            </div>
-          </div>
-          <p class="chart-note">붉은 표식 — <b>살(殺)이 뿌리내린 자리</b><br>잠긴 기둥은 심층 풀이에서 모두 공개됩니다</p>
-        </div>
+  <!-- 궁합 · 인연2 -->
+  <section class="shelf rv" data-cat="love">
+    <span class="shelf-cat">合 · 2인 궁합</span>
+    <h2 class="shelf-q">우리는, 왜 맨날 같은 데서 터질까?</h2>
+    <div class="card disabled">
+      <img src="assets/gate.jpg" alt="합문" loading="lazy">
+      <div class="shade"></div>
+      <span class="badge soon">COMING SOON</span>
+      <div class="meta">
+        <div class="c-title">두 사주가 부딪히는 자리</div>
+        <div class="c-desc">한 문을 함께 넘는 두 사람 — 위기의 해와 기회의 해를 나란히 펼친다</div>
+        <div class="c-price">준비 중</div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 흉살 진단 -->
-    <section class="sec" style="padding-top:30px">
-      <p class="h-red rv">원국에서 발견된</p>
-      <h2 class="h-big rv"><span class="r" id="salCount">2개의 흉살</span></h2>
-      <div id="salCards"></div>
-      <p class="toc-note rv">* 표기된 살의 상세 작용 시기·강도·해법은<br>심층 풀이 보고서에서 전부 공개됩니다.</p>
-    </section>
+</main>
 
-    <!-- 후크 -->
-    <section class="sec">
-      <p class="h-red rv">왜 이렇게</p>
-      <h2 class="h-big rv">뭘 해도 <span class="r">안 풀리지?</span></h2>
-      <div class="h-hanja rv">凶殺</div>
-      <p class="p-body rv">사주 속 <em>흉살(凶殺)</em>이<br>당신의 운을 가로막고 있습니다.</p>
-      <ul class="chk rv">
-        <li>사람을 너무 쉽게 믿었다가 꼭 실망하게 되고</li>
-        <li>노력은 내가 다 하는데 인정은 늘 남이 받고</li>
-        <li>결정을 미루면 기회를 놓치고, 결정하면 이미 늦고</li>
-        <li>새로 시작하려 하면 꼭 변수가 생겨 방해하고</li>
-        <li>열심히 사는데도 인생이 멈춰 있는 느낌이 들고</li>
-      </ul>
-      <p class="p-dim rv">이걸 단순히 "운이 나빴다"고 넘겨왔을 겁니다.<br>하지만 이건 운이 나빠서가 아니라<br><b style="color:var(--ink)">지금의 흐름을 모르고 있었기 때문</b>입니다.</p>
-    </section>
+<footer>
+  深谷寺 심곡사<br>
+  <b>본 페이지는 데모/브랜딩 시안입니다.</b><br>
+  상호·사업자등록번호·통신판매업신고·주소·연락처 표기 영역<br>
+  이용약관 · 개인정보처리방침 · 환불정책
+</footer>
 
-    <!-- 살이란 -->
-    <section class="sec img-sec">
-      <video class="bg" src="assets/ritual.mp4" muted loop playsinline preload="none" poster="assets/ritual.jpg"></video>
-      <div class="veil2"></div>
-      <div class="inner">
-        <div class="hr-knife rv"></div>
-        <p class="p-body rv" style="margin-top:60px;text-shadow:0 2px 12px #000">살(殺)은—</p>
-        <p class="p-body rv" style="text-shadow:0 2px 12px #000">감당할 수 없다면<br>나를 갉아먹는 <em>재앙</em>과도 같지만,</p>
-        <p class="p-body rv" style="margin-top:44px;text-shadow:0 2px 12px #000">감당할 수 있다면<br>하늘이 내린 <em>기회</em>와도 같습니다.</p>
-        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 2px 12px #000">당신이 외면해 온,<br>사주 속 뒷 이야기.<br><br>정면으로 마주하고, 풀어보세요.</p>
-      </div>
-    </section>
-
-    <!-- 무녀 소개 -->
-    <section class="sec img-sec">
-      <img class="bg" src="assets/bells.jpg" alt="">
-      <div class="veil2"></div>
-      <div class="inner">
-        <p class="h-red rv">숲 속 깊은 산사, 심곡사</p>
-        <h2 class="h-big rv">여든세 번째로<br>산을 지키는 무녀, <span class="r">묘담</span></h2>
-        <p class="p-body rv" style="text-shadow:0 2px 12px #000">
-          강원도 이름 없는 산 중턱,<br>83대째 <em>만세력과 신살(神殺)의 기록</em>을<br>지켜 온 집안.<br><br>
-          12년의 상담,<br><em>5,000명</em>이 넘는 사주를 풀어냈습니다.
-        </p>
-        <p class="p-dim rv" style="text-shadow:0 2px 12px #000">
-          신점(神占)이 아닙니다.<br>정통 명리학 · 만세력 기반의 사주 풀이입니다.<br><br>
-          사주팔자 명리심리상담사 1급<br>부부심리상담사 1급
-        </p>
-      </div>
-    </section>
-
-    <!-- 재물운 그래프 -->
-    <section class="sec">
-      <p class="h-red rv">풀이 미리보기 · 壹</p>
-      <h2 class="h-big rv">돈이 한 번 크게<br><span class="r">터지는 팔자?</span></h2>
-      <div class="graph-frame rv">
-        <div class="graph-title" id="graphOwner">財物運 흐름도</div>
-        <svg viewBox="0 0 320 150" width="100%" style="display:block">
-          <defs>
-            <linearGradient id="gline" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#7a2b2b"/><stop offset="1" stop-color="#e5383b"/>
-            </linearGradient>
-            <linearGradient id="gfill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="rgba(229,56,59,.28)"/><stop offset="1" stop-color="rgba(229,56,59,0)"/>
-            </linearGradient>
-          </defs>
-          <path d="M10,95 L60,78 L105,112 L150,60 L195,88 L245,30 L310,55 L310,150 L10,150 Z" fill="url(#gfill)"/>
-          <path d="M10,95 L60,78 L105,112 L150,60 L195,88 L245,30 L310,55" fill="none" stroke="url(#gline)" stroke-width="2.5"/>
-          <circle cx="105" cy="112" r="6" fill="#4d1113" stroke="#e6a5a7" stroke-width="1.5"/>
-          <circle cx="245" cy="30" r="7" fill="#a4161a" stroke="#ffd9a0" stroke-width="2">
-            <animate attributeName="r" values="7;9;7" dur="2s" repeatCount="indefinite"/>
-          </circle>
-        </svg>
-        <div class="graph-tags">
-          <span class="gtag bad"><b>재물은 위기일 때</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
-          <span class="gtag good"><b>재물은 기회일 때</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
-        </div>
-      </div>
-      <p class="toc-note rv">재물이 폭발하는 해와 새는 해 —<br>정확한 연도는 보고서에서 공개됩니다.</p>
-    </section>
-
-    <!-- 잠긴 티저 목록 -->
-    <section class="sec" style="background:var(--bg2)">
-      <p class="h-red rv">풀이 미리보기 · 貳</p>
-      <h2 class="h-big rv">묘담이 이미<br><span class="r">적어 둔 것들</span></h2>
-      <p class="p-dim rv">아래 목록은 당신의 원국을 기준으로<br>이미 작성되어 있습니다. 열람만 잠겨 있을 뿐.</p>
-      <div class="locklist">
-        <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其一</span><span class="li-title">죽어도 남에게 들키기 싫은<br>진짜 성격과 숨겨진 열등감</span></div>
-          <div class="li-body"><p>겉으로는 무던한 척 살아왔지만 정작 당신의 일간은 스스로를 갉아먹는 방향으로 기울어 있으며 그 뿌리는 어린 시절의…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
-        </div>
-        <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其二</span><span class="li-title">내 팔자에 박힌,<br>평생 만져볼 돈의 최대치</span></div>
-          <div class="li-body"><p>재성의 흐름이 대운과 맞물리는 구간이 두 번 존재하며 그 정점은 당신의 나이로 계산했을 때 대략…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
-        </div>
-        <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其三</span><span class="li-title">내 등을 처먹으려는 가짜 인연 vs<br>옆에 붙어야 할 귀인 구별법</span></div>
-          <div class="li-body"><p>당신의 원국은 특정 오행을 가진 사람에게 유독 쉽게 흔들리는 구조라서 지금까지 만난 인연 중에서도…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
-        </div>
-        <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其四</span><span class="li-title">지독한 억까가 끝나고<br>보상이 터지는 대운의 시기</span></div>
-          <div class="li-body"><p>지금의 정체기는 당신 탓이 아니라 대운의 골짜기 구간이며 이 골짜기를 빠져나가는 정확한 시점은…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
-        </div>
-        <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其五</span><span class="li-title">내 앞에 나타날<br>진짜 인연의 프로필</span></div>
-          <div class="li-body"><p>만나는 시기, 방향, 직업군, 첫인상까지 — 당신의 배우자 자리를 채울 사람의 윤곽은 이미 원국 안에…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3단 심층 살풀이 -->
-    <section class="sec">
-      <p class="h-red rv">묘담의</p>
-      <h2 class="h-big rv">3단 심층 <span class="r">살풀이</span></h2>
-
-      <div style="margin-top:70px">
-        <div class="stepnum rv">壹</div>
-        <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">언제, 어떤 영향을 미치는지</h3>
-        <div class="timeline rv" id="salTimeline">
-          <div class="row"><span class="yr">2023</span><span class="tx">백호살(白虎殺) — <b>이직 실패</b>, 반복된 구설</span></div>
-          <div class="row"><span class="yr">2026</span><span class="tx">귀문관살(鬼門關殺) — <b>매우 위험</b> · 불면, 예민함</span></div>
-          <div class="row"><span class="yr">2028</span><span class="tx">원진살(怨嗔殺) — <b>관계 파탄</b>의 고비</span></div>
-        </div>
-        <p class="toc-note rv">* 예시 화면입니다. 실제 분석은 당신의 원국 기준으로 제공됩니다.</p>
-      </div>
-
-      <div style="margin-top:80px">
-        <div class="stepnum rv">貳</div>
-        <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">특징부터 극복 방법까지</h3>
-        <div class="card rv">
-          <h4>귀문관살 <span>(鬼門關殺)</span></h4>
-          <p>12신살 중 사람의 마음 자체를 노리는 가장 미묘한 살.
-          정신과 영(靈)의 경계가 좁아진 자리로, 까닭 없는
-          불면·가위눌림·예민함으로 작동합니다.<br><br>
-          — 나에게 특히 위험한 이유<br>
-          — 극복하는 방위·시간대·물건까지<br>
-          맞춤으로 짚어드립니다.</p>
-        </div>
-      </div>
-
-      <div style="margin-top:80px">
-        <div class="stepnum rv">參</div>
-        <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">살풀이, 그 이후의 흐름</h3>
-        <div class="ba rv">
-          <div class="b">
-            <h5>살풀이 전</h5>
-            <p>새벽 3시까지 잠 못 들고 화면만 내리는 밤.
-            비슷한 결의 사람에게 휘둘리고, 끝내고, 또 자책하는
-            패턴이 계절을 넘어 굳어집니다.</p>
-          </div>
-          <div class="a">
-            <h5>살풀이 후</h5>
-            <p>같은 예민함이 — 풀고 나면 <b>직관과 통찰로 전환</b>됩니다.
-            언제 멈추고 언제 나아가야 하는지, 흐름을 아는 사람의
-            선택은 다릅니다.</p>
-          </div>
-        </div>
-        <p class="toc-note rv" style="margin-top:26px">* 심곡사의 살풀이는 굿·부적 판매가 아닌,<br>명리학 신살론(神殺論)에 근거한 서면 분석입니다.</p>
-      </div>
-    </section>
-
-    <!-- 보고서 목업 + 목차 -->
-    <section class="sec img-sec">
-      <img class="bg" src="assets/book.jpg" alt="">
-      <div class="veil2"></div>
-      <div class="inner">
-        <p class="h-red rv">받아보실 것</p>
-        <h2 class="h-big rv">100페이지,<br><span class="r">운명 사용설명서</span></h2>
-        <p class="p-dim rv" style="text-shadow:0 2px 12px #000">당신의 이름이 적힌, 단 한 권의 기록.<br>평생 소장하는 PDF 상세 분석서</p>
-        <div class="toc rv">
-          <div class="t"><span class="n">PART 1</span><span class="x">나의 사주팔자 상세분석 — 원국·음양오행·기질</span></div>
-          <div class="t"><span class="n">PART 2</span><span class="x">내 인생의 황금기 — 고점과 저점, 조심할 암흑기</span></div>
-          <div class="t"><span class="n">PART 3</span><span class="x">연애운과 배우자운 — 운명의 상대, 최적의 시기</span></div>
-          <div class="t"><span class="n">PART 4</span><span class="x">재물운 분석 — 돈이 불어날 때와 새는 곳</span></div>
-          <div class="t"><span class="n">PART 5</span><span class="x">직업과 성공 — 사업가의 팔자인가, 직장인의 팔자인가</span></div>
-          <div class="t"><span class="n">PART 6</span><span class="x">건강과 체질 — 유의해야 할 시기와 대처법</span></div>
-          <div class="t"><span class="n">PART 7</span><span class="x">운명의 귀인 — 나를 돕는 사람의 특징과 시기</span></div>
-          <div class="t"><span class="n">PART 8</span><span class="x">운명을 바꾸는 방법 — 운의 물길을 트는 전략</span></div>
-          <div class="t"><span class="n">PART 9</span><span class="x">2026 신년 월별 상세 운명분석</span></div>
-          <div class="t"><span class="n">PART 10</span><span class="x">앞으로 10년(2026–2035) 운명 분석</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 후기 -->
-    <section class="sec">
-      <p class="h-red rv">살을 마주한 뒤</p>
-      <h2 class="h-big rv">그들에게 일어난 일</h2>
-      <div class="review rv">
-        <div class="who">김○수 · 36세 · 주부</div>
-        <div class="quote">"3년째 이유 없이 잠을 못 잤어요…"</div>
-        <p>짓누르던 게 확실히 사라진 느낌이에요. 이제는 잠드는 게 안 무서워요. 다른 곳은 단어가 어려웠는데, 풀이가 어렵지 않게 되어 있어서 이해도 쉬웠고요.</p>
-      </div>
-      <div class="review rv">
-        <div class="who">박○미 · 32세 · 직장인</div>
-        <div class="quote">"와… 진짜, 읽다가 눈물 나왔어요."</div>
-        <p>20대부터 안 풀렸던 이유를 쫙 알려주는데… 자극적이지 않게, 마음 상하지 않게 설명해 주셔서 위안이 됐어요. "이래서 그랬구나" 싶었습니다.</p>
-      </div>
-      <div class="review rv">
-        <div class="who">최○영 · 37세 · 자영업</div>
-        <div class="quote">"이런 거 잘 안 믿는데… 이걸 맞춘다고?"</div>
-        <p>불신 가득이었다가 레포트 받고 처음으로 소름 돋았어요. 40만원 주고 봤던 대면 상담이랑 똑같네요. 진작 여기서 볼걸…</p>
-      </div>
-      <p class="review-src rv">* 실제 상담 후기를 재구성한 예시입니다.</p>
-    </section>
-
-    <!-- 가격 -->
-    <section class="sec" style="background:var(--bg2)">
-      <p class="h-red rv">불안할 때마다</p>
-      <h2 class="h-big rv">점집 찾고, 부적 쓰고,<br>굿까지…</h2>
-      <p class="price-strike rv">
-        점집 <s>–15만원</s> · 부적 <s>–55만원</s> · 굿 <s>–120만원</s><br>
-        <b style="color:var(--ink)">수백만 원, 쓰실 필요 없어요.</b>
-      </p>
-      <p class="p-body rv">집에서 받는 <em>맞춤형 살풀이</em></p>
-      <p class="p-body rv" style="margin-top:50px"><span style="font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-size:22px">기간 한정, 특별 혜택가</span></p>
-
-      <div class="plan hot rv">
-        <div class="head"><span>1차 얼리버드 · 심층 종합 살풀이</span><span class="tag">01</span></div>
-        <div class="body">
-          <div class="row1">
-            <div>
-              <div class="amount">38,900<small>원</small></div>
-              <div class="was"><s>정가 229,000원</s> · 선착순 마감</div>
-            </div>
-            <div class="off">83<small>%</small></div>
-          </div>
-          <ul>
-            <li>약 100페이지 상세 분석서 (PDF, 평생 소장)</li>
-            <li>흉살 분석 + 대운·세운 흐름 + 직업·재물·인연·건강</li>
-            <li>추가 질문 무제한</li>
-            <li>2인 이상 신청 시 궁합 분석 무료</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="plan mid rv soldout">
-        <div class="head"><span>2차 얼리버드</span><span class="tag">02</span></div>
-        <div class="body">
-          <div class="row1">
-            <div>
-              <div class="amount">69,000<small>원</small></div>
-              <div class="was"><s>정가 229,000원</s></div>
-            </div>
-            <div class="off">70<small>%</small></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="plan base rv">
-        <div class="head"><span>정가</span><span class="tag">03</span></div>
-        <div class="body">
-          <div class="row1">
-            <div>
-              <div class="amount">229,000<small>원</small></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <p class="toc-note rv" style="margin-top:20px">🌟 실제 신청자 10명 중 9명은 심층 풀이를 선택합니다.</p>
-
-      <div class="guarantee rv">
-        <h5>군말 없는 100% 환불 보장</h5>
-        <p>풀이가 불성실하다고 느끼시면, 이유를 묻지 않고
-        전액 환불해 드립니다.<br>신청 후 24시간 이내, 이메일로
-        「운명 사용설명서」가 도착합니다.</p>
-      </div>
-
-      <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 사주 속 살(殺) 확인하기</a>
-      <p class="cta-note rv">❌ 신점·대면·전화 없음 &nbsp;·&nbsp; ⭕ 전통 명리학 기반 서면 풀이</p>
-    </section>
-
-    <footer>
-      深谷寺 심곡사 · 무녀 묘담<br>
-      <b>본 페이지는 데모/브랜딩 시안입니다.</b><br>
-      상호·사업자등록번호·통신판매업신고·주소·연락처 표기 영역<br>
-      이용약관 · 개인정보처리방침 · 환불정책
-    </footer>
-  </div><!-- /sales -->
-
-</div><!-- /app -->
-
-<!-- 하단 고정 CTA -->
-<div id="sticky">
-  <a href="#" onclick="goCTA(event)"><span class="blink"></span><span id="stickyText">깃든 살(殺) 확인하기 — 오늘 83% 할인</span></a>
+<div class="navpill">
+  <button class="sel" aria-label="홈">⌂</button>
+  <button aria-label="찜" onclick="alert('준비 중입니다.')">♡<span class="dot"></span></button>
+  <button aria-label="문의" onclick="alert('준비 중입니다.')">✉</button>
 </div>
 
 <script>
-/* ───────── state ───────── */
-const user = { name:'', birth:null, gender:'' };
-
-/* ───────── ambient sound (WebAudio drone) ───────── */
-let actx = null, master = null;
-function startSound(){
-  try{
-    actx = new (window.AudioContext||window.webkitAudioContext)();
-    master = actx.createGain(); master.gain.value = 0; master.connect(actx.destination);
-    const o1 = actx.createOscillator(); o1.type='sine'; o1.frequency.value = 54;
-    const o2 = actx.createOscillator(); o2.type='sine'; o2.frequency.value = 54.7;
-    const og = actx.createGain(); og.gain.value = .12;
-    o1.connect(og); o2.connect(og); og.connect(master);
-    const len = actx.sampleRate * 4;
-    const buf = actx.createBuffer(1, len, actx.sampleRate);
-    const d = buf.getChannelData(0);
-    for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
-    const noise = actx.createBufferSource(); noise.buffer = buf; noise.loop = true;
-    const nf = actx.createBiquadFilter(); nf.type='lowpass'; nf.frequency.value = 320; nf.Q.value = .6;
-    const ng = actx.createGain(); ng.gain.value = .05;
-    noise.connect(nf); nf.connect(ng); ng.connect(master);
-    const lfo = actx.createOscillator(); lfo.frequency.value = .07;
-    const lg = actx.createGain(); lg.gain.value = .025;
-    lfo.connect(lg); lg.connect(ng.gain);
-    o1.start(); o2.start(); noise.start(); lfo.start();
-    master.gain.linearRampToValueAtTime(.9, actx.currentTime + 4);
-  }catch(e){}
-}
-function bellChime(){
-  if(!actx) return;
-  try{
-    const t = actx.currentTime;
-    [1244,1866,2489].forEach((f,i) => {
-      const o = actx.createOscillator(); o.type='sine'; o.frequency.value = f;
-      const g = actx.createGain();
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(.08/(i+1), t+.01);
-      g.gain.exponentialRampToValueAtTime(.0001, t+2.2);
-      o.connect(g); g.connect(master); o.start(t); o.stop(t+2.3);
-    });
-  }catch(e){}
-}
-
-/* ───────── gate ───────── */
-document.getElementById('enterBtn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  const gate = document.getElementById('gate');
-  gate.classList.add('off');
-  startSound();
-  setTimeout(bellChime, 600);
-  const v = document.querySelector('#hero video'); if (v) v.play().catch(()=>{});
-  document.querySelector('#hero .title-wrap').classList.add('go');
-  playScene(document.querySelector('#hero .dialog'));
-  if (navigator.vibrate) navigator.vibrate(30);
-}, {once:true});
-
-/* ───────── story engine ───────── */
-const order = ['hero','scene1','scene2','sceneAsk','scene3'];
-let hesitated = false;
-
-function playScene(dialog, root){
-  const scope = root || dialog;
-  const lines = scope.querySelectorAll('.line');
-  const choices = scope.querySelectorAll('.choice');
-  let t = 400;
-  lines.forEach(l => {
-    if (l.hasAttribute('data-hesitate-line') && !hesitated) return;
-    setTimeout(()=>{
-      l.classList.add('on');
-      if (l.hasAttribute('data-quake')) { quake(); }
-    }, t);
-    t += 1400;
+/* 카테고리 필터 */
+document.getElementById('chips').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  chip.classList.add('sel');
+  const cat = chip.dataset.cat;
+  document.querySelectorAll('.shelf').forEach(s => {
+    s.classList.toggle('hidden', cat !== 'all' && s.dataset.cat !== cat);
   });
-  choices.forEach(c => setTimeout(()=>c.classList.add('on'), t + 300));
-  scope.querySelectorAll('.ask-field,.ask-opt').forEach((el,i) => {
-    setTimeout(()=>el.classList.add('on'), t + 300 + i*250);
-  });
-}
-
-function quake(){
-  document.getElementById('app').classList.remove('shake');
-  void document.getElementById('app').offsetWidth;
-  document.getElementById('app').classList.add('shake');
-  const rf = document.getElementById('redflash');
-  rf.classList.add('on');
-  if (navigator.vibrate) navigator.vibrate([60,40,80]);
-  setTimeout(()=>rf.classList.remove('on'), 420);
-}
-
-function gotoScene(id){
-  order.forEach(s => { const el = document.getElementById(s); if (el) el.style.display = 'none'; });
-  const nxt = document.getElementById(id);
-  nxt.style.display = 'flex';
-  const v = nxt.querySelector('video'); if (v) { v.preload='auto'; v.play().catch(()=>{}); }
-  window.scrollTo(0,0);
-  return nxt;
-}
-
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('.choice');
-  if (!btn) return;
-  if (btn.dataset.hesitate) hesitated = true;
-  if (navigator.vibrate) navigator.vibrate(20);
-  const ask = btn.dataset.ask;
-  if (ask === 'start') { startAsk(); return; }
-  const next = btn.dataset.next;
-  if (!next) return;
-  if (next === 'sales') { enterLoading(); return; }
-  const map = {'1':'scene1','2':'scene2','3':'scene3'};
-  const nxt = gotoScene(map[next]);
-  const hl = nxt.querySelector('[data-hesitate-line]');
-  if (hl && hesitated) hl.style.display = '';
-  if (next === '3') prepScene3();
-  playScene(nxt.querySelector('.dialog'));
 });
-
-function skipStory(){
-  if (!user.name) { startAsk(); return; }
-  enterLoading();
-}
-
-/* ───────── 인적사항 문답 ───────── */
-function startAsk(){
-  const nxt = gotoScene('sceneAsk');
-  showAskStep('ask1');
-}
-function showAskStep(id){
-  ['ask1','ask2','ask3','ask4'].forEach(s => document.getElementById(s).style.display = 'none');
-  const step = document.getElementById(id);
-  step.style.display = 'block';
-  playScene(null, step);
-  const inp = step.querySelector('.ask-input');
-  if (inp) setTimeout(()=>inp.focus(), 1600);
-}
-function askName(){
-  const v = document.getElementById('inName').value.trim();
-  const err = document.getElementById('errName');
-  if (v.length < 2) { err.style.display='block'; return; }
-  err.style.display='none';
-  user.name = v;
-  if (navigator.vibrate) navigator.vibrate(20);
-  showAskStep('ask2');
-}
-function askBirth(){
-  const raw = document.getElementById('inBirth').value.trim().replace(/[^0-9]/g,'');
-  const err = document.getElementById('errBirth');
-  if (raw.length !== 8) { err.style.display='block'; return; }
-  const y = +raw.slice(0,4), m = +raw.slice(4,6), d = +raw.slice(6,8);
-  if (y < 1920 || y > 2015 || m < 1 || m > 12 || d < 1 || d > 31) { err.style.display='block'; return; }
-  err.style.display='none';
-  user.birth = {y, m, d};
-  if (navigator.vibrate) navigator.vibrate(20);
-  showAskStep('ask3');
-}
-function askGender(g, el){
-  user.gender = g;
-  el.classList.add('sel');
-  if (navigator.vibrate) navigator.vibrate(20);
-  const age = new Date().getFullYear() - user.birth.y + 1;
-  document.getElementById('reactLine1').innerHTML =
-    '"…' + esc(user.name) + '.<br>' + age + '해를 살아왔구나."';
-  setTimeout(()=>showAskStep('ask4'), 500);
-}
-function esc(s){ const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-/* ───────── scene3 개인화 ───────── */
-function prepScene3(){
-  if (user.name) {
-    document.getElementById('sorryLine').innerHTML = '"그렇게로구나… ' + esc(user.name) + '."';
-  }
-}
-
-/* ───────── 만세력 : 년주 계산 (갑자) ───────── */
-const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const SAL_POOL = [
-  {h:'鬼', name:'귀문관살', hanja:'鬼門關殺', lv:'매우 위험', desc:'정신과 영(靈)의 경계가 좁아진 자리. 까닭 없는 불면과 예민함, 반복되는 가위눌림으로 작동합니다.', lock:'이 살이 특히 강하게 작동하는 연령대와 이를 다스리는 방위는 당신의 경우'},
-  {h:'白', name:'백호살', hanja:'白虎殺', lv:'위험', desc:'피와 구설을 부르는 살. 가까운 사람과의 갈등, 예기치 못한 사고수로 나타납니다.', lock:'백호가 움직이는 해는 정해져 있으며 당신의 원국에서는 특히'},
-  {h:'怨', name:'원진살', hanja:'怨嗔殺', lv:'주의', desc:'까닭 없이 서로를 미워하게 만드는 살. 인연이 늘 같은 지점에서 어긋나는 이유입니다.', lock:'상대의 띠와 오행에 따라 원진이 발동하는 조합이 있는데 당신은'},
-  {h:'孤', name:'고신살', hanja:'孤辰殺', lv:'주의', desc:'군중 속에서도 혼자가 되는 살. 관계가 깊어질수록 오히려 거리를 두게 만듭니다.', lock:'이 살이 풀리는 시기는 대운의 전환점과 맞물리며 그 해는'},
-  {h:'驛', name:'역마살', hanja:'驛馬殺', lv:'주의', desc:'한 곳에 뿌리내리지 못하게 흔드는 살. 이직·이사·이별이 잦은 근본 원인입니다.', lock:'역마가 재물과 만나면 오히려 대박의 씨앗이 되는데 그 조건은'},
-  {h:'桃', name:'도화살', hanja:'桃花殺', lv:'양면', desc:'사람을 끌어당기는 힘이자, 구설을 부르는 칼. 다루는 법을 모르면 늘 관계가 시끄럽습니다.', lock:'도화를 무기로 바꾸는 방법이 있으며 당신의 일지 기준으로는'}
-];
-function hashUser(){
-  const s = user.name + (user.birth ? user.birth.y+''+user.birth.m+''+user.birth.d : '') + user.gender;
-  let h = 0;
-  for (let i = 0; i < s.length; i++){ h = ((h<<5)-h+s.charCodeAt(i))|0; }
-  return Math.abs(h);
-}
-function fillSales(){
-  const nm = user.name ? esc(user.name) : '';
-  if (nm){
-    document.getElementById('pHead').innerHTML = nm + ' 님의 사주,<br><span class="r">심상치 않습니다</span>';
-    document.getElementById('chartOwner').textContent = user.name + ' 님의 四柱原局';
-    document.getElementById('graphOwner').textContent = user.name + ' 님의 財物運 흐름도';
-    document.getElementById('stickyText').textContent = nm + '님의 살(殺) 풀이 받기 — 오늘 83% 할인';
-    document.getElementById('ctaMain').textContent = nm + ' 님의 살(殺) 풀이 받기';
-  }
-  if (user.birth){
-    const y = user.birth.y;
-    document.getElementById('yStem').textContent = STEMS[(y - 4) % 10];
-    document.getElementById('yBranch').textContent = BRANCHES[(y - 4) % 12];
-  }
-  // 흉살 진단 카드 (이름+생일 기반 고정 선택)
-  const h = hashUser();
-  const i1 = h % SAL_POOL.length;
-  let i2 = (h >> 3) % SAL_POOL.length; if (i2 === i1) i2 = (i2 + 1) % SAL_POOL.length;
-  const picks = [SAL_POOL[i1], SAL_POOL[i2]];
-  document.getElementById('salCount').textContent = picks.length + '개의 흉살';
-  document.getElementById('salCards').innerHTML = picks.map(s => `
-    <div class="sal-card rv">
-      <div class="sal-head">
-        <span class="sal-hanja">${s.h}</span>
-        <span class="sal-name">${s.name}<small>${s.hanja}</small></span>
-        <span class="sal-lv">${s.lv}</span>
-      </div>
-      <div class="sal-body">
-        <p>${s.desc}</p>
-        <div class="sal-lock">
-          <p>${s.lock} ■■■■■■■■■■■■■■■■■■■■■■■■■■■■</p>
-          <div class="lock-tag">🔒 심층 풀이에서 공개</div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-/* ───────── 로딩 → 결과 ───────── */
-function enterLoading(){
-  order.forEach(id => { const s = document.getElementById(id); if(s) s.style.display='none'; });
-  const ld = document.getElementById('loading');
-  ld.classList.add('on');
-  const msgs = user.name ? [
-    '만세력을 펼치는 중…',
-    '<b>' + esc(user.name) + '</b> 님의 원국을 세우는 중…',
-    '살(殺)의 흔적을 짚는 중…'
-  ] : ['만세력을 펼치는 중…','원국을 세우는 중…','살(殺)의 흔적을 짚는 중…'];
-  const lt = document.getElementById('loadtext');
-  let i = 0;
-  lt.innerHTML = msgs[0];
-  const iv = setInterval(()=>{
-    i++;
-    if (i < msgs.length){ lt.style.opacity = 0; setTimeout(()=>{ lt.innerHTML = msgs[i]; lt.style.opacity = 1; }, 350); }
-  }, 950);
-  setTimeout(()=>{
-    clearInterval(iv);
-    ld.classList.remove('on');
-    enterSales();
-  }, 2900);
-}
-
-function enterSales(){
-  fillSales();
-  document.getElementById('sales').style.display = 'block';
-  window.scrollTo(0,0);
-  document.getElementById('sticky').classList.add('on');
-  bellChime();
-  document.querySelectorAll('#sales video').forEach(v => { v.preload='auto'; v.play().catch(()=>{}); });
-  observeReveals();
-}
-
-/* 엔터키로 문답 진행 */
-document.getElementById('inName').addEventListener('keydown', e => { if (e.key === 'Enter') askName(); });
-document.getElementById('inBirth').addEventListener('keydown', e => { if (e.key === 'Enter') askBirth(); });
-
-/* ───────── scroll reveals ───────── */
-function observeReveals(){
-  const els = Array.from(document.querySelectorAll('#sales .rv'));
-  const io = new IntersectionObserver(es => {
-    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
-  }, {threshold:.14});
-  els.forEach(el => io.observe(el));
-  const manual = () => {
-    const vh = window.innerHeight;
-    els.forEach(el => {
-      if (el.classList.contains('on')) return;
-      const r = el.getBoundingClientRect();
-      if (r.top < vh * .92 && r.bottom > 0) el.classList.add('on');
-    });
-  };
-  window.addEventListener('scroll', manual, {passive:true});
-  manual();
-}
-
-/* ───────── CTA ───────── */
-function goCTA(e){
-  e.preventDefault();
-  // TODO: 카카오톡 채널 / 결제 링크 연결
-  alert('여기에 카카오톡 채널 또는 결제 링크를 연결하세요.');
-}
+/* reveal */
+const els = Array.from(document.querySelectorAll('.rv'));
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
+}, {threshold:.1});
+els.forEach(el => io.observe(el));
+const manual = () => {
+  const vh = window.innerHeight;
+  els.forEach(el => {
+    if (el.classList.contains('on')) return;
+    const r = el.getBoundingClientRect();
+    if (r.top < vh * .95 && r.bottom > 0) el.classList.add('on');
+  });
+};
+window.addEventListener('scroll', manual, {passive:true});
+manual();
 </script>
 </body>
 </html>
