@@ -267,8 +267,12 @@ body{
   position:fixed;inset:0;z-index:210;background:#020202;
   display:none;align-items:center;justify-content:center;flex-direction:column;gap:34px;
   overflow:hidden;
+  opacity:1;transition:opacity 1.1s ease;
 }
 #loading.on{display:flex}
+#loading.fade{opacity:0;pointer-events:none}
+#sales{opacity:0;transition:opacity 1.3s ease}
+#sales.show{opacity:1}
 #loading .load-bg{
   position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
   width:100%;max-width:480px;height:100%;object-fit:cover;
@@ -744,7 +748,7 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 2.5 : 인적사항 문답 ═══════════ -->
   <section class="scene hidden-scene" id="sceneAsk" style="display:none">
-    <video class="bg" id="askBg" src="../assets/candles.mp4" muted loop playsinline preload="none" poster="../assets/ritual.jpg"></video>
+    <video class="bg" id="askBg" src="../assets/candles.mp4" muted loop playsinline preload="none" poster="../assets/candles_start.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">問</span>
     <div class="dialog" data-scene="ask">
@@ -796,7 +800,7 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 3 : 선고 (가면 벗기) ═══════════ -->
   <section class="scene hidden-scene" id="scene3" style="display:none">
-    <video class="bg" src="../assets/maskwear.mp4" muted loop playsinline preload="none" poster="../assets/closeup.jpg"></video>
+    <video class="bg" src="../assets/maskwear.mp4" muted loop playsinline preload="none" poster="../assets/maskpose.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">參</span>
     <div class="dialog" data-scene="3">
@@ -1125,7 +1129,6 @@ footer b{color:#7a6f66}
       </div>
 
       <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 사주 속 살(殺) 확인하기</a>
-      <p class="cta-note rv">❌ 신점·대면·전화 없음 &nbsp;·&nbsp; ⭕ 전통 명리학 기반 서면 풀이</p>
     </section>
 
     <footer>
@@ -1209,25 +1212,13 @@ function playScene(dialog, root){
   const lines = Array.from(scope.querySelectorAll('.line'))
     .filter(l => !(l.hasAttribute('data-hesitate-line') && !hesitated));
   const choices = scope.querySelectorAll('.choice');
-  const FADE = 700;
   let t = 400;
-  lines.forEach((l, i) => {
-    const last = i === lines.length - 1;
-    const hold = Math.min(3400, Math.max(1900, (l.innerText || '').length * 62));
+  lines.forEach(l => {
     setTimeout(()=>{
-      l.style.display = '';
-      l.classList.remove('gone');
       l.classList.add('on');
       if (l.hasAttribute('data-quake')) { quake(); }
     }, t);
-    if (!last){
-      // 한 줄씩: 머물렀다가 사라진 뒤 다음 줄 등장
-      setTimeout(()=>l.classList.add('gone'), t + hold);
-      setTimeout(()=>{ l.style.display = 'none'; }, t + hold + FADE);
-      t += hold + FADE + 150;
-    } else {
-      t += 1100;
-    }
+    t += 1400;
   });
   choices.forEach(c => setTimeout(()=>c.classList.add('on'), t + 300));
   scope.querySelectorAll('.ask-field,.ask-opt').forEach((el,i) => {
@@ -1450,8 +1441,13 @@ function enterLoading(){
   }, 950);
   setTimeout(()=>{
     clearInterval(iv);
-    ld.classList.remove('on');
     enterSales();
+    // 크로스 디졸브: 결과지가 아래에서 떠오르는 동안 로딩이 서서히 걷힌다
+    requestAnimationFrame(()=>{
+      document.getElementById('sales').classList.add('show');
+      ld.classList.add('fade');
+    });
+    setTimeout(()=>{ ld.classList.remove('on'); ld.classList.remove('fade'); }, 1300);
   }, 2900);
 }
 
