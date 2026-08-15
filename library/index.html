@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내 서고(書庫) — 심곡사</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#050404">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050404; --bg2:#0b0808; --ink:#e8e0d8; --ink-dim:#9a8f85;
+  --blood:#a4161a; --blood-bright:#e5383b; --ember:#d08c3a; --paper:#e8ddc7;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Noto Serif KR','Nanum Myeongjo',serif;
+  min-height:100dvh;overflow-x:hidden;
+}
+.grain{
+  pointer-events:none;position:fixed;inset:-100%;width:300%;height:300%;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity:.06;z-index:90;
+}
+#wrap{max-width:480px;margin:0 auto;min-height:100dvh;padding:0 24px 80px;position:relative}
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 0 16px;border-bottom:1px solid rgba(232,224,216,.08);
+}
+header a.back{color:var(--ink-dim);text-decoration:none;font-size:13px;letter-spacing:.12em}
+header a.back:hover{color:var(--paper)}
+.logo{
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:17px;letter-spacing:.2em;color:var(--paper);
+}
+.logout{appearance:none;background:none;border:1px solid rgba(232,224,216,.2);border-radius:999px;
+  color:var(--ink-dim);font-family:inherit;font-size:12px;letter-spacing:.08em;padding:7px 14px;cursor:pointer;display:none}
+.hero{
+  text-align:center;padding:52px 0 10px;
+}
+.hero .hanja{font-family:'Nanum Myeongjo',serif;font-size:40px;font-weight:800;color:var(--paper);
+  letter-spacing:.3em;text-indent:.3em;text-shadow:0 0 40px rgba(164,22,26,.3)}
+.hero .sub{margin-top:10px;font-size:13px;letter-spacing:.35em;text-indent:.35em;color:var(--ink-dim)}
+.who{margin-top:18px;font-size:13.5px;color:var(--ink-dim);text-align:center;letter-spacing:.05em;display:none}
+.who b{color:var(--ember);font-weight:400}
+/* 로그인 폼 */
+.auth{
+  margin-top:44px;background:linear-gradient(170deg,#140d0b,#080505);
+  border:1px solid rgba(208,140,58,.3);border-radius:8px;padding:28px 22px;display:none;
+}
+.auth h3{font-size:19px;font-weight:900;text-align:center;color:var(--paper)}
+.auth .sub{font-size:13px;color:var(--ink-dim);text-align:center;line-height:1.9;margin:8px 0 18px;word-break:keep-all}
+.auth input{
+  width:100%;appearance:none;border:1px solid rgba(232,224,216,.22);border-radius:3px;
+  background:rgba(5,4,4,.7);color:var(--paper);font-family:inherit;font-size:16px;
+  padding:14px 15px;outline:none;margin-bottom:12px;
+}
+.auth input:focus{border-color:var(--blood-bright);box-shadow:0 0 16px rgba(164,22,26,.25)}
+.auth input::placeholder{color:#5c534c}
+.auth .err{display:none;font-size:12.5px;color:var(--blood-bright);margin:0 0 10px;line-height:1.7}
+.auth button.go{
+  display:block;width:100%;appearance:none;cursor:pointer;
+  background:linear-gradient(160deg,#c1121f,#780000);color:#fff;
+  border:1px solid rgba(255,255,255,.14);border-radius:3px;
+  font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:.1em;padding:15px;
+}
+.auth button.go:disabled{opacity:.55}
+.auth .switch{margin-top:14px;text-align:center;font-size:13px;color:var(--ink-dim)}
+.auth .switch a{color:var(--ember);text-decoration:underline;cursor:pointer}
+/* 서고 */
+.shelf{margin-top:40px;display:none}
+.shelf h2{font-size:15px;letter-spacing:.25em;color:var(--ember);font-family:'Nanum Myeongjo',serif;text-align:center;margin-bottom:22px}
+.empty{
+  border:1px dashed rgba(232,224,216,.18);border-radius:8px;
+  padding:56px 24px;text-align:center;
+}
+.empty .e-hanja{font-family:'Nanum Myeongjo',serif;font-size:34px;color:rgba(232,224,216,.25);margin-bottom:16px}
+.empty p{font-size:14.5px;line-height:2.1;color:var(--ink-dim);word-break:keep-all}
+.empty a{
+  display:inline-block;margin-top:22px;text-decoration:none;
+  background:linear-gradient(160deg,#c1121f,#780000);color:#fff;
+  font-size:14px;font-weight:700;letter-spacing:.1em;
+  padding:13px 26px;border-radius:3px;border:1px solid rgba(255,255,255,.14);
+}
+.book{
+  display:flex;gap:16px;align-items:center;
+  background:rgba(20,14,12,.7);border:1px solid rgba(208,140,58,.25);border-radius:6px;
+  padding:18px 16px;margin-bottom:12px;text-decoration:none;color:inherit;
+}
+.book .spine{
+  width:44px;height:60px;border-radius:2px;flex:none;
+  background:linear-gradient(160deg,#5c1a1d,#2b0d0e);
+  border:1px solid rgba(208,140,58,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:18px;
+}
+.book .b-t{font-size:15px;font-weight:700;color:var(--paper);line-height:1.5}
+.book .b-s{font-size:12px;color:var(--ink-dim);margin-top:4px;letter-spacing:.05em}
+footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-height:2;font-family:'Noto Sans KR',sans-serif}
+@media (min-width:768px){
+  body::before{content:"";position:fixed;inset:-40px;z-index:-1;
+    background:url('../assets/ritual.jpg') center/cover no-repeat;filter:blur(46px) brightness(.22)}
+  #wrap{background:rgba(5,4,4,.88);border-left:1px solid rgba(232,224,216,.08);border-right:1px solid rgba(232,224,216,.08)}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div id="wrap">
+  <header>
+    <a class="back" href="../">← 심곡사</a>
+    <span class="logo">書庫</span>
+    <button class="logout" id="logoutBtn" onclick="doLogout()">나가기</button>
+  </header>
+
+  <div class="hero">
+    <div class="hanja">書庫</div>
+    <div class="sub">내 서고 · 받은 풀이가 꽂히는 곳</div>
+    <p class="who" id="who"></p>
+  </div>
+
+  <!-- 로그인 폼 -->
+  <div class="auth" id="authBox">
+    <h3 id="aTitle">서고 열기</h3>
+    <p class="sub" id="aSub">열쇠(계정)로 들어와야<br>네 풀이를 읽을 수 있다.</p>
+    <input type="email" id="aEmail" placeholder="이메일" autocomplete="email">
+    <input type="password" id="aPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password">
+    <p class="err" id="aErr"></p>
+    <button class="go" id="aGo" onclick="doAuth()">서고 열기 · 로그인</button>
+    <p class="switch" id="aSwitch">열쇠가 없다면 <a onclick="toggleMode()">회원가입</a></p>
+  </div>
+
+  <!-- 서고 -->
+  <div class="shelf" id="shelf">
+    <h2>꽂혀 있는 풀이</h2>
+    <div id="books"></div>
+    <div class="empty" id="emptyBox">
+      <div class="e-hanja">空</div>
+      <p>아직 도착한 풀이가 없다.<br>풀이를 받으면, 이곳에 꽂힌다.</p>
+      <a href="../myodam/">묘담에게 풀이 받기</a>
+    </div>
+  </div>
+
+  <footer>深谷寺 심곡사 · 書庫</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
+const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
+const sb = window.supabase ? window.supabase.createClient(SUPA_URL, SUPA_KEY) : null;
+let mode = 'login';
+
+function show(logged, email){
+  document.getElementById('authBox').style.display = logged ? 'none' : 'block';
+  document.getElementById('shelf').style.display = logged ? 'block' : 'none';
+  document.getElementById('logoutBtn').style.display = logged ? 'inline-block' : 'none';
+  const who = document.getElementById('who');
+  who.style.display = logged ? 'block' : 'none';
+  if (logged) who.innerHTML = '열쇠 주인 — <b>' + email.replace(/</g,'&lt;') + '</b>';
+}
+async function init(){
+  if (!sb) { show(false); return; }
+  const { data } = await sb.auth.getSession();
+  if (data && data.session) show(true, data.session.user.email);
+  else show(false);
+}
+function toggleMode(){
+  mode = mode === 'login' ? 'signup' : 'login';
+  document.getElementById('aGo').textContent = mode === 'login' ? '서고 열기 · 로그인' : '열쇠 받기 · 회원가입';
+  document.getElementById('aSwitch').innerHTML = mode === 'login'
+    ? '열쇠가 없다면 <a onclick="toggleMode()">회원가입</a>'
+    : '이미 열쇠가 있다면 <a onclick="toggleMode()">로그인</a>';
+  document.getElementById('aErr').style.display = 'none';
+}
+function err(m){ const el = document.getElementById('aErr'); el.textContent = m; el.style.display = 'block'; }
+async function doAuth(){
+  if (!sb) { err('연결에 문제가 생겼다. 잠시 후 다시 시도하라.'); return; }
+  const email = document.getElementById('aEmail').value.trim();
+  const pw = document.getElementById('aPw').value;
+  if (!/.+@.+\..+/.test(email)) { err('이메일이 온전치 않다.'); return; }
+  if (pw.length < 6) { err('비밀번호는 여섯 자 이상이어야 한다.'); return; }
+  const btn = document.getElementById('aGo'); btn.disabled = true;
+  try{
+    let res = mode === 'signup'
+      ? await sb.auth.signUp({ email, password: pw })
+      : await sb.auth.signInWithPassword({ email, password: pw });
+    if (res.error && mode === 'signup' && /already|registered/i.test(res.error.message)){
+      res = await sb.auth.signInWithPassword({ email, password: pw });
+    }
+    if (res.error){
+      const m = res.error.message || '';
+      if (/invalid login|credentials/i.test(m)) err('이메일 또는 비밀번호가 틀렸다.');
+      else err('문이 열리지 않는다. 잠시 후 다시 시도하라.');
+      btn.disabled = false; return;
+    }
+    btn.disabled = false;
+    show(true, res.data.user.email);
+  }catch(e){ err('문이 열리지 않는다. 잠시 후 다시 시도하라.'); btn.disabled = false; }
+}
+async function doLogout(){ if (sb) await sb.auth.signOut(); show(false); }
+document.getElementById('aPw').addEventListener('keydown', e => { if (e.key === 'Enter') doAuth(); });
+init();
+</script>
+</body>
+</html>

@@ -617,6 +617,62 @@ footer b{color:#7a6f66}
   position:absolute;font-family:'Nanum Myeongjo',serif;color:rgba(164,22,26,.12);
   font-size:150px;font-weight:900;z-index:0;pointer-events:none;user-select:none;
 }
+/* ── 인증/구매 모달 ── */
+.modal-veil{
+  position:fixed;inset:0;z-index:220;display:none;
+  background:rgba(2,1,1,.82);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:22px;
+}
+.modal-veil.on{display:flex}
+.modal{
+  width:100%;max-width:400px;
+  background:linear-gradient(170deg,#140d0b,#080505);
+  border:1px solid rgba(208,140,58,.35);border-radius:8px;
+  padding:30px 24px 26px;position:relative;
+  box-shadow:0 24px 80px rgba(0,0,0,.8), 0 0 60px rgba(164,22,26,.15);
+  animation:modalin .5s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes modalin{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.modal .m-close{
+  position:absolute;top:12px;right:14px;appearance:none;background:none;border:none;
+  color:#6b5f57;font-size:20px;cursor:pointer;padding:6px;font-family:inherit;
+}
+.modal .m-tag{font-size:12px;letter-spacing:.35em;color:var(--ember);text-align:center;font-family:'Nanum Myeongjo',serif}
+.modal h3{font-size:21px;font-weight:900;text-align:center;margin:10px 0 4px;color:var(--paper)}
+.modal .m-sub{font-size:13px;color:var(--ink-dim);text-align:center;line-height:1.9;margin-bottom:20px;word-break:keep-all}
+.modal .m-field{margin-bottom:12px}
+.modal .m-field input{
+  width:100%;appearance:none;border:1px solid rgba(232,224,216,.22);border-radius:3px;
+  background:rgba(5,4,4,.7);color:var(--paper);
+  font-family:inherit;font-size:16px;letter-spacing:.04em;
+  padding:14px 15px;outline:none;
+}
+.modal .m-field input:focus{border-color:var(--blood-bright);box-shadow:0 0 16px rgba(164,22,26,.25)}
+.modal .m-field input::placeholder{color:#5c534c}
+.modal .m-err{display:none;font-size:12.5px;color:var(--blood-bright);line-height:1.7;margin:4px 0 10px;word-break:keep-all}
+.modal .m-btn{
+  display:block;width:100%;appearance:none;cursor:pointer;
+  background:linear-gradient(160deg,#c1121f,#780000);color:#fff;
+  border:1px solid rgba(255,255,255,.14);border-radius:3px;
+  font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:.1em;
+  padding:15px;margin-top:6px;
+}
+.modal .m-btn:disabled{opacity:.55;cursor:wait}
+.modal .m-switch{
+  margin-top:16px;text-align:center;font-size:13px;color:var(--ink-dim);
+}
+.modal .m-switch a{color:var(--ember);text-decoration:underline;cursor:pointer}
+/* 구매 모달 */
+.buy-card{
+  border:1px solid rgba(229,56,59,.35);border-radius:5px;overflow:hidden;margin-bottom:16px;
+}
+.buy-card .b-head{background:var(--blood);color:#fff;font-size:12.5px;letter-spacing:.12em;padding:10px 14px}
+.buy-card .b-body{background:rgba(240,234,226,.97);color:#181210;padding:16px 14px}
+.buy-card .b-name{font-size:15px;font-weight:900}
+.buy-card .b-price{font-family:'Noto Sans KR',sans-serif;font-weight:900;font-size:24px;margin-top:6px}
+.buy-card .b-price s{font-weight:400;font-size:13px;color:#7a6f66;margin-right:8px}
+.buy-card .b-price .pct{color:#a4161a;font-size:14px;margin-left:6px}
+.m-note{font-size:12px;color:#5c534c;text-align:center;line-height:1.8;margin-top:12px;word-break:keep-all}
 /* ── PC/태블릿: 흐린 배경 + 폰 프레임 ── */
 .back-home{
   position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);left:18px;z-index:60;
@@ -749,6 +805,7 @@ footer b{color:#7a6f66}
   <!-- ═══════════ SCENE 2.5 : 인적사항 문답 ═══════════ -->
   <section class="scene hidden-scene" id="sceneAsk" style="display:none">
     <video class="bg" id="askBg" src="../assets/candles.mp4" muted loop playsinline preload="none" poster="../assets/candles_start.jpg"></video>
+    <div id="askFade" style="position:absolute;inset:0;z-index:0;background:#000;opacity:1;transition:opacity 3s ease;pointer-events:none"></div>
     <div class="veil"></div>
     <span class="scene-tag">問</span>
     <div class="dialog" data-scene="ask">
@@ -1124,12 +1181,7 @@ footer b{color:#7a6f66}
 
       <p class="toc-note rv" style="margin-top:20px">한 번 적은 풀이는, 평생 네 것이다.</p>
 
-      <div class="guarantee rv">
-        <h5>군말 없는 100% 환불</h5>
-        <p>풀이가 성에 안 차면— 이유는 묻지 않는다.
-        전액 돌려준다.<br>대신 하루만 기다려라. 신청 후 24시간 안에,
-        네 「운명 사용설명서」가 도착한다.</p>
-      </div>
+      <p class="toc-note rv" style="margin-top:30px">신청 후 24시간 안에,<br>네 「운명 사용설명서」가 서고에 꽂힌다.</p>
 
       <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 사주 속 살(殺) 확인하기</a>
     </section>
@@ -1144,11 +1196,46 @@ footer b{color:#7a6f66}
 
 </div><!-- /app -->
 
+<!-- ═══════════ 로그인/회원가입 모달 ═══════════ -->
+<div class="modal-veil" id="authModal">
+  <div class="modal">
+    <button class="m-close" onclick="closeAuth()">✕</button>
+    <p class="m-tag">深谷寺 書庫</p>
+    <h3 id="authTitle">서고의 열쇠</h3>
+    <p class="m-sub" id="authSub">풀이는 네 서고(書庫)에 꽂힌다.<br>열쇠부터 만들어라.</p>
+    <div class="m-field"><input type="email" id="authEmail" placeholder="이메일" autocomplete="email"></div>
+    <div class="m-field"><input type="password" id="authPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password"></div>
+    <p class="m-err" id="authErr"></p>
+    <button class="m-btn" id="authGo" onclick="submitAuth()">열쇠 받기 · 회원가입</button>
+    <p class="m-switch" id="authSwitch">이미 열쇠가 있다면 <a onclick="toggleAuthMode()">로그인</a></p>
+  </div>
+</div>
+
+<!-- ═══════════ 구매 모달 ═══════════ -->
+<div class="modal-veil" id="buyModal">
+  <div class="modal">
+    <button class="m-close" onclick="closeBuy()">✕</button>
+    <p class="m-tag">深谷寺</p>
+    <h3 id="buyTitle">풀이를 받는다</h3>
+    <p class="m-sub" id="buySub">신청 후 24시간 안에,<br>네 서고에 「운명 사용설명서」가 꽂힌다.</p>
+    <div class="buy-card">
+      <div class="b-head">묘담의 심층 살풀이 · 아흔아홉 장</div>
+      <div class="b-body">
+        <div class="b-name" id="buyFor">—</div>
+        <div class="b-price"><s>229,000원</s>38,900<small>원</small><span class="pct">83%↓</span></div>
+      </div>
+    </div>
+    <button class="m-btn" id="buyGo" onclick="startPay()">결제하기</button>
+    <p class="m-note">결제 완료 즉시 접수되며,<br>완성된 풀이는 <a href="../library/" style="color:var(--ember)">내 서고</a>에서 언제든 읽을 수 있습니다.</p>
+  </div>
+</div>
+
 <!-- 하단 고정 CTA -->
 <div id="sticky">
   <a href="#" onclick="goCTA(event)"><span class="blink"></span><span id="stickyText">깃든 살(殺) 확인하기 — 오늘 83% 할인</span></a>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* ───────── state ───────── */
 const user = { name:'', birth:null, gender:'' };
@@ -1302,6 +1389,10 @@ function skipStory(){
 /* ───────── 인적사항 문답 ───────── */
 function startAsk(){
   const nxt = gotoScene('sceneAsk');
+  // 완전한 어둠에서 시작 → 촛불이 켜지며 서서히 드러남
+  const fade = document.getElementById('askFade');
+  fade.style.opacity = '1';
+  setTimeout(()=>{ fade.style.opacity = '0'; }, 900);
   showAskStep('ask1');
 }
 function showAskStep(id){
@@ -1522,12 +1613,91 @@ function observeReveals(){
   manual();
 }
 
+/* ───────── Auth (Supabase) ───────── */
+const sb = window.supabase ? window.supabase.createClient(SUPA_URL, SUPA_KEY) : null;
+let authMode = 'signup'; // 'signup' | 'login'
+let afterAuth = null;
+
+function openAuth(next){
+  afterAuth = next || null;
+  document.getElementById('authErr').style.display = 'none';
+  document.getElementById('authModal').classList.add('on');
+  setTimeout(()=>document.getElementById('authEmail').focus(), 300);
+}
+function closeAuth(){ document.getElementById('authModal').classList.remove('on'); }
+function toggleAuthMode(){
+  authMode = authMode === 'signup' ? 'login' : 'signup';
+  document.getElementById('authGo').textContent = authMode === 'signup' ? '열쇠 받기 · 회원가입' : '서고 열기 · 로그인';
+  document.getElementById('authSwitch').innerHTML = authMode === 'signup'
+    ? '이미 열쇠가 있다면 <a onclick="toggleAuthMode()">로그인</a>'
+    : '열쇠가 없다면 <a onclick="toggleAuthMode()">회원가입</a>';
+  document.getElementById('authSub').innerHTML = authMode === 'signup'
+    ? '풀이는 네 서고(書庫)에 꽂힌다.<br>열쇠부터 만들어라.'
+    : '돌아왔군.<br>네 서고가 기다리고 있다.';
+  document.getElementById('authErr').style.display = 'none';
+}
+function authError(msg){
+  const el = document.getElementById('authErr');
+  el.textContent = msg; el.style.display = 'block';
+}
+async function submitAuth(){
+  if (!sb) { authError('연결에 문제가 생겼다. 잠시 후 다시 시도하라.'); return; }
+  const email = document.getElementById('authEmail').value.trim();
+  const pw = document.getElementById('authPw').value;
+  if (!/.+@.+\..+/.test(email)) { authError('이메일이 온전치 않다.'); return; }
+  if (pw.length < 6) { authError('비밀번호는 여섯 자 이상이어야 한다.'); return; }
+  const btn = document.getElementById('authGo');
+  btn.disabled = true;
+  try{
+    let res;
+    if (authMode === 'signup'){
+      res = await sb.auth.signUp({ email, password: pw });
+      if (res.error && /already|registered/i.test(res.error.message)){
+        res = await sb.auth.signInWithPassword({ email, password: pw });
+      }
+    } else {
+      res = await sb.auth.signInWithPassword({ email, password: pw });
+    }
+    if (res.error){
+      const m = res.error.message || '';
+      if (/invalid login|credentials/i.test(m)) authError('이메일 또는 비밀번호가 틀렸다.');
+      else if (/already|registered/i.test(m)) authError('이미 등록된 이메일이다. 로그인하라.');
+      else if (/at least|password/i.test(m)) authError('비밀번호는 여섯 자 이상이어야 한다.');
+      else authError('문이 열리지 않는다. 잠시 후 다시 시도하라.');
+      btn.disabled = false;
+      return;
+    }
+    track(authMode === 'signup' ? 'signup' : 'login');
+    btn.disabled = false;
+    closeAuth();
+    if (afterAuth) { const f = afterAuth; afterAuth = null; f(); }
+  }catch(e){
+    authError('문이 열리지 않는다. 잠시 후 다시 시도하라.');
+    btn.disabled = false;
+  }
+}
+document.getElementById('authPw').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+
+/* ───────── 구매 모달 ───────── */
+function openBuy(){
+  document.getElementById('buyFor').textContent = user.name ? (user.name + ' — 심층 살풀이 보고서') : '심층 살풀이 보고서';
+  document.getElementById('buyModal').classList.add('on');
+}
+function closeBuy(){ document.getElementById('buyModal').classList.remove('on'); }
+function startPay(){
+  track('pay_click');
+  // TODO: 그로블 결제 모달 연결
+  alert('그로블 결제 모달이 이 자리에 연결됩니다.');
+}
+
 /* ───────── CTA ───────── */
-function goCTA(e){
+async function goCTA(e){
   e.preventDefault();
   track('cta_click');
-  // TODO: 카카오톡 채널 / 결제 링크 연결
-  alert('여기에 카카오톡 채널 또는 결제 링크를 연결하세요.');
+  if (!sb) { openBuy(); return; }
+  const { data } = await sb.auth.getSession();
+  if (data && data.session) openBuy();
+  else openAuth(openBuy);
 }
 </script>
 </body>
