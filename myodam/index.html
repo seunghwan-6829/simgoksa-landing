@@ -783,6 +783,9 @@ footer b{color:#7a6f66}
             <button class="ask-opt" onclick="askGender('여',this)">女 · 여자</button>
             <button class="ask-opt" onclick="askGender('남',this)">男 · 남자</button>
           </div>
+          <p style="font-size:11px;color:#5c534c;letter-spacing:.06em;line-height:1.8;text-align:center;margin-top:4px">
+            선택 시 적은 이름·생년월일·성별이 풀이 접수 목적으로만 기록됩니다.
+          </p>
         </div>
       </div>
       <!-- step 4 : 반응 -->
@@ -1150,6 +1153,37 @@ footer b{color:#7a6f66}
 /* ───────── state ───────── */
 const user = { name:'', birth:null, gender:'' };
 
+/* ───────── Supabase 리드 수집 (INSERT 전용 키 — RLS로 조회 차단됨) ───────── */
+const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
+const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
+const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+let lastSals = [];
+function track(event){
+  try{
+    const row = {
+      event,
+      session_id: sessionId,
+      name: user.name || null,
+      birth: user.birth ? `${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}` : null,
+      gender: user.gender || null,
+      sals: lastSals.length ? lastSals : null,
+      year_pillar: user.birth ? (STEMS[(user.birth.y-4)%10] + BRANCHES[(user.birth.y-4)%12]) : null,
+      product: 'myodam',
+      user_agent: navigator.userAgent.slice(0, 250)
+    };
+    fetch(SUPA_URL + '/rest/v1/leads', {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'apikey': SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(row)
+    }).catch(()=>{});
+  }catch(e){}
+}
+
 /* ───────── ambient sound (WebAudio drone) ───────── */
 let actx = null, master = null;
 function startSound(){
@@ -1402,6 +1436,7 @@ function fillSales(){
   const futureY = nowY + 2 + ((h >> 4) % 3);
   const effects = ['속을 갉는 <b>불면과 예민함</b>','가까운 이와의 <b>갈등과 구설</b>','겹치는 <b>이직·이사·이별</b>','같은 자리에서 <b>어긋나는 인연</b>','줄줄 새는 <b>재물의 구멍</b>'];
   const eff = i => effects[(h + i*3) % effects.length];
+  lastSals = picks.map(s => s.name);
   const t = [
     {yr: pastY, s: picks[0], tx: eff(0), tag:'이미 지나온 자리'},
     {yr: nowY, s: picks[1] || picks[0], tx: eff(1), tag:'<b>지금, 한창 움직이는 중</b>'},
@@ -1422,6 +1457,7 @@ function fillSales(){
 
 /* ───────── 로딩 → 결과 ───────── */
 function enterLoading(){
+  track('input_complete');
   order.forEach(id => { const s = document.getElementById(id); if(s) s.style.display='none'; });
   const ld = document.getElementById('loading');
   ld.classList.add('on');
@@ -1489,6 +1525,7 @@ function observeReveals(){
 /* ───────── CTA ───────── */
 function goCTA(e){
   e.preventDefault();
+  track('cta_click');
   // TODO: 카카오톡 채널 / 결제 링크 연결
   alert('여기에 카카오톡 채널 또는 결제 링크를 연결하세요.');
 }
