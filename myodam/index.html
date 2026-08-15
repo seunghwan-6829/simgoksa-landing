@@ -152,14 +152,15 @@ body{
 .dialog .line{
   font-size:17.5px;line-height:1.95;
   color:var(--ink);
-  text-shadow:0 2px 14px rgba(0,0,0,.95);
+  text-shadow:0 1px 2px rgba(0,0,0,.98), 0 2px 6px rgba(0,0,0,.95), 0 4px 18px rgba(0,0,0,.9), 0 0 34px rgba(0,0,0,.8);
   opacity:0;transform:translateY(16px);filter:blur(7px);
   transition:opacity 1.2s ease,transform 1.2s ease,filter 1.2s ease;
   word-break:keep-all;
 }
 .dialog .line.on{opacity:1;transform:none;filter:blur(0)}
 .dialog .line em{font-style:normal;color:var(--blood-bright)}
-.dialog .line.whisper{font-size:14px;color:var(--ink-dim);letter-spacing:.12em}
+.dialog .line.whisper{font-size:14px;color:var(--ink-dim);letter-spacing:.12em;text-shadow:0 1px 2px rgba(0,0,0,.98),0 2px 8px rgba(0,0,0,.95),0 3px 20px rgba(0,0,0,.9)}
+.dialog .line em{text-shadow:0 1px 2px rgba(0,0,0,.98),0 2px 8px rgba(0,0,0,.95),0 0 22px rgba(164,22,26,.45)}
 .dialog .line.voice{font-weight:700}
 .choices{display:flex;flex-direction:column;gap:12px;padding-top:8px}
 .choice{
@@ -264,8 +265,20 @@ body{
 #loading{
   position:fixed;inset:0;z-index:210;background:#020202;
   display:none;align-items:center;justify-content:center;flex-direction:column;gap:34px;
+  overflow:hidden;
 }
 #loading.on{display:flex}
+#loading .load-bg{
+  position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;height:100%;object-fit:cover;
+  filter:brightness(.3) saturate(.75);
+  opacity:.85;
+}
+#loading .load-veil{
+  position:absolute;inset:0;
+  background:radial-gradient(80% 60% at 50% 50%,rgba(2,2,2,.25) 0%,rgba(2,2,2,.9) 100%);
+}
+#loading .load-ring,#loading #loadtext{position:relative;z-index:2}
 .load-ring{
   position:relative;width:120px;height:120px;
 }
@@ -652,6 +665,8 @@ footer b{color:#7a6f66}
 
 <!-- ═══════════ 로딩 오버레이 ═══════════ -->
 <div id="loading">
+  <video class="load-bg" src="../assets/shinmok.mp4" muted loop playsinline preload="none" poster="../assets/shinmok.jpg"></video>
+  <div class="load-veil"></div>
   <div class="load-ring">
     <div class="ring"></div>
     <div class="ring2"></div>
@@ -665,7 +680,7 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 0 : 히어로 ═══════════ -->
   <section class="scene" id="hero">
-    <video class="bg" src="../assets/hero.mp4" muted loop playsinline preload="auto" poster="../assets/hero.jpg"></video>
+    <video class="bg" src="../assets/walkin.mp4" muted loop playsinline preload="auto" poster="../assets/distant.jpg"></video>
     <div class="veil"></div>
     <div class="title-wrap">
       <div class="hanja"><span>深</span><span>谷</span><span>寺</span></div>
@@ -701,7 +716,7 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 2 : 무녀와 대면 + 인적사항 ═══════════ -->
   <section class="scene hidden-scene" id="scene2" style="display:none">
-    <video class="bg" src="../assets/ritual.mp4" muted loop playsinline preload="none" poster="../assets/ritual.jpg"></video>
+    <video class="bg" src="../assets/door.mp4" muted loop playsinline preload="none" poster="../assets/gate.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">貳</span>
     <div class="dialog" data-scene="2">
@@ -718,29 +733,29 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 2.5 : 인적사항 문답 ═══════════ -->
   <section class="scene hidden-scene" id="sceneAsk" style="display:none">
-    <img class="bg" src="../assets/seated.jpg" alt="">
+    <video class="bg" id="askBg" src="../assets/candles.mp4" muted loop playsinline preload="none" poster="../assets/seated.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">問</span>
     <div class="dialog" data-scene="ask">
       <!-- step 1 : 이름 -->
       <div class="ask-step" id="ask1">
-        <p class="line voice">"알다 뿐이냐.<br>허나 <em>네 입으로</em> 말해야 시작된다."</p>
+        <p class="line voice">"알다 뿐이냐.<br>허나 <em>네 손으로 적어야</em> 시작된다."</p>
         <p class="line voice" style="margin-top:12px">"이름이 무엇이냐."</p>
         <div class="ask-wrap on">
           <div class="ask-field">
             <input class="ask-input" id="inName" type="text" maxlength="10" placeholder="이름을 적는다" autocomplete="off">
-            <button class="ask-go" onclick="askName()">말한다</button>
+            <button class="ask-go" onclick="askName()">적는다</button>
           </div>
           <p class="ask-err" id="errName">…이름을 말해야 한다.</p>
         </div>
       </div>
       <!-- step 2 : 생년월일 -->
       <div class="ask-step" id="ask2" style="display:none">
-        <p class="line voice">"태어난 날을 말하거라.<br><em>해와 달과 날</em>— 하나도 빠짐없이."</p>
+        <p class="line voice">"태어난 날을 적거라.<br><em>해와 달과 날</em>— 하나도 빠짐없이."</p>
         <div class="ask-wrap on">
           <div class="ask-field">
             <input class="ask-input" id="inBirth" type="text" inputmode="numeric" maxlength="10" placeholder="1995.03.14" autocomplete="off">
-            <button class="ask-go" onclick="askBirth()">말한다</button>
+            <button class="ask-go" onclick="askBirth()">적는다</button>
           </div>
           <p class="ask-err" id="errBirth">…여덟 자리로 말하거라. (예: 1995.03.14)</p>
         </div>
@@ -770,15 +785,15 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 3 : 선고 (가면 벗기) ═══════════ -->
   <section class="scene hidden-scene" id="scene3" style="display:none">
-    <video class="bg" src="../assets/maskoff.mp4" muted loop playsinline preload="none" poster="../assets/maskon.jpg"></video>
+    <video class="bg" src="../assets/maskwear.mp4" muted loop playsinline preload="none" poster="../assets/closeup.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">參</span>
     <div class="dialog" data-scene="3">
       <p class="line voice" id="sorryLine">"그렇게로구나…"</p>
       <p class="line voice">"<em>그래서 안 된 거였구나.</em>"</p>
-      <p class="line" style="margin-top:8px">여인이 천천히, 가면을 벗는다.</p>
+      <p class="line" style="margin-top:8px">여인이 천천히, 가면을 쓴다.<br>공기가— 일렁이기 시작한다.</p>
       <p class="line voice" data-quake>"네 사주에 <em>살(殺)</em>이 박혀 있다."</p>
-      <p class="line">그 한마디에, 등 뒤의 촛불이<br>일제히 흔들렸다.</p>
+      <p class="line">가면 너머의 목소리가<br>방 전체를 울린다.</p>
       <p class="line voice">"운이 나빴던 게 아니야.<br><em>흐름을 모르고 살았던 것뿐이지.</em>"</p>
       <p class="line voice" id="showLine">"보여주랴 —<br>네 인생이 안 풀리는 <em>진짜 이유.</em>"</p>
       <div class="choices">
@@ -792,11 +807,14 @@ footer b{color:#7a6f66}
   <div id="sales" style="display:none">
 
     <!-- 개인화 선고 -->
-    <section class="sec" style="padding-top:90px">
-      <span class="splat" style="top:8%;left:-30px">殺</span>
-      <p class="h-red rv" id="pTag">— 심곡사 살(殺) 감정 결과 —</p>
-      <h2 class="h-big rv" id="pHead">당신의 사주,<br><span class="r">심상치 않습니다</span></h2>
-      <p class="p-body rv" id="pSub">여든세 번째 무녀 묘담이<br>당신의 원국(原局)을 직접 짚었습니다.</p>
+    <section class="sec img-sec">
+      <img class="bg" src="../assets/hero.jpg" alt="">
+      <div class="veil2"></div>
+      <div class="inner">
+        <p class="h-red rv" id="pTag">— 심곡사 살(殺) 감정 —</p>
+        <h2 class="h-big rv" id="pHead" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 4px 20px rgba(0,0,0,.9)">네 사주,<br><span class="r">심상치 않다</span></h2>
+        <p class="p-body rv" id="pSub" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px rgba(0,0,0,.9)">"여든세 번째 무녀로서 말한다.<br>지금부터— <em>네 원국(原局)</em>이다."</p>
+      </div>
     </section>
 
     <!-- 원국 차트 -->
@@ -824,33 +842,33 @@ footer b{color:#7a6f66}
               <div class="pchar"><div id="yStem">乙</div><div id="yBranch">亥</div></div>
             </div>
           </div>
-          <p class="chart-note">붉은 표식 — <b>살(殺)이 뿌리내린 자리</b><br>잠긴 기둥은 심층 풀이에서 모두 공개됩니다</p>
+          <p class="chart-note">붉은 표식 — <b>살(殺)이 뿌리내린 자리</b><br>잠긴 기둥은, 풀이에서 전부 열어 주마</p>
         </div>
       </div>
     </section>
 
     <!-- 흉살 진단 -->
     <section class="sec" style="padding-top:30px">
-      <p class="h-red rv">원국에서 발견된</p>
+      <p class="h-red rv">네 원국에서 나온</p>
       <h2 class="h-big rv"><span class="r" id="salCount">2개의 흉살</span></h2>
       <div id="salCards"></div>
-      <p class="toc-note rv">* 표기된 살의 상세 작용 시기·강도·해법은<br>심층 풀이 보고서에서 전부 공개됩니다.</p>
+      <p class="toc-note rv">* 살이 움직이는 해, 강도, 다스리는 법—<br>전부 적어 뒀다. 풀이에서 열어 봐라.</p>
     </section>
 
     <!-- 후크 -->
     <section class="sec">
-      <p class="h-red rv">왜 이렇게</p>
-      <h2 class="h-big rv">뭘 해도 <span class="r">안 풀리지?</span></h2>
+      <p class="h-red rv">"왜 이렇게</p>
+      <h2 class="h-big rv">뭘 해도 <span class="r">안 풀리지?"</span></h2>
       <div class="h-hanja rv">凶殺</div>
-      <p class="p-body rv">사주 속 <em>흉살(凶殺)</em>이<br>당신의 운을 가로막고 있습니다.</p>
+      <p class="p-body rv">사주 속 <em>흉살(凶殺)</em>이<br>네 운을 가로막고 있다.</p>
       <ul class="chk rv">
-        <li>사람을 너무 쉽게 믿었다가 꼭 실망하게 되고</li>
-        <li>노력은 내가 다 하는데 인정은 늘 남이 받고</li>
-        <li>결정을 미루면 기회를 놓치고, 결정하면 이미 늦고</li>
-        <li>새로 시작하려 하면 꼭 변수가 생겨 방해하고</li>
-        <li>열심히 사는데도 인생이 멈춰 있는 느낌이 들고</li>
+        <li>사람을 쉽게 믿었다가, 꼭 데이고</li>
+        <li>애는 네가 쓰는데, 인정은 남이 받고</li>
+        <li>미루면 놓치고, 결정하면 이미 늦고</li>
+        <li>시작만 하면, 꼭 변수가 터지고</li>
+        <li>열심히 사는데— 인생은 멈춰 있고</li>
       </ul>
-      <p class="p-dim rv">이걸 단순히 "운이 나빴다"고 넘겨왔을 겁니다.<br>하지만 이건 운이 나빠서가 아니라<br><b style="color:var(--ink)">지금의 흐름을 모르고 있었기 때문</b>입니다.</p>
+      <p class="p-dim rv">"운이 나빴다"고 넘겨 왔겠지.<br>아니야.<br><b style="color:var(--ink)">흐름을 모르고 있었을 뿐이다.</b></p>
     </section>
 
     <!-- 살이란 -->
@@ -859,10 +877,10 @@ footer b{color:#7a6f66}
       <div class="veil2"></div>
       <div class="inner">
         <div class="hr-knife rv"></div>
-        <p class="p-body rv" style="margin-top:60px;text-shadow:0 2px 12px #000">살(殺)은—</p>
-        <p class="p-body rv" style="text-shadow:0 2px 12px #000">감당할 수 없다면<br>나를 갉아먹는 <em>재앙</em>과도 같지만,</p>
-        <p class="p-body rv" style="margin-top:44px;text-shadow:0 2px 12px #000">감당할 수 있다면<br>하늘이 내린 <em>기회</em>와도 같습니다.</p>
-        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 2px 12px #000">당신이 외면해 온,<br>사주 속 뒷 이야기.<br><br>정면으로 마주하고, 풀어보세요.</p>
+        <p class="p-body rv" style="margin-top:60px;text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px #000">살(殺)은—</p>
+        <p class="p-body rv" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px #000">감당 못 하면<br>너를 갉아먹는 <em>재앙</em>이지만,</p>
+        <p class="p-body rv" style="margin-top:44px;text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px #000">감당해 내면<br>하늘이 내린 <em>기회</em>다.</p>
+        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px #000">네가 외면해 온,<br>사주 속 뒷 이야기.<br><br>정면으로 마주하고— 풀어라.</p>
       </div>
     </section>
 
@@ -875,10 +893,10 @@ footer b{color:#7a6f66}
         <h2 class="h-big rv">여든세 번째로<br>산을 지키는 무녀, <span class="r">묘담</span></h2>
         <p class="p-body rv" style="text-shadow:0 2px 12px #000">
           강원도 이름 없는 산 중턱,<br>83대째 <em>만세력과 신살(神殺)의 기록</em>을<br>지켜 온 집안.<br><br>
-          12년의 상담,<br><em>5,000명</em>이 넘는 사주를 풀어냈습니다.
+          12년,<br><em>5,000명</em>의 사주를 풀었다.
         </p>
-        <p class="p-dim rv" style="text-shadow:0 2px 12px #000">
-          신점(神占)이 아닙니다.<br>정통 명리학 · 만세력 기반의 사주 풀이입니다.<br><br>
+        <p class="p-dim rv" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px #000">
+          신점(神占)이 아니다.<br>정통 명리학 · 만세력 기반의 사주 풀이다.<br><br>
           사주팔자 명리심리상담사 1급<br>부부심리상담사 1급
         </p>
       </div>
@@ -887,7 +905,7 @@ footer b{color:#7a6f66}
     <!-- 재물운 그래프 -->
     <section class="sec">
       <p class="h-red rv">풀이 미리보기 · 壹</p>
-      <h2 class="h-big rv">돈이 한 번 크게<br><span class="r">터지는 팔자?</span></h2>
+      <h2 class="h-big rv">"돈이 한 번 크게<br><span class="r">터지는 팔자던데."</span></h2>
       <div class="graph-frame rv">
         <div class="graph-title" id="graphOwner">財物運 흐름도</div>
         <svg viewBox="0 0 320 150" width="100%" style="display:block">
@@ -911,14 +929,14 @@ footer b{color:#7a6f66}
           <span class="gtag good"><b>재물은 기회일 때</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
         </div>
       </div>
-      <p class="toc-note rv">재물이 폭발하는 해와 새는 해 —<br>정확한 연도는 보고서에서 공개됩니다.</p>
+      <p class="toc-note rv">재물이 폭발하는 해와, 줄줄 새는 해.<br>정확한 연도는— 풀이에서 보여주마.</p>
     </section>
 
     <!-- 잠긴 티저 목록 -->
     <section class="sec" style="background:var(--bg2)">
       <p class="h-red rv">풀이 미리보기 · 貳</p>
-      <h2 class="h-big rv">묘담이 이미<br><span class="r">적어 둔 것들</span></h2>
-      <p class="p-dim rv">아래 목록은 당신의 원국을 기준으로<br>이미 작성되어 있습니다. 열람만 잠겨 있을 뿐.</p>
+      <h2 class="h-big rv">"이미 다<br><span class="r">적어 뒀다."</span></h2>
+      <p class="p-dim rv">네 원국을 보고 전부 적어 뒀다.<br>열람만 잠겨 있을 뿐.</p>
       <div class="locklist">
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其一</span><span class="li-title">죽어도 남에게 들키기 싫은<br>진짜 성격과 숨겨진 열등감</span></div>
@@ -951,46 +969,41 @@ footer b{color:#7a6f66}
       <div style="margin-top:70px">
         <div class="stepnum rv">壹</div>
         <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">언제, 어떤 영향을 미치는지</h3>
-        <div class="timeline rv" id="salTimeline">
-          <div class="row"><span class="yr">2023</span><span class="tx">백호살(白虎殺) — <b>이직 실패</b>, 반복된 구설</span></div>
-          <div class="row"><span class="yr">2026</span><span class="tx">귀문관살(鬼門關殺) — <b>매우 위험</b> · 불면, 예민함</span></div>
-          <div class="row"><span class="yr">2028</span><span class="tx">원진살(怨嗔殺) — <b>관계 파탄</b>의 고비</span></div>
-        </div>
-        <p class="toc-note rv">* 예시 화면입니다. 실제 분석은 당신의 원국 기준으로 제공됩니다.</p>
+        <h3 class="h-big rv" style="font-size:20px">언제, 어떻게 움직이는지</h3>
+        <div class="timeline rv" id="salTimeline"></div>
+        <p class="toc-note rv">* 가려진 자리는 풀이에서 열린다.</p>
       </div>
 
       <div style="margin-top:80px">
         <div class="stepnum rv">貳</div>
         <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">특징부터 극복 방법까지</h3>
-        <div class="card rv">
+        <h3 class="h-big rv" style="font-size:20px">뿌리부터, 다스리는 법까지</h3>
+        <div class="card rv" id="salDeepCard">
           <h4>귀문관살 <span>(鬼門關殺)</span></h4>
           <p>12신살 중 사람의 마음 자체를 노리는 가장 미묘한 살.
-          정신과 영(靈)의 경계가 좁아진 자리로, 까닭 없는
-          불면·가위눌림·예민함으로 작동합니다.<br><br>
-          — 나에게 특히 위험한 이유<br>
-          — 극복하는 방위·시간대·물건까지<br>
-          맞춤으로 짚어드립니다.</p>
+          까닭 없는 불면과 예민함으로 작동한다.<br><br>
+          — 네게 유독 위험한 이유<br>
+          — 다스리는 방위·시간대·물건까지<br>
+          하나하나 짚어 주마.</p>
         </div>
       </div>
 
       <div style="margin-top:80px">
         <div class="stepnum rv">參</div>
         <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">살풀이, 그 이후의 흐름</h3>
+        <h3 class="h-big rv" style="font-size:20px">살풀이, 그 이후</h3>
         <div class="ba rv">
           <div class="b">
-            <h5>살풀이 전</h5>
+            <h5>풀기 전</h5>
             <p>새벽 3시까지 잠 못 들고 화면만 내리는 밤.
-            비슷한 결의 사람에게 휘둘리고, 끝내고, 또 자책하는
-            패턴이 계절을 넘어 굳어집니다.</p>
+            같은 결의 사람에게 휘둘리고, 끝내고, 자책하는
+            패턴이 굳는다.</p>
           </div>
           <div class="a">
-            <h5>살풀이 후</h5>
-            <p>같은 예민함이 — 풀고 나면 <b>직관과 통찰로 전환</b>됩니다.
-            언제 멈추고 언제 나아가야 하는지, 흐름을 아는 사람의
-            선택은 다릅니다.</p>
+            <h5>풀고 난 후</h5>
+            <p>같은 예민함이 <b>직관과 통찰로 바뀐다.</b>
+            언제 멈추고 언제 나아갈지—
+            흐름을 아는 자의 선택은 다르다.</p>
           </div>
         </div>
         <p class="toc-note rv" style="margin-top:26px">* 심곡사의 살풀이는 굿·부적 판매가 아닌,<br>명리학 신살론(神殺論)에 근거한 서면 분석입니다.</p>
@@ -1002,9 +1015,9 @@ footer b{color:#7a6f66}
       <img class="bg" src="../assets/book.jpg" alt="">
       <div class="veil2"></div>
       <div class="inner">
-        <p class="h-red rv">받아보실 것</p>
+        <p class="h-red rv">네가 받을 것</p>
         <h2 class="h-big rv">100페이지,<br><span class="r">운명 사용설명서</span></h2>
-        <p class="p-dim rv" style="text-shadow:0 2px 12px #000">당신의 이름이 적힌, 단 한 권의 기록.<br>평생 소장하는 PDF 상세 분석서</p>
+        <p class="p-dim rv" id="bookOwner" style="text-shadow:0 2px 6px rgba(0,0,0,.95),0 3px 16px #000">네 이름이 적힌, 단 한 권의 기록.<br>평생 소장하는 PDF 상세 분석서.</p>
         <div class="toc rv">
           <div class="t"><span class="n">PART 1</span><span class="x">나의 사주팔자 상세분석 — 원국·음양오행·기질</span></div>
           <div class="t"><span class="n">PART 2</span><span class="x">내 인생의 황금기 — 고점과 저점, 조심할 암흑기</span></div>
@@ -1048,7 +1061,7 @@ footer b{color:#7a6f66}
       <h2 class="h-big rv">점집 찾고, 부적 쓰고,<br>굿까지…</h2>
       <p class="price-strike rv">
         점집 <s>–15만원</s> · 부적 <s>–55만원</s> · 굿 <s>–120만원</s><br>
-        <b style="color:var(--ink)">수백만 원, 쓰실 필요 없어요.</b>
+        <b style="color:var(--ink)">수백만 원, 쓸 필요 없다.</b>
       </p>
       <p class="p-body rv">집에서 받는 <em>맞춤형 살풀이</em></p>
       <p class="p-body rv" style="margin-top:50px"><span style="font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-size:22px">기간 한정, 특별 혜택가</span></p>
@@ -1208,10 +1221,7 @@ function quake(){
   document.getElementById('app').classList.remove('shake');
   void document.getElementById('app').offsetWidth;
   document.getElementById('app').classList.add('shake');
-  const rf = document.getElementById('redflash');
-  rf.classList.add('on');
   if (navigator.vibrate) navigator.vibrate([60,40,80]);
-  setTimeout(()=>rf.classList.remove('on'), 420);
 }
 
 function gotoScene(id){
@@ -1255,6 +1265,21 @@ function showAskStep(id){
   ['ask1','ask2','ask3','ask4'].forEach(s => document.getElementById(s).style.display = 'none');
   const step = document.getElementById(id);
   step.style.display = 'block';
+  // 생년월일 단계부터: 만세력에 적어 내려가는 붓글씨 배경으로 전환
+  if (id === 'ask2') {
+    const bg = document.getElementById('askBg');
+    if (bg && !bg.dataset.writing) {
+      bg.dataset.writing = '1';
+      bg.style.transition = 'opacity 1.2s ease';
+      bg.style.opacity = '0';
+      setTimeout(() => {
+        bg.src = '../assets/writing.mp4';
+        bg.poster = '../assets/writing.jpg';
+        bg.play().catch(()=>{});
+        bg.style.opacity = '1';
+      }, 1200);
+    }
+  }
   playScene(null, step);
   const inp = step.querySelector('.ask-input');
   if (inp) setTimeout(()=>inp.focus(), 1600);
@@ -1317,22 +1342,28 @@ function hashUser(){
 function fillSales(){
   const nm = user.name ? esc(user.name) : '';
   if (nm){
-    document.getElementById('pHead').innerHTML = nm + ' 님의 사주,<br><span class="r">심상치 않습니다</span>';
-    document.getElementById('chartOwner').textContent = user.name + ' 님의 四柱原局';
-    document.getElementById('graphOwner').textContent = user.name + ' 님의 財物運 흐름도';
-    document.getElementById('stickyText').textContent = nm + '님의 살(殺) 풀이 받기 — 오늘 83% 할인';
-    document.getElementById('ctaMain').textContent = nm + ' 님의 살(殺) 풀이 받기';
+    document.getElementById('pHead').innerHTML = nm + '.<br><span class="r">네 사주, 심상치 않다</span>';
+    document.getElementById('chartOwner').textContent = user.name + ' — 四柱原局';
+    document.getElementById('graphOwner').textContent = user.name + ' — 財物運 흐름도';
+    document.getElementById('stickyText').textContent = nm + ', 네 살(殺)의 풀이 — 오늘 83% 할인';
+    document.getElementById('ctaMain').textContent = nm + ', 네 살(殺)의 풀이를 받아라';
+    document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>네 이름이 적힌, 단 한 권의 기록.<br>평생 소장하는 PDF 상세 분석서.';
   }
   if (user.birth){
     const y = user.birth.y;
     document.getElementById('yStem').textContent = STEMS[(y - 4) % 10];
     document.getElementById('yBranch').textContent = BRANCHES[(y - 4) % 12];
   }
-  // 흉살 진단 카드 (이름+생일 기반 고정 선택)
+  // 흉살 진단 (이름+생일 기반 고정 선택 · 2~3개 가변)
   const h = hashUser();
-  const i1 = h % SAL_POOL.length;
-  let i2 = (h >> 3) % SAL_POOL.length; if (i2 === i1) i2 = (i2 + 1) % SAL_POOL.length;
-  const picks = [SAL_POOL[i1], SAL_POOL[i2]];
+  const count = 2 + ((h >> 5) % 2);
+  const picks = [];
+  let idx = h % SAL_POOL.length;
+  const step = ((h >> 7) % 2) ? 5 : 1; // 6과 서로소인 걸음만 사용 → 전체 순환 보장
+  while (picks.length < count){
+    if (!picks.includes(SAL_POOL[idx])) picks.push(SAL_POOL[idx]);
+    idx = (idx + step) % SAL_POOL.length;
+  }
   document.getElementById('salCount').textContent = picks.length + '개의 흉살';
   document.getElementById('salCards').innerHTML = picks.map(s => `
     <div class="sal-card rv">
@@ -1349,6 +1380,28 @@ function fillSales(){
         </div>
       </div>
     </div>`).join('');
+  // 타임라인 (연도·살 개인화 + 핵심 블러)
+  const nowY = new Date().getFullYear();
+  const pastY = nowY - 2 - (h % 3);
+  const futureY = nowY + 2 + ((h >> 4) % 3);
+  const effects = ['속을 갉는 <b>불면과 예민함</b>','가까운 이와의 <b>갈등과 구설</b>','겹치는 <b>이직·이사·이별</b>','같은 자리에서 <b>어긋나는 인연</b>','줄줄 새는 <b>재물의 구멍</b>'];
+  const eff = i => effects[(h + i*3) % effects.length];
+  const t = [
+    {yr: pastY, s: picks[0], tx: eff(0), tag:'이미 지나온 자리'},
+    {yr: nowY, s: picks[1] || picks[0], tx: eff(1), tag:'<b>지금, 한창 움직이는 중</b>'},
+    {yr: futureY, s: picks[2] || picks[0], tx: eff(2), tag:'다가오는 고비'}
+  ];
+  document.getElementById('salTimeline').innerHTML = t.map(r => `
+    <div class="row"><span class="yr">${r.yr}</span><span class="tx">${r.s.name}(${r.s.hanja}) — ${r.tag}<br>
+    <span style="filter:blur(4.5px);user-select:none">${r.tx}, ■월과 ■월에 정점</span> 🔒</span></div>`).join('');
+  // 심층 카드 = 첫 번째 살 연동
+  const d = picks[0];
+  document.getElementById('salDeepCard').innerHTML = `
+    <h4>${d.name} <span>(${d.hanja})</span></h4>
+    <p>${d.desc}<br><br>
+    — 네게 유독 위험한 이유<br>
+    — 다스리는 방위·시간대·물건까지<br>
+    하나하나 짚어 주마.</p>`;
 }
 
 /* ───────── 로딩 → 결과 ───────── */
@@ -1356,11 +1409,13 @@ function enterLoading(){
   order.forEach(id => { const s = document.getElementById(id); if(s) s.style.display='none'; });
   const ld = document.getElementById('loading');
   ld.classList.add('on');
+  const lbg = ld.querySelector('.load-bg');
+  if (lbg) { lbg.preload='auto'; lbg.play().catch(()=>{}); }
   const msgs = user.name ? [
-    '만세력을 펼치는 중…',
-    '<b>' + esc(user.name) + '</b> 님의 원국을 세우는 중…',
-    '살(殺)의 흔적을 짚는 중…'
-  ] : ['만세력을 펼치는 중…','원국을 세우는 중…','살(殺)의 흔적을 짚는 중…'];
+    '만세력을 펼친다…',
+    '<b>' + esc(user.name) + '</b>… 네 원국을 세운다…',
+    '살(殺)의 흔적을 짚는다…'
+  ] : ['만세력을 펼친다…','원국을 세운다…','살(殺)의 흔적을 짚는다…'];
   const lt = document.getElementById('loadtext');
   let i = 0;
   lt.innerHTML = msgs[0];
