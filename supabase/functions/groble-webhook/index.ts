@@ -90,6 +90,13 @@ Deno.serve(async (req) => {
     }
   } catch (_e) { /* 매칭 실패해도 결제 기록은 계속 */ }
 
+  // 사주가 확보된 묘담 결제는 즉시 도착(delivered) — 결과지는 자동 생성이므로 바로 열람 가능.
+  // 사주를 못 찾은 건은 paid로 남겨 관리자가 수동 연결한다.
+  const finalSaju = qaAnswer
+    ?? pick("customAnswer", "answers", "surveyAnswer", "data.customAnswer", "data.answers", "optionAnswer")
+    ?? sajuFromIntent;
+  const productKey = (contentId && CONTENT_PRODUCT[contentId]) || "myodam";
+
   const row = {
     buyer_email: buyerEmail,
     buyer_name: buyerName,
@@ -97,13 +104,13 @@ Deno.serve(async (req) => {
     product_name: pick("data.object.content.title", "contentTitle", "productName", "product_name", "title", "data.contentTitle", "data.productName", "content.title"),
     amount: Number(pick("data.object.pricing.finalAmount", "finalPrice", "amount", "price", "totalPrice", "data.finalPrice", "data.amount", "data.price") ?? 0) || null,
     // 그로블 질문 답변이 있으면 우선, 없으면 pay_intent의 사주로 채운다 (질문 제거 후에도 결과지 연결 유지)
-    saju_answer: qaAnswer ?? pick("customAnswer", "answers", "surveyAnswer", "data.customAnswer", "data.answers", "optionAnswer") ?? sajuFromIntent,
+    saju_answer: finalSaju,
     groble_content_id: contentId,
     groble_purchase_id: pick("data.object.merchantUid", "purchaseId", "purchase_id", "orderId", "merchantUid", "data.purchaseId", "data.orderId", "data.merchantUid"),
     // 매핑에 없는 ID는 묘담으로 폴백 (contentId 추출 실패 시에도 기존 구매 흐름이 끊기지 않도록)
-    product: (contentId && CONTENT_PRODUCT[contentId]) || "myodam",
+    product: productKey,
     site_email: siteEmail,
-    status: "paid",
+    status: productKey === "myodam" && finalSaju ? "delivered" : "paid",
     payload: body,
   };
 

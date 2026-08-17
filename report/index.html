@@ -174,7 +174,7 @@ h2.pg-title .r{color:var(--blood-bright)}
 const qs = new URLSearchParams(location.search);
 let user = null;
 if (qs.get('name') || qs.get('demo')){
-  user = { name: qs.get('name') || '김심곡', birth: {y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender: qs.get('g') || '여' };
+  user = { name: (qs.get('name') || '김심곡').trim(), birth: {y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender: (qs.get('g') || '여').trim() };
   if (qs.get('demo')) document.getElementById('demoBar').style.display = 'block';
 } else {
   try{
