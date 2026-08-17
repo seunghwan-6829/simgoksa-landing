@@ -617,6 +617,18 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') goPage(Math.min(total - 1, currentPage() + 1));
   if (e.key === 'ArrowLeft') goPage(Math.max(0, currentPage() - 1));
 });
+
+/* 첫 방문 스와이프 힌트 */
+(function(){
+  const hint = document.createElement('div');
+  hint.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 26px);z-index:60;background:rgba(5,4,4,.78);backdrop-filter:blur(6px);border:1px solid rgba(232,224,216,.2);border-radius:999px;padding:10px 20px;font-size:12.5px;letter-spacing:.15em;color:#e8e0d8;transition:opacity 1s ease;pointer-events:none';
+  hint.textContent = '옆으로 넘겨 읽어라 →';
+  document.body.appendChild(hint);
+  let dismissed = false;
+  const dismiss = () => { if (dismissed) return; dismissed = true; hint.style.opacity = '0'; setTimeout(()=>hint.remove(), 1100); };
+  pager.addEventListener('scroll', dismiss, {once:true, passive:true});
+  setTimeout(dismiss, 6000);
+})();
 </script>
 </body>
 </html>
