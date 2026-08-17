@@ -549,7 +549,11 @@ addPage(`${pgHead(pages.length + 1)}
   <p class="pg-body">아흔아홉 장을 다 읽었다면— 알 것이다. 이 책은 예언서가 아니라 <em>지도</em>라는 것을.</p>
   <p class="pg-body">지도는 길을 대신 걸어 주지 않는다. 허나 갈림길에서 지도를 가진 자와 없는 자는, 십 년 뒤 전혀 다른 곳에 서 있다.</p>
   <p class="pg-quote">"운이 나빴던 게 아니야.<br>흐름을 모르고 살았던 것뿐이지.<br>— 이제는 아니다."</p>
-  <p class="pg-body">막히는 날이 오거든, 언제든 이 서고로 돌아와라. 네 책은 늘 이 자리에 꽂혀 있다.</p>`);
+  <p class="pg-body">막히는 날이 오거든, 언제든 이 서고로 돌아와라. 네 책은 늘 이 자리에 꽂혀 있다.</p>
+  <div style="text-align:center">
+    <button onclick="shareSite()" style="display:inline-flex;align-items:center;gap:9px;margin-top:30px;appearance:none;cursor:pointer;font-family:inherit;background:#FEE500;color:#191919;border:none;border-radius:6px;font-size:14.5px;font-weight:700;padding:14px 26px">💬 곁의 사람에게도 문을 열어줘라</button>
+    <p class="pg-note" id="shareDone" style="display:none">문이 전해졌다.</p>
+  </div>`);
 
 addPage(`
   <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
@@ -652,6 +656,20 @@ tocList.innerHTML = tocEntries.map(t =>
 function openToc(){ document.getElementById('tocOverlay').classList.add('on'); }
 function closeToc(){ document.getElementById('tocOverlay').classList.remove('on'); }
 function jumpTo(i){ closeToc(); goPage(i); }
+
+/* 공유 — 캐릭터 랜딩(myodam)으로 초대 */
+async function shareSite(){
+  const data = {
+    title: '심곡사(深谷寺)',
+    text: '숲 속 깊은 산사의 여든세 번째 무녀가, 네 사주에 박힌 살(殺)을 짚는다.',
+    url: 'https://simgoksa.com/myodam/'
+  };
+  const done = document.getElementById('shareDone');
+  try{
+    if (navigator.share){ await navigator.share(data); if (done) done.style.display = 'block'; }
+    else { await navigator.clipboard.writeText(data.url); if (done){ done.textContent = '주소가 복사되었다 — 카카오톡에 붙여넣어라.'; done.style.display = 'block'; } }
+  }catch(e){}
+}
 
 /* 키보드 (PC) */
 document.addEventListener('keydown', e => {

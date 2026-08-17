@@ -6,9 +6,10 @@
 <title>심곡사(深谷寺) — 당신의 인생이 풀리지 않는 이유</title>
 <meta name="description" content="숲 속 깊은 곳, 83대째 이어져 온 산사(山寺). 무녀 묘담이 당신의 사주 속 흉살(凶殺)을 풀어드립니다.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://simgoksa.com/myodam/">
 <meta property="og:title" content="심곡사(深谷寺) — 당신의 인생이 풀리지 않는 이유">
-<meta property="og:description" content="지도에도 나오지 않는 산사. 여든세 번째 무녀가 당신을 기다립니다.">
-<meta property="og:image" content="/assets/hero.jpg">
+<meta property="og:description" content="지도에도 나오지 않는 산사. 여든세 번째 무녀가 네 사주 속 살(殺)을 짚는다.">
+<meta property="og:image" content="https://simgoksa.com/assets/hero.jpg">
 <meta name="theme-color" content="#050404">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1128,6 +1129,22 @@ footer b{color:#7a6f66}
       </div>
     </section>
 
+    <!-- 공유 -->
+    <section class="sec" style="padding-top:70px;padding-bottom:70px">
+      <p class="h-red rv">혼자 알기엔</p>
+      <h2 class="h-big rv">아까운 이야기라면</h2>
+      <p class="p-dim rv" style="margin-top:18px">네 곁에도, 뭘 해도 안 풀린다는<br>얼굴이 하나쯤 있을 것이다.<br>그 사람에게— 이 문을 열어줘라.</p>
+      <button class="rv" id="shareBtn" onclick="shareSite()" style="
+        display:inline-flex;align-items:center;gap:10px;margin-top:28px;
+        appearance:none;cursor:pointer;font-family:inherit;
+        background:#FEE500;color:#191919;border:none;border-radius:6px;
+        font-size:15px;font-weight:700;letter-spacing:.05em;
+        padding:15px 30px;box-shadow:0 6px 26px rgba(254,229,0,.18);">
+        <span style="font-size:17px">💬</span> 카카오톡으로 알려주기
+      </button>
+      <p class="toc-note rv" id="shareDone" style="display:none;margin-top:14px">문이 전해졌다.</p>
+    </section>
+
     <!-- 후기 -->
     <section class="sec">
       <p class="h-red rv">살을 마주한 뒤</p>
@@ -1809,6 +1826,28 @@ function startPay(){
   track('pay_click');
   // 그로블 결제창 (결제 완료 → simgoksa.com/library/ 로 자동 이동)
   location.href = 'https://www.groble.im/payment/kAAJFx';
+}
+
+/* ───────── 공유 (모바일: OS 공유시트 → 카카오톡 / PC: 링크 복사) ───────── */
+async function shareSite(){
+  track('share_click');
+  const data = {
+    title: '심곡사(深谷寺)',
+    text: '숲 속 깊은 산사의 여든세 번째 무녀가, 네 사주에 박힌 살(殺)을 짚는다.',
+    url: 'https://simgoksa.com/myodam/'
+  };
+  const done = document.getElementById('shareDone');
+  try{
+    if (navigator.share){
+      await navigator.share(data);
+      done.textContent = '문이 전해졌다.';
+      done.style.display = 'block';
+    } else {
+      await navigator.clipboard.writeText(data.url);
+      done.textContent = '주소가 복사되었다 — 카카오톡에 붙여넣어라.';
+      done.style.display = 'block';
+    }
+  }catch(e){ /* 사용자가 공유 시트를 닫음 — 무시 */ }
 }
 
 /* ───────── CTA ───────── */
