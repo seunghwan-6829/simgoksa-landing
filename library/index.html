@@ -139,6 +139,7 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
     <p class="sub" id="aSub">열쇠(계정)로 들어와야<br>네 풀이를 읽을 수 있다.</p>
     <input type="email" id="aEmail" placeholder="이메일" autocomplete="email">
     <input type="password" id="aPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password">
+    <input type="password" id="aPw2" placeholder="비밀번호 다시 한 번" autocomplete="new-password" style="display:none">
     <p class="err" id="aErr"></p>
     <button class="go" id="aGo" onclick="doAuth()">서고 열기 · 로그인</button>
     <p class="switch" id="aSwitch">열쇠가 없다면 <a onclick="toggleMode()">회원가입</a></p>
@@ -241,6 +242,7 @@ function toggleMode(){
   document.getElementById('aSwitch').innerHTML = mode === 'login'
     ? '열쇠가 없다면 <a onclick="toggleMode()">회원가입</a>'
     : '이미 열쇠가 있다면 <a onclick="toggleMode()">로그인</a>';
+  document.getElementById('aPw2').style.display = mode === 'signup' ? 'block' : 'none';
   document.getElementById('aErr').style.display = 'none';
 }
 function err(m){ const el = document.getElementById('aErr'); el.textContent = m; el.style.display = 'block'; }
@@ -250,6 +252,9 @@ async function doAuth(){
   const pw = document.getElementById('aPw').value;
   if (!/.+@.+\..+/.test(email)) { err('이메일이 온전치 않다.'); return; }
   if (pw.length < 6) { err('비밀번호는 여섯 자 이상이어야 한다.'); return; }
+  if (mode === 'signup' && pw !== document.getElementById('aPw2').value){
+    err('두 번 적은 비밀번호가 서로 다르다.'); return;
+  }
   const btn = document.getElementById('aGo'); btn.disabled = true;
   try{
     let res = mode === 'signup'

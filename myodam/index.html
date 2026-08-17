@@ -146,6 +146,7 @@ body{
   background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 32%,rgba(0,0,0,.15) 60%,rgba(5,4,4,.96) 100%);
 }
 .dialog{
+  position:relative;z-index:2; /* 씬 페이드(블랙 솔리드)보다 위 — 대사·입력란은 항상 선명 */
   padding:60px 26px 40px;
   display:flex;flex-direction:column;gap:18px;
   max-height:calc(100dvh - 10px);
@@ -1215,7 +1216,8 @@ footer b{color:#7a6f66}
     <h3 id="authTitle">서고의 열쇠</h3>
     <p class="m-sub" id="authSub">풀이는 네 서고(書庫)에 꽂힌다.<br>열쇠부터 만들어라.</p>
     <div class="m-field"><input type="email" id="authEmail" placeholder="이메일" autocomplete="email"></div>
-    <div class="m-field"><input type="password" id="authPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password"></div>
+    <div class="m-field"><input type="password" id="authPw" placeholder="비밀번호 (6자 이상)" autocomplete="new-password"></div>
+    <div class="m-field" id="authPw2Wrap"><input type="password" id="authPw2" placeholder="비밀번호 다시 한 번" autocomplete="new-password"></div>
     <p class="m-err" id="authErr"></p>
     <button class="m-btn" id="authGo" onclick="submitAuth()">열쇠 받기 · 회원가입</button>
     <p class="m-switch" id="authSwitch">이미 열쇠가 있다면 <a onclick="toggleAuthMode()">로그인</a></p>
@@ -1369,11 +1371,38 @@ function loadProgress(){
 const savedProgress = loadProgress();
 if (savedProgress) document.getElementById('resumeBtn').style.display = 'block';
 
+/* 게이트 첫 터치 → 방울·바람 앰비언스 즉시 시작 (입장 전부터 몰입) */
+let gateAmb = null;
+let soundStarted = false;
+function ensureSound(){
+  if (!soundStarted){ soundStarted = true; startSound(); }
+}
+document.getElementById('gate').addEventListener('pointerdown', (e) => {
+  ensureSound();
+  if (!gateAmb){
+    gateAmb = new Audio('../assets/sfx_intro.mp3');
+    gateAmb.loop = true; gateAmb.volume = .65;
+    gateAmb.play().catch(()=>{});
+    const note = document.querySelector('#gate .gate-note');
+    if (note) note.textContent = '· 방울 소리가 들리기 시작합니다 ·';
+  }
+}, {capture:true});
+
+function fadeOutGateAmb(){
+  if (!gateAmb) return;
+  const a = gateAmb;
+  const iv = setInterval(()=>{
+    a.volume = Math.max(0, a.volume - .08);
+    if (a.volume <= 0.01){ a.pause(); clearInterval(iv); }
+  }, 120);
+}
+
 document.getElementById('enterBtn').addEventListener('click', (e) => {
   e.stopPropagation();
   const gate = document.getElementById('gate');
   gate.classList.add('off');
-  startSound();
+  ensureSound();
+  fadeOutGateAmb();
   setTimeout(bellChime, 600);
   const v = document.querySelector('#hero video'); if (v) v.play().catch(()=>{});
   document.querySelector('#hero .title-wrap').classList.add('go');
@@ -1387,7 +1416,8 @@ document.getElementById('resumeBtn').addEventListener('click', (e) => {
   if (!d) return;
   user.name = d.name; user.birth = d.birth; user.gender = d.gender;
   document.getElementById('gate').classList.add('off');
-  startSound();
+  ensureSound();
+  fadeOutGateAmb();
   enterLoading();
 }, {once:true});
 
@@ -1718,6 +1748,9 @@ function toggleAuthMode(){
   document.getElementById('authSub').innerHTML = authMode === 'signup'
     ? '풀이는 네 서고(書庫)에 꽂힌다.<br>열쇠부터 만들어라.'
     : '돌아왔군.<br>네 서고가 기다리고 있다.';
+  // 비밀번호 확인 필드는 회원가입 모드에서만
+  document.getElementById('authPw2Wrap').style.display = authMode === 'signup' ? 'block' : 'none';
+  document.getElementById('authPw').autocomplete = authMode === 'signup' ? 'new-password' : 'current-password';
   document.getElementById('authErr').style.display = 'none';
 }
 function authError(msg){
@@ -1730,6 +1763,9 @@ async function submitAuth(){
   const pw = document.getElementById('authPw').value;
   if (!/.+@.+\..+/.test(email)) { authError('이메일이 온전치 않다.'); return; }
   if (pw.length < 6) { authError('비밀번호는 여섯 자 이상이어야 한다.'); return; }
+  if (authMode === 'signup' && pw !== document.getElementById('authPw2').value){
+    authError('두 번 적은 비밀번호가 서로 다르다.'); return;
+  }
   const btn = document.getElementById('authGo');
   btn.disabled = true;
   try{
@@ -1761,6 +1797,7 @@ async function submitAuth(){
   }
 }
 document.getElementById('authPw').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+document.getElementById('authPw2').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 
 /* ───────── 구매 모달 ───────── */
 function openBuy(){
