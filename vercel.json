@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "simgoksa.vercel.app" }],
+      "destination": "https://simgoksa.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.simgoksa.com" }],
+      "destination": "https://simgoksa.com/:path*",
+      "permanent": true
+    }
+  ]
+}

@@ -1129,22 +1129,6 @@ footer b{color:#7a6f66}
       </div>
     </section>
 
-    <!-- 공유 -->
-    <section class="sec" style="padding-top:70px;padding-bottom:70px">
-      <p class="h-red rv">혼자 알기엔</p>
-      <h2 class="h-big rv">아까운 이야기라면</h2>
-      <p class="p-dim rv" style="margin-top:18px">네 곁에도, 뭘 해도 안 풀린다는<br>얼굴이 하나쯤 있을 것이다.<br>그 사람에게— 이 문을 열어줘라.</p>
-      <button class="rv" id="shareBtn" onclick="shareSite()" style="
-        display:inline-flex;align-items:center;gap:10px;margin-top:28px;
-        appearance:none;cursor:pointer;font-family:inherit;
-        background:#FEE500;color:#191919;border:none;border-radius:6px;
-        font-size:15px;font-weight:700;letter-spacing:.05em;
-        padding:15px 30px;box-shadow:0 6px 26px rgba(254,229,0,.18);">
-        <span style="font-size:17px">💬</span> 카카오톡으로 알려주기
-      </button>
-      <p class="toc-note rv" id="shareDone" style="display:none;margin-top:14px">문이 전해졌다.</p>
-    </section>
-
     <!-- 후기 -->
     <section class="sec">
       <p class="h-red rv">살을 마주한 뒤</p>
@@ -1179,7 +1163,7 @@ footer b{color:#7a6f66}
       <p class="p-body rv" style="margin-top:50px"><span style="font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-size:22px">기간 한정, 특별 혜택가</span></p>
 
       <div class="plan hot rv">
-        <div class="head"><span>얼리버드 · 묘담의 심층 살풀이</span><span class="tag">한정</span></div>
+        <div class="head"><span>먼저 문을 두드린 값 · 묘담의 심층 살풀이</span><span class="tag">한정</span></div>
         <div class="body">
           <div class="row1">
             <div>
@@ -1213,6 +1197,26 @@ footer b{color:#7a6f66}
       <p class="toc-note rv" style="margin-top:30px">신청 후 24시간 안에,<br>네 「운명 사용설명서」가 서고에 꽂힌다.</p>
 
       <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 사주 속 살(殺) 확인하기</a>
+    </section>
+
+    <!-- 공유 (맨 하단 — 푸터 직전) -->
+    <section class="sec" style="padding-top:80px;padding-bottom:60px">
+      <div class="hr-knife rv"></div>
+      <p class="h-red rv" style="margin-top:50px">혼자 알기엔</p>
+      <h2 class="h-big rv">아까운 이야기라면</h2>
+      <p class="p-dim rv" style="margin-top:18px">네 곁에도, 뭘 해도 안 풀린다는<br>얼굴이 하나쯤 있을 것이다.<br>그 사람에게— 이 문을 열어줘라.</p>
+      <button class="rv" id="shareBtn" onclick="shareSite()" style="
+        display:inline-flex;align-items:center;gap:12px;margin-top:30px;
+        appearance:none;cursor:pointer;font-family:'Nanum Myeongjo','Noto Serif KR',serif;
+        background:rgba(12,8,7,.85);color:var(--paper);
+        border:1px solid rgba(208,140,58,.55);border-radius:3px;
+        font-size:15px;font-weight:700;letter-spacing:.2em;text-indent:.1em;
+        padding:17px 34px;
+        box-shadow:0 0 26px rgba(164,22,26,.18), inset 0 0 16px rgba(208,140,58,.06);">
+        <span style="width:8px;height:8px;border-radius:50%;background:#FEE500;box-shadow:0 0 10px rgba(254,229,0,.6)"></span>
+        카카오톡으로 문을 전한다
+      </button>
+      <p class="toc-note rv" id="shareDone" style="display:none;margin-top:14px">문이 전해졌다.</p>
     </section>
 
     <footer style="user-select:none;-webkit-user-select:none;pointer-events:none">
@@ -1321,10 +1325,33 @@ function startSound(){
     const ng = actx.createGain(); ng.gain.value = .05;
     noise.connect(nf); nf.connect(ng); ng.connect(master);
     const lfo = actx.createOscillator(); lfo.frequency.value = .07;
-    const lg = actx.createGain(); lg.gain.value = .025;
+    const lg = actx.createGain(); lg.gain.value = .035;
     lfo.connect(lg); lg.connect(ng.gain);
     o1.start(); o2.start(); noise.start(); lfo.start();
-    master.gain.linearRampToValueAtTime(.55, actx.currentTime + 4); // 앰비언스가 주인공이 되도록 드론은 낮게
+    // 즉시 인입 — 빠르게 차오르는 드론+바람
+    master.gain.linearRampToValueAtTime(.6, actx.currentTime + 1.1);
+  }catch(e){}
+}
+
+/* 혀 차는 소리 (쯧쯧) — 선고 순간용 */
+function playTsk(){
+  if (!actx) return;
+  try{
+    const t0 = actx.currentTime + 0.05;
+    [0, 0.24].forEach(off => {
+      const dur = 0.045;
+      const buf = actx.createBuffer(1, Math.floor(actx.sampleRate * dur), actx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+      const src = actx.createBufferSource(); src.buffer = buf;
+      const bp = actx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2900; bp.Q.value = 7;
+      const g = actx.createGain();
+      g.gain.setValueAtTime(.0001, t0 + off);
+      g.gain.exponentialRampToValueAtTime(.55, t0 + off + 0.006);
+      g.gain.exponentialRampToValueAtTime(.0001, t0 + off + dur);
+      src.connect(bp); bp.connect(g); g.connect(master);
+      src.start(t0 + off);
+    });
   }catch(e){}
 }
 
@@ -1386,30 +1413,36 @@ function loadProgress(){
 }
 
 /* ───────── gate ───────── */
-/* 게이트 첫 터치 → 방울·바람 앰비언스 즉시 시작 (입장 전부터 몰입) */
-let gateAmb = null;
+/* 게이트 첫 터치 → 방울+바람+발소리 3중 앰비언스 즉시 시작 (사전 로딩으로 지연 없음) */
+const gateAmbBells = new Audio('../assets/sfx_intro.mp3');   // 방울 딸랑임 + 밤바람
+gateAmbBells.loop = true; gateAmbBells.volume = .8; gateAmbBells.preload = 'auto';
+const gateAmbSteps = new Audio('../assets/sfx_forest.mp3');  // 저벅저벅 발소리 + 숲 바람
+gateAmbSteps.loop = true; gateAmbSteps.volume = .5; gateAmbSteps.preload = 'auto';
+let gateAmbOn = false;
 let soundStarted = false;
 function ensureSound(){
   if (!soundStarted){ soundStarted = true; startSound(); }
 }
-document.getElementById('gate').addEventListener('pointerdown', (e) => {
+function startGateAmb(){
   ensureSound();
-  if (!gateAmb){
-    gateAmb = new Audio('../assets/sfx_intro.mp3');
-    gateAmb.loop = true; gateAmb.volume = .65;
-    gateAmb.play().catch(()=>{});
-    const note = document.querySelector('#gate .gate-note');
-    if (note) note.textContent = '· 방울 소리가 들리기 시작합니다 ·';
-  }
-}, {capture:true});
+  if (gateAmbOn) return;
+  gateAmbOn = true;
+  gateAmbBells.play().catch(()=>{});
+  gateAmbSteps.play().catch(()=>{});
+  const note = document.querySelector('#gate .gate-note');
+  if (note) note.textContent = '· 방울 소리가 들리기 시작합니다 ·';
+}
+document.getElementById('gate').addEventListener('pointerdown', startGateAmb, {capture:true});
+document.getElementById('gate').addEventListener('touchstart', startGateAmb, {capture:true, passive:true});
 
 function fadeOutGateAmb(){
-  if (!gateAmb) return;
-  const a = gateAmb;
-  const iv = setInterval(()=>{
-    a.volume = Math.max(0, a.volume - .08);
-    if (a.volume <= 0.01){ a.pause(); clearInterval(iv); }
-  }, 120);
+  if (!gateAmbOn) return;
+  [gateAmbBells, gateAmbSteps].forEach(a => {
+    const iv = setInterval(()=>{
+      a.volume = Math.max(0, a.volume - .08);
+      if (a.volume <= 0.01){ a.pause(); clearInterval(iv); }
+    }, 110);
+  });
 }
 
 document.getElementById('enterBtn').addEventListener('click', (e) => {
@@ -1474,7 +1507,8 @@ function gotoScene(id){
 
 /* 앰비언스 바인딩 (파일: assets/sfx_*.mp3) */
 attachAmbience(document.querySelector('#hero video'), '../assets/sfx_treesign.mp3', .6);
-attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_forest.mp3', .6);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_forest.mp3', .8);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_shinmok.mp3', .3); // 바람 레이어 보강
 attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_door.mp3', .65);
 const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_candles.mp3', .6);
 attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_maskwear.mp3', .7);
@@ -1706,6 +1740,7 @@ function enterSales(){
   window.scrollTo(0,0);
   document.getElementById('sticky').classList.add('on');
   bellChime();
+  setTimeout(playTsk, 1500); // 선고("쯧쯧…")가 눈에 들어올 즈음 혀 차는 소리
   document.querySelectorAll('#sales video').forEach(v => { v.preload='auto'; v.play().catch(()=>{}); });
   observeReveals();
 }
