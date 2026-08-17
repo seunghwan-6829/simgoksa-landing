@@ -274,7 +274,9 @@ async function loadBooks(){
         </div>
         <div class="b-foot">
           <span class="b-badge ${s.cls}">${s.label}</span>
-          ${href ? `<span class="b-go">확인하러 가기 →</span>` : `<span class="b-wait">${ch.label}이 적는 중이다 — 곧 꽂힌다</span>`}
+          ${href ? `<span class="b-go">확인하러 가기 →</span>`
+            : p.status === 'delivered' ? `<span class="b-wait">도착했다 — 열람 준비 중, 곧 열린다</span>`
+            : `<span class="b-wait">${ch.label}이 적는 중이다 — 곧 꽂힌다</span>`}
         </div>`;
       return href
         ? `<a class="book" href="${href}">${inner}</a>`
