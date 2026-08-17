@@ -9,8 +9,9 @@
 <meta property="og:url" content="https://simgoksa.com/">
 <meta property="og:title" content="심곡사(深谷寺) — 숲이 감춘 술사들">
 <meta property="og:description" content="여든세 번째 무녀 묘담, 그리고 산이 숨겨 둔 술사들.">
-<meta property="og:image" content="https://simgoksa.com/assets/hero.jpg">
+<meta property="og:image" content="https://simgoksa.com/assets/og_main.jpg">
 <meta name="theme-color" content="#050404">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -183,6 +184,55 @@ footer b{color:#7a6f66}
 /* reveal */
 .rv{opacity:0;transform:translateY(22px);transition:opacity .9s ease,transform .9s ease}
 .rv.on{opacity:1;transform:none}
+/* ── 드로어 ── */
+#drawerVeil{
+  position:fixed;inset:0;z-index:190;background:rgba(2,1,1,.6);backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .35s ease;
+}
+#drawerVeil.on{opacity:1;pointer-events:auto}
+#drawer{
+  position:fixed;top:0;bottom:0;right:0;z-index:200;
+  width:min(320px, 84vw);
+  background:linear-gradient(200deg,#140d0b,#070404);
+  border-left:1px solid rgba(208,140,58,.3);
+  box-shadow:-20px 0 70px rgba(0,0,0,.7);
+  transform:translateX(105%);transition:transform .38s cubic-bezier(.22,.8,.3,1);
+  display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top,0px) + 18px) 0 calc(env(safe-area-inset-bottom,0px) + 20px);
+}
+#drawer.on{transform:none}
+#drawer .d-close{
+  appearance:none;background:none;border:none;cursor:pointer;
+  color:var(--ink-dim);font-size:20px;align-self:flex-end;padding:4px 18px 10px;
+}
+#drawer .d-row{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 22px;text-decoration:none;color:inherit;cursor:pointer;
+  border-bottom:1px solid rgba(232,224,216,.06);
+}
+#drawer .d-row:active{background:rgba(164,22,26,.12)}
+#drawer .d-ico{
+  width:38px;height:38px;border-radius:50%;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(164,22,26,.16);border:1px solid rgba(229,56,59,.35);
+  font-family:'Nanum Myeongjo',serif;font-size:16px;color:var(--blood-bright);
+}
+#drawer .d-t{font-size:15px;font-weight:700;color:var(--paper)}
+#drawer .d-s{font-size:11.5px;color:var(--ink-dim);margin-top:3px;letter-spacing:.04em}
+#drawer .d-arrow{margin-left:auto;color:#5c534c;font-size:15px}
+#drawer .d-head{
+  font-family:'Nanum Myeongjo',serif;font-size:11px;letter-spacing:.35em;color:var(--ember);
+  padding:24px 22px 8px;
+}
+#drawer .d-cat{
+  display:block;padding:13px 22px;font-size:14px;color:var(--ink);cursor:pointer;
+  letter-spacing:.08em;border-bottom:1px solid rgba(232,224,216,.04);
+}
+#drawer .d-cat:active{background:rgba(164,22,26,.12)}
+#drawer .d-foot{
+  margin-top:auto;padding:20px 22px 0;font-size:10.5px;color:#544c46;
+  font-family:'Nanum Myeongjo',serif;letter-spacing:.25em;text-align:center;
+}
 </style>
 </head>
 <body>
@@ -191,7 +241,7 @@ footer b{color:#7a6f66}
 <header>
   <div class="bar">
     <a class="logo" href="./">深谷寺</a>
-    <button class="menu-btn" aria-label="메뉴" onclick="alert('준비 중입니다.')">☰</button>
+    <button class="menu-btn" aria-label="메뉴" onclick="openDrawer()">☰</button>
   </div>
   <div class="chips" id="chips">
     <button class="chip sel" data-cat="all">전체</button>
@@ -274,20 +324,69 @@ footer b{color:#7a6f66}
 
 </main>
 
-<footer>
+<footer style="user-select:none;-webkit-user-select:none;pointer-events:none">
   深谷寺 심곡사<br>
-  <b>본 페이지는 데모/브랜딩 시안입니다.</b><br>
-  상호·사업자등록번호·통신판매업신고·주소·연락처 표기 영역<br>
-  이용약관 · 개인정보처리방침 · 환불정책
+  상호명 이공이사랩 · 대표자 송승환<br>
+  사업자등록번호 579-21-01801<br>
+  문의 메일 simgoksa.com@gmail.com (전화 상담 미운영)<br>
+  © 2026 이공이사랩 · 심곡사(simgoksa). All rights reserved.
 </footer>
 
 <div class="navpill">
   <button class="sel" aria-label="홈">⌂</button>
   <button aria-label="내 서고" onclick="location.href='library/'" style="font-family:'Nanum Myeongjo',serif;font-size:15px">書<span class="dot"></span></button>
-  <button aria-label="문의" onclick="alert('준비 중입니다.')">✉</button>
 </div>
 
+<!-- ═══ 드로어 ═══ -->
+<div id="drawerVeil" onclick="closeDrawer()"></div>
+<aside id="drawer">
+  <button class="d-close" onclick="closeDrawer()">✕</button>
+  <a class="d-row" href="library/" id="drawerAuthRow">
+    <span class="d-ico">鍵</span>
+    <span><span class="d-t" id="drawerAuthT">서고의 열쇠</span><br><span class="d-s" id="drawerAuthS">로그인하고 풀이를 한곳에 모아라</span></span>
+    <span class="d-arrow">›</span>
+  </a>
+  <a class="d-row" href="library/">
+    <span class="d-ico">書</span>
+    <span><span class="d-t">내 서고</span><br><span class="d-s">받은 풀이가 꽂히는 곳</span></span>
+    <span class="d-arrow">›</span>
+  </a>
+  <div class="d-head">術 · 술사들</div>
+  <span class="d-cat" onclick="drawerFilter('all')">전체</span>
+  <span class="d-cat" onclick="drawerFilter('sal')">殺 · 살풀이 — 무녀 묘담</span>
+  <span class="d-cat" onclick="drawerFilter('money')">財 · 재물 — 스님 현월</span>
+  <span class="d-cat" onclick="drawerFilter('love')">緣 · 인연 — 아씨 홍단</span>
+  <div class="d-foot">深 谷 寺</div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+/* 드로어 */
+function openDrawer(){
+  document.getElementById('drawer').classList.add('on');
+  document.getElementById('drawerVeil').classList.add('on');
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('on');
+  document.getElementById('drawerVeil').classList.remove('on');
+}
+function drawerFilter(cat){
+  const chip = document.querySelector('.chip[data-cat="' + cat + '"]');
+  if (chip) chip.click();
+  closeDrawer();
+}
+/* 로그인 상태 표시 */
+(async () => {
+  try{
+    const sb = window.supabase.createClient('https://lpjuanegereuzufjzgbq.supabase.co', 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa');
+    const { data } = await sb.auth.getSession();
+    if (data && data.session){
+      document.getElementById('drawerAuthT').textContent = '열쇠 주인';
+      document.getElementById('drawerAuthS').textContent = data.session.user.email;
+    }
+  }catch(e){}
+})();
+
 /* 카테고리 필터 */
 document.getElementById('chips').addEventListener('click', e => {
   const chip = e.target.closest('.chip');

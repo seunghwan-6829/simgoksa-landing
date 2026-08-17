@@ -6,6 +6,7 @@
 <title>운명 사용설명서 — 深谷寺</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#050404">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -151,7 +152,10 @@ h2.pg-title .r{color:var(--blood-bright)}
   <div id="topbar">
     <a class="t-brand" href="../" style="text-decoration:none" title="심곡사 메인으로">⌂ 深谷寺</a>
     <span class="t-page" id="pageNo">第 1 章 / 99</span>
-    <button onclick="openToc()">목차</button>
+    <span style="display:flex;gap:8px">
+      <button onclick="saveReport()" title="PDF로 저장">저장</button>
+      <button onclick="openToc()">목차</button>
+    </span>
   </div>
   <div id="progress"><div id="progressBar"></div></div>
   <div id="demoBar">미리보기 — 실제 구매 시 본인 원국 기준으로 작성됩니다</div>
@@ -657,6 +661,31 @@ tocList.innerHTML = tocEntries.map(t =>
 function openToc(){ document.getElementById('tocOverlay').classList.add('on'); }
 function closeToc(){ document.getElementById('tocOverlay').classList.remove('on'); }
 function jumpTo(i){ closeToc(); goPage(i); }
+
+/* 열람/다운로드 기록 (IP는 서버에서 캡처) */
+function trackReport(event){
+  try{
+    fetch('https://lpjuanegereuzufjzgbq.supabase.co/functions/v1/track-view', {
+      method: 'POST',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event,
+        name: user.name,
+        birth: `${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}`,
+        gender: user.gender,
+        product: 'myodam',
+        is_demo: !!qs.get('demo')
+      })
+    }).catch(()=>{});
+  }catch(e){}
+}
+trackReport('view');
+
+function saveReport(){
+  trackReport('download');
+  window.print();
+}
 
 /* 공유 — 캐릭터 랜딩(myodam)으로 초대 */
 async function shareSite(){

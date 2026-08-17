@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>심곡사 ADMIN</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:#f4f6fa;color:#1c2434;font-size:14px}
+a{color:inherit;text-decoration:none}
+/* 로그인 */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0d1117}
+#gate .box{background:#fff;border-radius:14px;padding:38px 34px;width:360px;box-shadow:0 24px 80px rgba(0,0,0,.4)}
+#gate h1{font-size:19px;margin-bottom:6px}
+#gate p{font-size:12.5px;color:#7a8497;margin-bottom:22px}
+#gate input{width:100%;border:1px solid #d6dce8;border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;margin-bottom:10px;outline:none}
+#gate input:focus{border-color:#3b6fea}
+#gate button{width:100%;background:#1c2434;color:#fff;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+#gate .err{display:none;color:#d33;font-size:12.5px;margin:4px 0 8px}
+/* 레이아웃 */
+#app{display:none;min-height:100vh}
+#side{
+  position:fixed;left:0;top:0;bottom:0;width:220px;background:#fff;
+  border-right:1px solid #e6eaf2;padding:22px 14px;z-index:10;
+}
+#side .brand{display:flex;align-items:center;gap:8px;padding:0 8px 22px;font-weight:900;font-size:16px}
+#side .brand .tag{background:#1c2434;color:#fff;font-size:9.5px;padding:3px 7px;border-radius:5px;letter-spacing:.08em}
+#side .nav{display:flex;flex-direction:column;gap:4px}
+#side .nav button{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  appearance:none;border:none;background:none;cursor:pointer;font-family:inherit;
+  font-size:14px;color:#4b5568;padding:11px 12px;border-radius:9px;font-weight:500;
+}
+#side .nav button.sel{background:#eef3ff;color:#2b5fd9;font-weight:700}
+#side .foot{position:absolute;bottom:20px;left:14px;right:14px;display:flex;flex-direction:column;gap:4px}
+#side .foot button,#side .foot a{
+  display:block;appearance:none;border:none;background:none;cursor:pointer;font-family:inherit;
+  font-size:13px;color:#7a8497;padding:9px 12px;border-radius:8px;text-align:left;
+}
+#side .foot button:hover,#side .foot a:hover{background:#f2f5fa}
+#main{margin-left:220px;padding:28px 32px 60px}
+#main h1{font-size:21px;font-weight:900}
+#main .sub{font-size:12px;color:#8a93a6;margin-top:4px}
+/* 카드 */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:22px 0}
+.kcard{background:#fff;border:1px solid #e6eaf2;border-radius:12px;padding:18px 20px}
+.kcard .k{font-size:12px;color:#7a8497;display:flex;align-items:center;gap:6px}
+.kcard .v{font-size:26px;font-weight:900;margin-top:8px}
+.kcard .v small{font-size:13px;color:#7a8497;font-weight:500}
+/* 패널/표 */
+.panel{background:#fff;border:1px solid #e6eaf2;border-radius:12px;padding:20px;margin-bottom:18px}
+.panel h2{font-size:15px;font-weight:700;margin-bottom:4px}
+.panel .p-sub{font-size:12px;color:#8a93a6;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:#7a8497;font-weight:500;text-align:left;padding:9px 10px;border-bottom:1px solid #edf0f6;white-space:nowrap}
+td{padding:10px;border-bottom:1px solid #f2f4f9;vertical-align:middle}
+tr:hover td{background:#fafbfe}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.badge.paid{background:#fff4e0;color:#b97c10}
+.badge.preparing{background:#e8f0ff;color:#2b5fd9}
+.badge.delivered{background:#e5f7ec;color:#188b4e}
+.badge.refunded{background:#f2f4f9;color:#7a8497}
+.badge.yes{background:#e5f7ec;color:#188b4e}
+.badge.no{background:#fdeaea;color:#c53030}
+select.status{border:1px solid #d6dce8;border-radius:7px;padding:6px 8px;font-family:inherit;font-size:12.5px;cursor:pointer}
+button.mini{
+  appearance:none;border:1px solid #d6dce8;background:#fff;border-radius:7px;
+  padding:6px 12px;font-size:12.5px;font-family:inherit;cursor:pointer;color:#4b5568;
+}
+button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
+.viewbox{background:#f8fafd;border:1px solid #e6eaf2;border-radius:9px;padding:10px 12px;margin-top:8px;font-size:12.5px}
+.viewbox .vrow{display:flex;gap:12px;padding:5px 0;border-bottom:1px dashed #e6eaf2;flex-wrap:wrap}
+.viewbox .vrow:last-child{border-bottom:none}
+.viewbox .ip{font-family:Consolas,monospace;background:#eef1f7;border-radius:5px;padding:1px 7px}
+.muted{color:#8a93a6;font-size:12px}
+.loading{color:#8a93a6;padding:30px;text-align:center}
+.view{display:none}
+.view.on{display:block}
+.bars{display:flex;align-items:flex-end;gap:10px;height:120px;padding:10px 4px 0}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.bars .bar{width:100%;max-width:44px;background:linear-gradient(180deg,#5b8cff,#2b5fd9);border-radius:6px 6px 0 0;min-height:3px}
+.bars .bl{font-size:10.5px;color:#8a93a6}
+@media (max-width:860px){
+  #side{width:64px;padding:18px 8px}
+  #side .brand span:not(.tag),#side .nav button em,#side .foot .txt{display:none}
+  #main{margin-left:64px;padding:20px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- 로그인 게이트 -->
+<div id="gate">
+  <div class="box">
+    <h1>深谷寺 ADMIN</h1>
+    <p>관리자 계정으로 로그인하세요.</p>
+    <input type="email" id="gEmail" placeholder="관리자 이메일" autocomplete="email">
+    <input type="password" id="gPw" placeholder="비밀번호" autocomplete="current-password">
+    <p class="err" id="gErr"></p>
+    <button onclick="adminLogin()">로그인</button>
+  </div>
+</div>
+
+<!-- 앱 -->
+<div id="app">
+  <aside id="side">
+    <div class="brand">深谷寺 <span>심곡사</span> <span class="tag">ADMIN</span></div>
+    <nav class="nav">
+      <button class="sel" data-v="dash" onclick="switchView('dash',this)">📊 <em>대시보드</em></button>
+      <button data-v="orders" onclick="switchView('orders',this)">🧾 <em>주문 관리</em></button>
+      <button data-v="members" onclick="switchView('members',this)">👥 <em>회원</em></button>
+    </nav>
+    <div class="foot">
+      <button onclick="loadAll()">↻ <span class="txt">새로고침</span></button>
+      <a href="../" target="_blank">🌐 <span class="txt">사이트 보기</span></a>
+      <button onclick="adminLogout()">🚪 <span class="txt">로그아웃</span></button>
+    </div>
+  </aside>
+
+  <main id="main">
+    <!-- 대시보드 -->
+    <section class="view on" id="v-dash">
+      <h1>대시보드</h1>
+      <p class="sub" id="dashUpdated">—</p>
+      <div class="cards">
+        <div class="kcard"><div class="k">⚡ 오늘 리드</div><div class="v" id="kToday">—</div></div>
+        <div class="kcard"><div class="k">🗂 누적 리드</div><div class="v" id="kTotal">—</div></div>
+        <div class="kcard"><div class="k">🧾 총 주문</div><div class="v" id="kOrders">—</div></div>
+        <div class="kcard"><div class="k">💰 총 매출</div><div class="v" id="kRevenue">—</div></div>
+      </div>
+      <div class="panel">
+        <h2>최근 7일 리드 추이</h2>
+        <p class="p-sub">인적사항 입력 완료 + 결제 클릭 이벤트 합계</p>
+        <div class="bars" id="leadBars"><div class="loading">불러오는 중…</div></div>
+      </div>
+      <div class="panel">
+        <h2>기간별 분석 (최근 7일)</h2>
+        <p class="p-sub">서울 시간 기준</p>
+        <table>
+          <thead><tr><th>일자</th><th>입력완료</th><th>결제클릭</th><th>가입</th><th>주문</th><th>매출</th><th>열람</th></tr></thead>
+          <tbody id="dailyRows"><tr><td colspan="7" class="loading">불러오는 중…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 주문 관리 -->
+    <section class="view" id="v-orders">
+      <h1>주문 관리</h1>
+      <p class="sub">상태를 「도착(delivered)」으로 바꾸면 구매자 서고에서 열람이 열립니다. · 행의 [열람 기록]으로 IP 확인</p>
+      <div class="panel" style="margin-top:20px">
+        <table>
+          <thead><tr><th>접수일</th><th>구매자</th><th>사주 정보</th><th>금액</th><th>상태</th><th>열람/다운로드</th></tr></thead>
+          <tbody id="orderRows"><tr><td colspan="6" class="loading">불러오는 중…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 회원 -->
+    <section class="view" id="v-members">
+      <h1>회원</h1>
+      <p class="sub">가입 계정 전체 · 결제 여부는 결제 시 입력한 이메일과 대조</p>
+      <div class="panel" style="margin-top:20px">
+        <table>
+          <thead><tr><th>이메일</th><th>가입일</th><th>최근 로그인</th><th>결제</th><th>주문 수</th><th>결제 금액 합계</th></tr></thead>
+          <tbody id="memberRows"><tr><td colspan="6" class="loading">불러오는 중…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
+const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
+const API = SUPA_URL + '/functions/v1/admin-api';
+const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+const esc = s => String(s ?? '').replace(/</g,'&lt;');
+const won = n => (Number(n)||0).toLocaleString() + '원';
+const dt = s => { const d = new Date(s); return `${d.getMonth()+1}.${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+const dOnly = s => { const d = new Date(s); return `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; };
+
+async function api(action, params){
+  const { data } = await sb.auth.getSession();
+  if (!data || !data.session) throw new Error('no session');
+  const r = await fetch(API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + data.session.access_token },
+    body: JSON.stringify({ action, ...(params || {}) })
+  });
+  if (r.status === 403) throw new Error('forbidden');
+  if (!r.ok) throw new Error('api ' + r.status);
+  return r.json();
+}
+
+/* 로그인 */
+async function adminLogin(){
+  const email = document.getElementById('gEmail').value.trim();
+  const pw = document.getElementById('gPw').value;
+  const err = document.getElementById('gErr');
+  err.style.display = 'none';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+  if (error){ err.textContent = '로그인 실패: 이메일 또는 비밀번호를 확인하세요.'; err.style.display = 'block'; return; }
+  try{
+    await api('stats'); // 관리자 권한 확인
+    enter();
+  }catch(e){
+    err.textContent = e.message === 'forbidden' ? '관리자 권한이 없는 계정입니다.' : '확인 중 오류가 발생했습니다. 다시 시도하세요.';
+    err.style.display = 'block';
+    await sb.auth.signOut();
+  }
+}
+document.getElementById('gPw').addEventListener('keydown', e => { if (e.key === 'Enter') adminLogin(); });
+async function adminLogout(){ await sb.auth.signOut(); location.reload(); }
+
+function enter(){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadAll();
+}
+(async () => {
+  const { data } = await sb.auth.getSession();
+  if (data && data.session){
+    try{ await api('stats'); enter(); }catch(e){ /* 게이트 유지 */ }
+  }
+})();
+
+function switchView(v, btn){
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
+  document.getElementById('v-' + v).classList.add('on');
+  document.querySelectorAll('#side .nav button').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function loadAll(){ loadDash(); loadOrders(); loadMembers(); }
+
+/* ── 대시보드 ── */
+async function loadDash(){
+  try{
+    const { leads, orders, views, totalLeads } = await api('stats');
+    const today = new Date(); today.setHours(0,0,0,0);
+    const kst = d => new Date(d);
+    document.getElementById('dashUpdated').textContent = '마지막 갱신 ' + new Date().toLocaleString('ko-KR');
+    document.getElementById('kToday').textContent = leads.filter(l => kst(l.created_at) >= today).length;
+    document.getElementById('kTotal').textContent = totalLeads;
+    const paidOrders = orders.filter(o => o.status !== 'refunded');
+    document.getElementById('kOrders').textContent = paidOrders.length;
+    document.getElementById('kRevenue').textContent = won(paidOrders.reduce((s,o)=>s+(o.amount||0),0));
+    // 일별
+    const days = [];
+    for (let i = 6; i >= 0; i--){
+      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
+      const next = new Date(d); next.setDate(d.getDate() + 1);
+      const inDay = arr => arr.filter(x => { const t = new Date(x.created_at); return t >= d && t < next; });
+      const L = inDay(leads), O = inDay(orders), V = inDay(views);
+      days.push({
+        label: `${d.getMonth()+1}.${d.getDate()}`,
+        input: L.filter(x=>x.event==='input_complete').length,
+        cta: L.filter(x=>x.event==='cta_click'||x.event==='pay_click').length,
+        join: L.filter(x=>x.event==='signup').length,
+        orders: O.length,
+        rev: O.reduce((s,o)=>s+(o.amount||0),0),
+        views: V.length,
+        total: L.length
+      });
+    }
+    const max = Math.max(1, ...days.map(x=>x.total));
+    document.getElementById('leadBars').innerHTML = days.map(x =>
+      `<div class="b"><div class="bar" style="height:${Math.round(x.total/max*100)}%"></div><div class="bl">${x.label}</div></div>`).join('');
+    document.getElementById('dailyRows').innerHTML = days.slice().reverse().map(x =>
+      `<tr><td>${x.label}</td><td>${x.input}</td><td>${x.cta}</td><td>${x.join}</td><td>${x.orders}</td><td>${won(x.rev)}</td><td>${x.views}</td></tr>`).join('');
+  }catch(e){ console.error(e); }
+}
+
+/* ── 주문 관리 ── */
+async function loadOrders(){
+  try{
+    const { rows } = await api('orders');
+    const tb = document.getElementById('orderRows');
+    if (!rows.length){ tb.innerHTML = '<tr><td colspan="6" class="loading">주문이 없습니다.</td></tr>'; return; }
+    tb.innerHTML = rows.map(p => `
+      <tr data-id="${p.id}">
+        <td>${dt(p.created_at)}</td>
+        <td>${esc(p.buyer_email || p.buyer_name || '—')}<div class="muted">${esc(p.buyer_phone || '')}</div></td>
+        <td>${esc(p.saju_answer || '—')}<div class="muted">${esc(p.product_name || '')}</div></td>
+        <td>${won(p.amount)}</td>
+        <td>
+          <select class="status" onchange="setStatus('${p.id}', this.value)">
+            ${['paid','preparing','delivered','refunded'].map(s =>
+              `<option value="${s}" ${p.status===s?'selected':''}>${{paid:'접수(paid)',preparing:'작성중',delivered:'도착',refunded:'환불'}[s]}</option>`).join('')}
+          </select>
+        </td>
+        <td><button class="mini" onclick="toggleViews(this, '${esc((p.saju_answer||'').split('/')[0].trim())}')">열람 기록</button></td>
+      </tr>
+      <tr class="vrow-holder" style="display:none"><td colspan="6"><div class="viewbox">불러오는 중…</div></td></tr>
+    `).join('');
+  }catch(e){ console.error(e); }
+}
+async function setStatus(id, status){
+  const r = await api('set_status', { id, status });
+  if (!r.ok) alert('상태 변경 실패');
+}
+async function toggleViews(btn, name){
+  const holder = btn.closest('tr').nextElementSibling;
+  if (holder.style.display !== 'none'){ holder.style.display = 'none'; return; }
+  holder.style.display = '';
+  const box = holder.querySelector('.viewbox');
+  box.innerHTML = '불러오는 중…';
+  if (!name){ box.innerHTML = '<span class="muted">사주 정보의 이름을 파싱할 수 없어 매칭 불가</span>'; return; }
+  try{
+    const { rows } = await api('views_for', { name });
+    if (!rows.length){ box.innerHTML = '<span class="muted">아직 열람 기록이 없습니다.</span>'; return; }
+    box.innerHTML = rows.map(v => `
+      <div class="vrow">
+        <span>${dt(v.created_at)}</span>
+        <b>${v.event === 'download' ? '⬇ 다운로드(인쇄)' : '👁 열람'}</b>
+        <span class="ip">${esc(v.ip || 'IP 미확인')}</span>
+        ${v.is_demo ? '<span class="muted">(데모)</span>' : ''}
+        <span class="muted" style="flex-basis:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(v.user_agent || '')}</span>
+      </div>`).join('');
+  }catch(e){ box.innerHTML = '<span class="muted">조회 실패</span>'; }
+}
+
+/* ── 회원 ── */
+async function loadMembers(){
+  try{
+    const { users, purchases } = await api('members');
+    const byEmail = {};
+    purchases.forEach(p => {
+      const k = (p.buyer_email || '').toLowerCase();
+      if (!k) return;
+      (byEmail[k] = byEmail[k] || []).push(p);
+    });
+    const tb = document.getElementById('memberRows');
+    if (!users.length){ tb.innerHTML = '<tr><td colspan="6" class="loading">회원이 없습니다.</td></tr>'; return; }
+    tb.innerHTML = users
+      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+      .map(u => {
+        const ps = byEmail[(u.email||'').toLowerCase()] || [];
+        const paidPs = ps.filter(p => p.status !== 'refunded');
+        return `<tr>
+          <td>${esc(u.email)}</td>
+          <td>${dOnly(u.created_at)}</td>
+          <td>${u.last_sign_in_at ? dt(u.last_sign_in_at) : '—'}</td>
+          <td><span class="badge ${paidPs.length ? 'yes' : 'no'}">${paidPs.length ? '결제' : '미결제'}</span></td>
+          <td>${ps.length}</td>
+          <td>${won(paidPs.reduce((s,p)=>s+(p.amount||0),0))}</td>
+        </tr>`;
+      }).join('');
+  }catch(e){ console.error(e); }
+}
+</script>
+</body>
+</html>

@@ -9,8 +9,9 @@
 <meta property="og:url" content="https://simgoksa.com/myodam/">
 <meta property="og:title" content="심곡사(深谷寺) — 당신의 인생이 풀리지 않는 이유">
 <meta property="og:description" content="지도에도 나오지 않는 산사. 여든세 번째 무녀가 네 사주 속 살(殺)을 짚는다.">
-<meta property="og:image" content="https://simgoksa.com/assets/hero.jpg">
+<meta property="og:image" content="https://simgoksa.com/assets/og_myodam.jpg">
 <meta name="theme-color" content="#050404">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -742,7 +743,6 @@ footer b{color:#7a6f66}
     </div>
     <p class="gate-warn">방울이 멈춘 자리에서<br><b>당신을 기다리고 있습니다</b></p>
     <button class="gate-btn" id="enterBtn">신당에 들어선다</button>
-    <button class="gate-btn" id="resumeBtn" style="display:none;margin-top:14px;border-color:rgba(232,224,216,.35);box-shadow:none;animation:ghostin 2.4s ease 3s forwards">지난 풀이 결과로 바로 간다</button>
     <p class="gate-note">· 소리와 함께 입장하시길 바랍니다 ·</p>
   </div>
 </div>
@@ -1215,11 +1215,12 @@ footer b{color:#7a6f66}
       <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 사주 속 살(殺) 확인하기</a>
     </section>
 
-    <footer>
+    <footer style="user-select:none;-webkit-user-select:none;pointer-events:none">
       深谷寺 심곡사 · 무녀 묘담<br>
-      <b>본 페이지는 데모/브랜딩 시안입니다.</b><br>
-      상호·사업자등록번호·통신판매업신고·주소·연락처 표기 영역<br>
-      이용약관 · 개인정보처리방침 · 환불정책
+      상호명 이공이사랩 · 대표자 송승환<br>
+      사업자등록번호 579-21-01801<br>
+      문의 메일 simgoksa.com@gmail.com (전화 상담 미운영)<br>
+      © 2026 이공이사랩 · 심곡사(simgoksa). All rights reserved.
     </footer>
   </div><!-- /sales -->
 
@@ -1385,9 +1386,6 @@ function loadProgress(){
 }
 
 /* ───────── gate ───────── */
-const savedProgress = loadProgress();
-if (savedProgress) document.getElementById('resumeBtn').style.display = 'block';
-
 /* 게이트 첫 터치 → 방울·바람 앰비언스 즉시 시작 (입장 전부터 몰입) */
 let gateAmb = null;
 let soundStarted = false;
@@ -1427,16 +1425,7 @@ document.getElementById('enterBtn').addEventListener('click', (e) => {
   if (navigator.vibrate) navigator.vibrate(30);
 }, {once:true});
 
-document.getElementById('resumeBtn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  const d = loadProgress();
-  if (!d) return;
-  user.name = d.name; user.birth = d.birth; user.gender = d.gender;
-  document.getElementById('gate').classList.add('off');
-  ensureSound();
-  fadeOutGateAmb();
-  enterLoading();
-}, {once:true});
+/* (지난 결과 바로가기 버튼은 이탈 방지를 위해 제거 — 모든 방문자는 처음처럼 시작) */
 
 /* ───────── story engine ───────── */
 const order = ['hero','scene1','scene2','sceneAsk','scene3'];
