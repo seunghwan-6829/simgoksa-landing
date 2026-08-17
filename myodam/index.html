@@ -612,7 +612,7 @@ body.insales .grain{animation:none}
 #sticky a{
   display:flex;align-items:center;justify-content:center;gap:10px;
   background:linear-gradient(160deg,#c1121f,#780000);color:#fff;text-decoration:none;
-  font-size:15.5px;font-weight:700;letter-spacing:.1em;
+  font-size:15.5px;font-weight:700;letter-spacing:.1em;text-align:center;
   padding:16px;border-radius:3px;border:1px solid rgba(255,255,255,.15);
   box-shadow:0 4px 24px rgba(164,22,26,.5);
 }
@@ -1267,7 +1267,7 @@ footer b{color:#7a6f66}
 
 <!-- 하단 고정 CTA -->
 <div id="sticky">
-  <a href="#" onclick="goCTA(event)"><span class="blink"></span><span id="stickyText">깃든 살(殺) 확인하기 — 오늘 83% 할인</span></a>
+  <a href="#" onclick="goCTA(event)"><span class="blink"></span><span id="stickyText">깃든 살(殺)의 풀이를 받아라</span></a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -1280,10 +1280,11 @@ const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
 const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
 const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
 let lastSals = [];
-function track(event){
+function track(event, extra){
   try{
     const row = {
       event,
+      ...(extra || {}),
       session_id: sessionId,
       name: user.name || null,
       birth: user.birth ? `${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}` : null,
@@ -1415,28 +1416,35 @@ function loadProgress(){
 /* ───────── gate ───────── */
 /* 게이트 첫 터치 → 방울+바람+발소리 3중 앰비언스 즉시 시작 (사전 로딩으로 지연 없음) */
 const gateAmbBells = new Audio('../assets/sfx_intro.mp3');   // 방울 딸랑임 + 밤바람
-gateAmbBells.loop = true; gateAmbBells.volume = .8; gateAmbBells.preload = 'auto';
+gateAmbBells.loop = true; gateAmbBells.volume = 1; gateAmbBells.preload = 'auto';
 const gateAmbSteps = new Audio('../assets/sfx_forest.mp3');  // 저벅저벅 발소리 + 숲 바람
-gateAmbSteps.loop = true; gateAmbSteps.volume = .5; gateAmbSteps.preload = 'auto';
+gateAmbSteps.loop = true; gateAmbSteps.volume = .72; gateAmbSteps.preload = 'auto';
 let gateAmbOn = false;
 let soundStarted = false;
 function ensureSound(){
   if (!soundStarted){ soundStarted = true; startSound(); }
 }
+let gateClosed = false;
 function startGateAmb(){
-  ensureSound();
-  if (gateAmbOn) return;
-  gateAmbOn = true;
-  gateAmbBells.play().catch(()=>{});
-  gateAmbSteps.play().catch(()=>{});
-  const note = document.querySelector('#gate .gate-note');
-  if (note) note.textContent = '· 방울 소리가 들리기 시작합니다 ·';
+  if (gateAmbOn || gateClosed) return;
+  const p1 = gateAmbBells.play(), p2 = gateAmbSteps.play();
+  Promise.all([p1, p2].map(p => p || Promise.resolve())).then(() => {
+    if (gateClosed){ gateAmbBells.pause(); gateAmbSteps.pause(); return; }
+    gateAmbOn = true;
+    ensureSound();
+    const note = document.querySelector('#gate .gate-note');
+    if (note) note.textContent = '· 방울 소리가 들리기 시작합니다 ·';
+  }).catch(()=>{ /* 자동재생 차단 — 첫 제스처를 기다린다 */ });
 }
-document.getElementById('gate').addEventListener('pointerdown', startGateAmb, {capture:true});
-document.getElementById('gate').addEventListener('touchstart', startGateAmb, {capture:true, passive:true});
+// 랜딩 즉시 재생 시도 (재방문·인앱 브라우저 등 자동재생이 허용되는 환경은 바로 들린다)
+startGateAmb();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) startGateAmb(); });
+// 차단된 환경은 화면에 손이 닿는 최초의 순간(스크롤 시작 포함) 바로 시작
+['pointerdown','touchstart','keydown'].forEach(ev =>
+  window.addEventListener(ev, startGateAmb, {capture:true, passive:true}));
 
 function fadeOutGateAmb(){
-  if (!gateAmbOn) return;
+  gateClosed = true;
   [gateAmbBells, gateAmbSteps].forEach(a => {
     const iv = setInterval(()=>{
       a.volume = Math.max(0, a.volume - .08);
@@ -1506,11 +1514,11 @@ function gotoScene(id){
 }
 
 /* 앰비언스 바인딩 (파일: assets/sfx_*.mp3) */
-attachAmbience(document.querySelector('#hero video'), '../assets/sfx_treesign.mp3', .6);
-attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_forest.mp3', .8);
-attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_shinmok.mp3', .3); // 바람 레이어 보강
-attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_door.mp3', .65);
-const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_candles.mp3', .6);
+attachAmbience(document.querySelector('#hero video'), '../assets/sfx_treesign.mp3', .8);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_forest.mp3', .9);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_shinmok.mp3', .4); // 바람 레이어 보강
+attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_door.mp3', .78);
+const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_candles.mp3', .7);
 attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_maskwear.mp3', .7);
 attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_shinmok.mp3', .55);
 
@@ -1631,7 +1639,7 @@ function fillSales(){
     document.getElementById('pHead').innerHTML = nm + '. 쯧쯧…<br><span class="r">너, 심상치 않다</span>';
     document.getElementById('chartOwner').textContent = user.name + ' — 四柱原局';
     document.getElementById('graphOwner').textContent = user.name + ' — 財物運 흐름도';
-    document.getElementById('stickyText').textContent = nm + ', 네 살(殺)의 풀이 — 오늘 83% 할인';
+    document.getElementById('stickyText').textContent = nm + ', 네 살(殺)의 풀이를 받아라';
     document.getElementById('ctaMain').textContent = nm + ', 네 살(殺)의 풀이를 받아라';
     document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>네 이름이 적힌, 단 한 권의 기록.<br>평생 소장하는 PDF 상세 분석서.';
   }
@@ -1846,8 +1854,15 @@ function openBuy(){
   document.getElementById('buyModal').classList.add('on');
 }
 function closeBuy(){ document.getElementById('buyModal').classList.remove('on'); }
-function startPay(){
+async function startPay(){
   track('pay_click');
+  // 결제 의향 기록: 사이트 계정 이메일 + 사주 정보 → 웹훅이 이걸로 구매-계정-사주를 잇는다
+  // (그로블 결제창에서 사주를 다시 적지 않아도 되게 하는 핵심 장치)
+  try{
+    const { data } = await sb.auth.getSession();
+    const email = data && data.session && data.session.user ? data.session.user.email : null;
+    if (email) track('pay_intent', { email });
+  }catch(e){}
   // 그로블 결제창 (결제 완료 → simgoksa.com/library/ 로 자동 이동)
   location.href = 'https://www.groble.im/payment/kAAJFx';
 }

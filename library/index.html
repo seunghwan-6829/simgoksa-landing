@@ -212,6 +212,12 @@ function show(logged, email){
   if (logged){
     who.innerHTML = '열쇠 주인 — <b>' + email.replace(/</g,'&lt;') + '</b>';
     loadBooks();
+    // 결제 직후 도착 대기: 웹훅이 몇 초 늦을 수 있어 45초간 5초 간격으로 조용히 재확인
+    let polls = 0;
+    (function pollArrival(){
+      if (polls++ >= 9) return;
+      setTimeout(async () => { try{ await loadBooks(true); }catch(e){} pollArrival(); }, 5000);
+    })();
   }
 }
 
@@ -222,23 +228,29 @@ const STATUS_MAP = {
   delivered: { label: '도착 — 읽기', cls: 'done' },
   refunded:  { label: '환불됨', cls: 'refund' }
 };
-async function loadBooks(){
+let lastBookCount = -1;
+async function loadBooks(quiet){
   const loading = document.getElementById('booksLoading');
   const booksEl = document.getElementById('books');
   const emptyEl = document.getElementById('emptyBox');
   const noteEl = document.getElementById('shelfNote');
-  loading.style.display = 'block'; booksEl.innerHTML = ''; emptyEl.style.display = 'none'; noteEl.style.display = 'none';
+  if (!quiet){ loading.style.display = 'block'; booksEl.innerHTML = ''; emptyEl.style.display = 'none'; noteEl.style.display = 'none'; }
   try{
     const { data, error } = await sb.from('purchases')
       .select('id,created_at,product,product_name,amount,status,saju_answer')
       .order('created_at', { ascending: false });
     loading.style.display = 'none';
     if (error) throw error;
-    if (!data || data.length === 0){
+    const n = data ? data.length : 0;
+    if (quiet && n === lastBookCount) return;   // 변화 없으면 화면 유지 (깜빡임 방지)
+    lastBookCount = n;
+    if (n === 0){
+      booksEl.innerHTML = '';
       emptyEl.style.display = 'block';
       noteEl.style.display = 'block';
       return;
     }
+    emptyEl.style.display = 'none';
     booksEl.innerHTML = data.map(p => {
       const s = STATUS_MAP[p.status] || STATUS_MAP.paid;
       const d = new Date(p.created_at);
