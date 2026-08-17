@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>심곡사(深谷寺) — 당신의 돈이 모이지 않는 이유</title>
+<meta name="description" content="심곡사 뒤편, 장경각(藏經閣). 스님 현월이 당신의 사주 속 새는 구멍(漏)을 셈합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://simgoksa.com/hyunwol/">
+<meta property="og:title" content="심곡사(深谷寺) — 당신의 돈이 모이지 않는 이유">
+<meta property="og:description" content="수천 권의 장부가 잠든 장경각. 스님 현월이 네 돈이 새는 구멍(漏)을 셈한다.">
+<meta property="og:image" content="https://simgoksa.com/assets/og_hyunwol.jpg">
+<meta name="theme-color" content="#050404">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050404;
+  --bg2:#0b0808;
+  --ink:#e8e0d8;
+  --ink-dim:#9a8f85;
+  --blood:#7a4a12;         /* 현월 — 금동(brass) 팔레트 */
+  --blood-bright:#e0a43c;
+  --ember:#d08c3a;
+  --paper:#e8ddc7;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* 인앱 브라우저 글자 자동확대로 인한 레이아웃 밀림 방지 */
+html{scroll-behavior:smooth}
+body{
+  background:#000;
+  color:var(--ink);
+  font-family:'Noto Serif KR','Nanum Myeongjo',serif;
+  overflow-x:hidden;
+}
+#app{
+  position:relative;
+  max-width:480px;
+  margin:0 auto;
+  background:var(--bg);
+  min-height:100dvh;
+  box-shadow:0 0 80px rgba(0,0,0,.9);
+}
+/* ---------- film grain ---------- */
+.grain{
+  pointer-events:none;
+  position:fixed;
+  inset:-100%;
+  width:300%;height:300%;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity:.07;
+  z-index:90;
+  animation:grain .9s steps(4) infinite;
+}
+@keyframes grain{
+  0%{transform:translate(0,0)}25%{transform:translate(-2%,1%)}
+  50%{transform:translate(1%,-1%)}75%{transform:translate(-1%,2%)}100%{transform:translate(2%,-2%)}
+}
+/* ---------- candle flicker vignette ---------- */
+.flicker-veil{
+  pointer-events:none;position:fixed;inset:0;z-index:85;
+  background:radial-gradient(120% 90% at 50% 55%,transparent 55%,rgba(0,0,0,.5) 100%);
+  animation:cflick 3.4s ease-in-out infinite;
+}
+@keyframes cflick{
+  0%,100%{opacity:.85}18%{opacity:.65}25%{opacity:.9}41%{opacity:.7}
+  55%{opacity:.95}70%{opacity:.75}86%{opacity:.88}
+}
+/* ---------- sound gate (도입) ---------- */
+#gate{
+  position:fixed;inset:0;z-index:200;
+  background:#000;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity 1.8s ease;
+  cursor:pointer;overflow:hidden;
+}
+#gate.off{opacity:0;pointer-events:none}
+#gate .gate-frame{
+  position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;overflow:hidden;
+}
+#gate .gate-bg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:brightness(.62) saturate(.85);
+  transform:scale(1.06);
+  animation:gatezoom 22s ease-in-out infinite alternate;
+}
+@keyframes gatezoom{from{transform:scale(1.06)}to{transform:scale(1.14)}}
+#gate .gate-veil{
+  position:absolute;inset:0;
+  background:radial-gradient(90% 70% at 50% 46%,transparent 30%,rgba(0,0,0,.82) 100%),
+             linear-gradient(180deg,rgba(0,0,0,.5),transparent 30%,transparent 62%,rgba(0,0,0,.92));
+}
+#gate .gate-inner{
+  position:relative;z-index:2;max-width:480px;width:100%;height:100dvh;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 64px);
+}
+#gate .gate-brand{
+  position:absolute;top:14%;left:0;right:0;text-align:center;
+}
+#gate .gate-hanja{
+  font-family:'Nanum Myeongjo',serif;font-weight:800;
+  font-size:46px;letter-spacing:.34em;text-indent:.34em;color:var(--paper);
+  text-shadow:0 0 34px rgba(0,0,0,.95),0 0 70px rgba(150,96,26,.4);
+  opacity:0;animation:ghostin 2.6s ease .5s forwards;
+}
+#gate .gate-sub{
+  margin-top:12px;font-size:12px;letter-spacing:.55em;text-indent:.55em;color:var(--ink-dim);
+  opacity:0;animation:ghostin 2.6s ease 1.3s forwards;
+}
+#gate .gate-warn{
+  font-size:13px;letter-spacing:.3em;color:var(--ink-dim);line-height:2.3;text-align:center;
+  opacity:0;animation:ghostin 2.4s ease 2s forwards;
+  margin-bottom:26px;
+}
+#gate .gate-warn b{color:var(--ink);font-weight:400}
+#gate .gate-btn{
+  appearance:none;font-family:inherit;cursor:pointer;
+  background:rgba(5,4,4,.5);backdrop-filter:blur(4px);
+  border:1px solid rgba(224,164,60,.55);color:var(--paper);
+  font-size:15px;letter-spacing:.28em;text-indent:.28em;
+  padding:17px 44px;border-radius:2px;
+  box-shadow:0 0 30px rgba(150,96,26,.25), inset 0 0 18px rgba(150,96,26,.12);
+  opacity:0;animation:ghostin 2.4s ease 2.7s forwards, gatebeat 2.6s ease-in-out 5s infinite;
+}
+@keyframes gatebeat{0%,100%{box-shadow:0 0 30px rgba(150,96,26,.25),inset 0 0 18px rgba(150,96,26,.12)}50%{box-shadow:0 0 48px rgba(150,96,26,.5),inset 0 0 26px rgba(150,96,26,.22)}}
+#gate .gate-note{
+  margin-top:18px;font-size:10.5px;letter-spacing:.22em;color:#544c46;
+  opacity:0;animation:ghostin 2s ease 3.4s forwards;
+}
+@keyframes ghostin{from{opacity:0;transform:translateY(14px);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+/* ---------- story scenes ---------- */
+.scene{
+  position:relative;
+  min-height:100dvh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  overflow:hidden;
+  isolation:isolate;
+}
+.scene .bg,.scene video.bg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;
+  filter:brightness(.82) saturate(.85);
+}
+.scene .veil{
+  position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 32%,rgba(0,0,0,.15) 60%,rgba(5,4,4,.96) 100%);
+}
+.dialog{
+  position:relative;z-index:2; /* 씬 페이드(블랙 솔리드)보다 위 — 대사·입력란은 항상 선명 */
+  padding:60px 26px 40px;
+  display:flex;flex-direction:column;gap:18px;
+  max-height:calc(100dvh - 10px);
+  overflow-y:auto;
+  scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 52px,#000 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 52px,#000 100%);
+}
+.dialog::-webkit-scrollbar{display:none}
+@media (max-width:400px){
+  #app .scene .dialog .line{font-size:16px;line-height:1.9}
+  #app .scene .dialog{padding-left:22px;padding-right:22px}
+}
+.dialog .line{
+  font-size:17.5px;line-height:1.95;
+  color:var(--ink);
+  text-shadow:0 1px 2px rgba(0,0,0,.98), 0 2px 6px rgba(0,0,0,.95), 0 4px 18px rgba(0,0,0,.9), 0 0 34px rgba(0,0,0,.8);
+  opacity:0;transform:translateY(16px);filter:blur(7px);
+  transition:opacity 1.2s ease,transform 1.2s ease,filter 1.2s ease;
+  word-break:keep-all;
+}
+.dialog .line.on{opacity:1;transform:none;filter:blur(0)}
+.dialog .line.gone{opacity:0;transform:translateY(-12px);filter:blur(6px);transition:opacity .7s ease,transform .7s ease,filter .7s ease}
+.dialog .line em{font-style:normal;color:var(--blood-bright)}
+.dialog .line.whisper{font-size:14px;color:var(--ink-dim);letter-spacing:.12em;text-shadow:0 1px 2px rgba(0,0,0,.98),0 2px 8px rgba(0,0,0,.95),0 3px 20px rgba(0,0,0,.9)}
+.dialog .line em{text-shadow:0 1px 2px rgba(0,0,0,.98),0 2px 8px rgba(0,0,0,.95),0 0 22px rgba(150,96,26,.45)}
+.dialog .line.voice{font-weight:700}
+.choices{display:flex;flex-direction:column;gap:12px;padding-top:8px}
+.choice{
+  appearance:none;border:1px solid rgba(232,224,216,.3);
+  background:rgba(5,4,4,.55);backdrop-filter:blur(3px);
+  color:var(--ink);font-family:inherit;font-size:15px;letter-spacing:.06em;
+  padding:15px 18px;border-radius:2px;cursor:pointer;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .9s ease .2s,transform .9s ease .2s,background .3s,border-color .3s;
+  word-break:keep-all;
+}
+.choice.on{opacity:1;transform:none}
+.choice:active{background:rgba(150,96,26,.25);border-color:var(--blood)}
+.skip{
+  position:absolute;top:calc(env(safe-area-inset-top, 0px) + 18px);right:18px;
+  color:rgba(232,224,216,.45);font-size:12px;letter-spacing:.15em;
+  background:none;border:none;font-family:inherit;cursor:pointer;z-index:5;
+}
+.scene-tag{
+  position:absolute;top:calc(env(safe-area-inset-top, 0px) + 18px);left:20px;
+  font-size:11px;letter-spacing:.4em;color:rgba(232,224,216,.4);z-index:5;
+}
+/* ---------- hero title (글자 하나씩 등장) ---------- */
+#hero .title-wrap{
+  position:absolute;top:13%;left:0;right:0;text-align:center;z-index:2;
+}
+#hero .hanja{
+  font-family:'Nanum Myeongjo',serif;font-weight:800;
+  font-size:54px;letter-spacing:.26em;text-indent:.26em;
+  color:var(--paper);
+  text-shadow:0 0 30px rgba(0,0,0,.9),0 0 60px rgba(150,96,26,.35);
+}
+#hero .hanja span{
+  display:inline-block;opacity:0;transform:translateY(20px) scale(1.15);filter:blur(10px);
+}
+#hero .title-wrap.go .hanja span{animation:charin 1.6s cubic-bezier(.2,.7,.3,1) forwards}
+#hero .title-wrap.go .hanja span:nth-child(1){animation-delay:.7s}
+#hero .title-wrap.go .hanja span:nth-child(2){animation-delay:1.15s}
+#hero .title-wrap.go .hanja span:nth-child(3){animation-delay:1.6s}
+@keyframes charin{to{opacity:1;transform:none;filter:blur(0)}}
+#hero .sub{
+  margin-top:14px;font-size:13px;letter-spacing:.5em;text-indent:.5em;color:var(--ink-dim);
+  opacity:0;
+}
+#hero .title-wrap.go .sub{animation:ghostin 2.4s ease 2.4s forwards}
+#hero .title-glow{
+  width:150px;height:1px;margin:26px auto 0;
+  background:linear-gradient(90deg,transparent,rgba(224,164,60,.7),transparent);
+  opacity:0;
+}
+#hero .title-wrap.go .title-glow{animation:ghostin 2s ease 3s forwards, glowpulse 3s ease-in-out 5s infinite}
+@keyframes glowpulse{50%{opacity:.35}}
+/* ---------- 인적사항 입력 ---------- */
+.ask-wrap{
+  display:none;flex-direction:column;gap:16px;padding-top:10px;
+}
+.ask-wrap.on{display:flex}
+.ask-field{
+  display:flex;gap:10px;align-items:stretch;
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease;
+}
+.ask-field.on{opacity:1;transform:none}
+.ask-input{
+  flex:1;min-width:0;width:100%;appearance:none;border:1px solid rgba(232,224,216,.35);
+  background:rgba(5,4,4,.6);backdrop-filter:blur(3px);
+  color:var(--paper);font-family:inherit;font-size:16px;letter-spacing:.1em;
+  padding:15px 16px;border-radius:2px;outline:none;text-align:center;
+}
+.ask-input::placeholder{color:#5c534c;letter-spacing:.08em}
+.ask-input:focus{border-color:var(--blood-bright);box-shadow:0 0 18px rgba(150,96,26,.25)}
+.ask-go{
+  flex-shrink:0;white-space:nowrap;
+  appearance:none;border:1px solid rgba(224,164,60,.6);
+  background:rgba(120,0,0,.5);color:var(--paper);
+  font-family:inherit;font-size:14px;letter-spacing:.15em;
+  padding:0 clamp(12px, 4vw, 22px);border-radius:2px;cursor:pointer;
+}
+.ask-go:active{background:rgba(150,96,26,.7)}
+.ask-row{display:flex;gap:10px}
+.ask-opt{
+  flex:1;appearance:none;border:1px solid rgba(232,224,216,.3);
+  background:rgba(5,4,4,.55);color:var(--ink);
+  font-family:inherit;font-size:15px;letter-spacing:.2em;text-indent:.2em;
+  padding:15px 0;border-radius:2px;cursor:pointer;
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease,background .3s,border-color .3s;
+}
+.ask-opt.on{opacity:1;transform:none}
+.ask-opt:active,.ask-opt.sel{background:rgba(150,96,26,.3);border-color:var(--blood-bright)}
+.ask-err{font-size:12px;color:var(--blood-bright);letter-spacing:.08em;display:none}
+/* ---------- 화면 흔들림 / 붉은 섬광 ---------- */
+.shake{animation:shake .55s ease}
+@keyframes shake{
+  0%,100%{transform:translate(0,0)}15%{transform:translate(-7px,3px)}30%{transform:translate(6px,-4px)}
+  45%{transform:translate(-5px,-3px)}60%{transform:translate(4px,4px)}75%{transform:translate(-3px,1px)}90%{transform:translate(2px,-2px)}
+}
+#redflash{
+  pointer-events:none;position:fixed;inset:0;z-index:95;
+  background:radial-gradient(100% 100% at 50% 50%,rgba(150,96,26,.5),rgba(80,0,0,.25));
+  opacity:0;transition:opacity .25s ease;
+}
+#redflash.on{opacity:1}
+/* ---------- 로딩 오버레이 ---------- */
+#loading{
+  position:fixed;inset:0;z-index:210;background:#020202;
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:34px;
+  overflow:hidden;
+  opacity:1;transition:opacity 1.1s ease;
+}
+#loading.on{display:flex}
+#loading.fade{opacity:0;pointer-events:none}
+#sales{opacity:0;transition:opacity 1.3s ease}
+#sales.show{opacity:1}
+#loading .load-bg{
+  position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;height:100%;object-fit:cover;
+  filter:brightness(.52) saturate(.8);
+  opacity:.95;
+}
+#loading .load-veil{
+  position:absolute;inset:0;
+  background:radial-gradient(85% 65% at 50% 50%,rgba(2,2,2,.18) 0%,rgba(2,2,2,.78) 100%);
+}
+#loading .load-ring,#loading #loadtext{position:relative;z-index:2}
+.load-ring{
+  position:relative;width:120px;height:120px;
+}
+.load-ring .ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(224,164,60,.18);
+}
+.load-ring .ring2{
+  position:absolute;inset:0;border-radius:50%;
+  border:1px solid transparent;border-top-color:var(--blood-bright);
+  animation:spin 1.6s linear infinite;
+}
+.load-ring .ring3{
+  position:absolute;inset:12px;border-radius:50%;
+  border:1px dashed rgba(232,224,216,.15);
+  animation:spinrev 9s linear infinite;
+}
+.load-ring .core{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Nanum Myeongjo',serif;font-size:38px;color:var(--blood-bright);
+  text-shadow:0 0 24px rgba(150,96,26,.7);
+  animation:corepulse 1.8s ease-in-out infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinrev{to{transform:rotate(-360deg)}}
+@keyframes corepulse{50%{opacity:.5;text-shadow:0 0 40px rgba(224,164,60,.9)}}
+#loadtext{
+  font-size:14px;letter-spacing:.25em;color:var(--ink-dim);text-align:center;line-height:2.2;
+  min-height:3em;
+  transition:opacity .4s ease;
+}
+#loadtext b{color:var(--paper);font-weight:400}
+/* ---------- sales sections ---------- */
+.sec{
+  position:relative;
+  padding:110px 26px;
+  text-align:center;
+  overflow:hidden;
+}
+.sec.img-sec{padding:0;min-height:88dvh;display:flex;flex-direction:column;justify-content:center}
+.sec.img-sec .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:brightness(.6) saturate(.8)}
+.sec.img-sec video.bg{filter:brightness(.55) saturate(.8)}
+.sec.img-sec .veil2{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,var(--bg) 0%,transparent 25%,transparent 70%,var(--bg) 100%)}
+.sec.img-sec .inner{position:relative;z-index:2;padding:110px 26px}
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1.2s ease,transform 1.2s ease}
+.rv.on{opacity:1;transform:none}
+.h-red{
+  color:var(--blood-bright);font-size:15px;letter-spacing:.25em;margin-bottom:18px;font-weight:600;
+}
+.h-big{
+  font-size:27px;font-weight:900;line-height:1.75;word-break:keep-all;
+}
+.h-big .r{color:var(--blood-bright)}
+.h-hanja{
+  font-family:'Nanum Myeongjo',serif;font-size:64px;font-weight:800;color:var(--blood);margin:34px 0 6px;
+  text-shadow:0 0 40px rgba(150,96,26,.4);
+}
+.p-dim{
+  margin-top:26px;color:var(--ink-dim);font-size:15.5px;line-height:2.1;word-break:keep-all;
+}
+.p-body{
+  margin-top:26px;font-size:16px;line-height:2.15;word-break:keep-all;
+}
+.p-body em{font-style:normal;color:var(--blood-bright);font-weight:700}
+.hr-knife{
+  width:1px;height:72px;margin:0 auto;
+  background:linear-gradient(180deg,transparent,var(--blood),transparent);
+}
+/* checklist */
+.chk{margin-top:34px;display:flex;flex-direction:column;gap:15px;text-align:center}
+.chk li{
+  list-style:none;display:flex;gap:10px;align-items:baseline;justify-content:center;
+  font-size:15.5px;line-height:1.8;color:var(--ink);word-break:keep-all;
+}
+.chk li::before{content:"✔";color:var(--blood-bright);font-size:13px}
+/* ---------- 사용자 정보 낭독 ---------- */
+.recite{display:flex;flex-direction:column;gap:14px}
+.recite p{
+  font-family:'Nanum Myeongjo',serif;
+  font-size:17px;letter-spacing:.2em;line-height:1.9;
+  color:var(--ink-dim);word-break:keep-all;
+}
+.recite .rc-name{
+  font-size:21px;font-weight:700;color:var(--paper);
+  text-shadow:0 0 26px rgba(150,96,26,.45);
+}
+/* ---------- 원국 차트 ---------- */
+.chart-frame{
+  margin-top:34px;position:relative;border-radius:6px;overflow:hidden;
+  border:1px solid rgba(208,140,58,.35);
+  background:#0d0906;
+  box-shadow:0 0 44px rgba(150,96,26,.15), inset 0 0 60px rgba(0,0,0,.8);
+}
+.chart-frame .chart-bg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32;filter:saturate(.8);
+}
+.chart-inner{position:relative;z-index:2;padding:30px 18px 26px}
+.chart-title{
+  font-family:'Nanum Myeongjo',serif;font-size:13px;letter-spacing:.4em;color:var(--ember);
+  margin-bottom:22px;
+}
+.pillars{display:flex;gap:8px;justify-content:center}
+.pillar{
+  flex:1;max-width:88px;border:1px solid rgba(232,224,216,.14);border-radius:4px;
+  background:rgba(5,4,4,.55);padding:14px 4px 12px;position:relative;
+}
+.pillar .plabel{font-size:10.5px;letter-spacing:.25em;color:var(--ink-dim);margin-bottom:10px}
+.pillar .pchar{
+  font-family:'Nanum Myeongjo',serif;font-size:30px;line-height:1.35;color:var(--paper);
+}
+.pillar .pchar div{position:relative}
+.pillar.locked .pchar{filter:blur(7px);opacity:.75}
+.pillar.locked::after{
+  content:"🔒";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:17px;opacity:.85;
+}
+.pillar.cursed{border-color:rgba(224,164,60,.6);box-shadow:0 0 22px rgba(150,96,26,.3)}
+.pillar.cursed .plabel{color:var(--blood-bright)}
+.pillar .curse-mark{
+  position:absolute;top:-9px;right:-7px;
+  font-family:'Nanum Myeongjo',serif;font-size:15px;color:#fff;
+  background:var(--blood);border-radius:50%;width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 16px rgba(150,96,26,.8);
+  animation:corepulse 2s ease-in-out infinite;
+}
+.chart-note{margin-top:18px;font-size:13px;color:var(--ink-dim);letter-spacing:.1em;line-height:1.9}
+.chart-note b{color:var(--blood-bright);font-weight:400}
+/* ---------- 흉살 진단 카드 ---------- */
+.sal-card{
+  margin-top:26px;text-align:left;border-radius:5px;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,rgba(40,12,10,.65),rgba(10,6,5,.92));
+  border:1px solid rgba(224,164,60,.35);
+}
+.sal-card .sal-head{
+  display:flex;align-items:center;gap:12px;padding:18px 18px 14px;
+  border-bottom:1px dashed rgba(232,224,216,.12);
+}
+.sal-card .sal-hanja{
+  font-family:'Nanum Myeongjo',serif;font-size:30px;color:var(--blood-bright);
+  text-shadow:0 0 18px rgba(150,96,26,.5);
+}
+.sal-card .sal-name{font-size:16px;font-weight:700;color:var(--paper)}
+.sal-card .sal-name small{display:block;font-size:11px;color:var(--ink-dim);letter-spacing:.15em;margin-top:3px;font-weight:300}
+.sal-card .sal-lv{white-space:nowrap;
+  margin-left:auto;font-size:11px;letter-spacing:.12em;color:#fff;
+  background:var(--blood);padding:5px 10px;border-radius:2px;
+}
+.sal-card .sal-body{padding:16px 18px 18px}
+.sal-card .sal-body p{font-size:14.5px;line-height:2;color:var(--ink);word-break:keep-all}
+.sal-card .sal-lock{
+  margin-top:12px;position:relative;border-radius:3px;overflow:hidden;
+}
+.sal-card .sal-lock p{
+  font-size:13px;line-height:1.95;color:var(--ink-dim);
+  filter:blur(5px);user-select:none;
+}
+.sal-card .sal-lock .lock-tag{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:12px;letter-spacing:.15em;color:var(--paper);
+  background:rgba(5,4,4,.25);
+}
+/* ---------- 재물 그래프 ---------- */
+.graph-frame{
+  margin-top:30px;border:1px solid rgba(208,140,58,.3);border-radius:6px;
+  background:rgba(10,7,5,.85);padding:24px 14px 18px;position:relative;overflow:hidden;
+}
+.graph-title{font-size:12px;letter-spacing:.3em;color:var(--ember);margin-bottom:16px;font-family:'Nanum Myeongjo',serif}
+.graph-tags{display:flex;justify-content:space-around;margin-top:10px}
+.gtag{font-size:11.5px;letter-spacing:.08em;padding:6px 10px;border-radius:2px}
+.gtag.bad{background:rgba(60,40,8,.85);color:#e8d5a7}
+.gtag.good{background:rgba(110,74,16,.9);color:#ffe4b0}
+.gtag b{display:block;font-size:12px;margin-bottom:2px}
+.gtag .blurline{filter:blur(4px);user-select:none}
+/* ---------- 잠긴 티저 목록 ---------- */
+.locklist{margin-top:30px;display:flex;flex-direction:column;gap:12px;text-align:left}
+.lockitem{
+  position:relative;border:1px solid rgba(232,224,216,.1);border-radius:4px;overflow:hidden;
+  background:rgba(18,12,10,.75);
+}
+.lockitem .li-head{
+  display:flex;gap:10px;align-items:baseline;padding:15px 16px;
+}
+.lockitem .li-no{font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:12px;white-space:nowrap;letter-spacing:.05em}
+.lockitem .li-title{font-size:15px;font-weight:700;color:var(--paper);line-height:1.65;word-break:keep-all}
+.lockitem .li-body{
+  padding:0 16px 14px;position:relative;
+}
+.lockitem .li-body p{font-size:13.5px;line-height:1.9;color:var(--ink-dim);filter:blur(5px);user-select:none}
+.lockitem .li-veil{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;letter-spacing:.18em;color:rgba(232,224,216,.75);
+  background:linear-gradient(180deg,transparent,rgba(5,4,4,.3));
+}
+/* steps */
+.stepnum{
+  font-family:'Nanum Myeongjo',serif;font-size:44px;font-weight:800;color:var(--blood-bright);
+}
+.stepline{width:1px;height:46px;background:linear-gradient(180deg,var(--blood),transparent);margin:14px auto}
+.card{
+  margin-top:30px;background:rgba(20,14,12,.75);border:1px solid rgba(150,96,26,.25);
+  border-radius:4px;padding:26px 22px;text-align:left;
+}
+.card h4{font-size:16px;margin-bottom:14px;color:var(--paper)}
+.card h4 span{color:var(--blood-bright)}
+.card p{font-size:14.5px;line-height:2;color:var(--ink-dim);word-break:keep-all}
+.timeline{margin-top:26px;display:flex;flex-direction:column;gap:2px;text-align:left}
+.timeline .row{
+  display:flex;gap:14px;align-items:center;background:rgba(20,14,12,.7);
+  border-left:2px solid var(--blood);padding:15px 16px;
+}
+.timeline .yr{font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-weight:800;font-size:15px;min-width:44px}
+.timeline .tx{font-size:14.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
+.timeline .tx b{color:var(--blood-bright)}
+/* before / after */
+.ba{margin-top:30px;display:flex;flex-direction:column;gap:20px}
+.ba .b,.ba .a{border-radius:4px;padding:24px 20px;text-align:left}
+.ba .b{background:rgba(15,10,10,.85);border:1px solid rgba(232,224,216,.12)}
+.ba .a{background:linear-gradient(160deg,rgba(50,14,14,.5),rgba(20,8,8,.9));border:1px solid rgba(224,164,60,.4)}
+.ba h5{font-size:14px;letter-spacing:.15em;margin-bottom:12px}
+.ba .b h5{color:var(--ink-dim)}
+.ba .a h5{color:var(--blood-bright)}
+.ba p{font-size:14.5px;line-height:2;color:var(--ink-dim);word-break:keep-all}
+.ba .a p{color:var(--ink)}
+/* toc */
+.toc{margin-top:30px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.toc .t{
+  display:flex;gap:14px;align-items:baseline;padding:13px 16px;
+  background:rgba(20,14,12,.55);border:1px solid rgba(232,224,216,.07);border-radius:3px;
+}
+.toc .n{font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:12px;font-weight:700;letter-spacing:.05em;white-space:nowrap}
+.toc .x{font-size:14.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
+.toc-note{margin-top:16px;font-size:14px;color:var(--ink-dim);letter-spacing:.05em}
+/* reviews */
+.review{
+  margin-top:26px;text-align:left;background:rgba(20,14,12,.7);
+  border:1px solid rgba(232,224,216,.08);border-radius:4px;padding:22px 20px;
+  position:relative;
+}
+.review::after{
+  content:"";position:absolute;inset:0;border-radius:4px;pointer-events:none;
+  box-shadow:0 0 34px rgba(150,96,26,.12) inset;
+}
+.review .who{font-size:12px;color:var(--ink-dim);letter-spacing:.1em;margin-bottom:10px}
+.review .quote{font-size:15px;font-weight:700;color:var(--blood-bright);margin-bottom:10px;line-height:1.7;word-break:keep-all}
+.review p{font-size:14.5px;line-height:2;color:var(--ink);word-break:keep-all}
+.review-src{margin-top:18px;font-size:11.5px;color:#5c534c;letter-spacing:.1em}
+/* pricing */
+.price-strike{
+  margin-top:30px;font-size:15px;color:var(--ink-dim);line-height:2.4;
+}
+.price-strike s{color:#6b5f57}
+.plan{
+  margin-top:26px;border-radius:5px;overflow:hidden;text-align:left;
+  border:1px solid rgba(232,224,216,.12);
+}
+.plan .head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 18px;font-size:13px;letter-spacing:.1em;color:#fff;
+}
+.plan.hot .head{background:var(--blood)}
+.plan.mid .head{background:#5c3038}
+.plan.base .head{background:#3a322d}
+.plan .body{background:rgba(240,234,226,.96);color:#181210;padding:20px 18px}
+.plan .row1{display:flex;align-items:center;justify-content:space-between}
+.plan .amount{font-size:30px;font-weight:900;font-family:'Noto Sans KR',sans-serif}
+.plan .amount small{font-size:14px;font-weight:400}
+.plan .off{
+  width:56px;height:56px;border-radius:50%;background:var(--blood);color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:18px;
+  font-family:'Noto Sans KR',sans-serif;line-height:1;
+}
+.plan.mid .off{background:#5c3038}
+.plan .off small{font-size:10px;font-weight:400;margin-top:2px}
+.plan .was{font-size:13px;color:#7a6f66;margin-top:4px}
+.plan .was s{color:#8a5e18}
+.plan ul{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.plan li{list-style:none;font-size:13px;line-height:1.7;color:#3a322d;display:flex;gap:8px}
+.plan li::before{content:"✅";font-size:11px}
+.plan .tag{font-size:11px;letter-spacing:.15em}
+.soldout{
+  position:relative;
+}
+.soldout::after{
+  content:"마 감";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(5,4,4,.55);color:var(--paper);font-size:20px;letter-spacing:.6em;text-indent:.6em;
+  font-family:'Nanum Myeongjo',serif;
+}
+.guarantee{
+  margin-top:34px;border:1px dashed rgba(224,164,60,.5);border-radius:4px;padding:22px 18px;
+}
+.guarantee h5{color:var(--blood-bright);font-size:15px;margin-bottom:10px;letter-spacing:.1em}
+.guarantee p{font-size:13px;line-height:2;color:var(--ink-dim);word-break:keep-all}
+/* CTA */
+.cta-big{
+  display:block;width:100%;margin-top:40px;
+  background:linear-gradient(160deg,#a3701c,#5c3c0a);
+  color:#fff;text-decoration:none;text-align:center;
+  font-family:inherit;font-size:17px;font-weight:700;letter-spacing:.12em;
+  padding:20px 10px;border-radius:3px;border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 6px 34px rgba(150,96,26,.4);
+}
+body.insales .grain{animation:none}
+.cta-note{margin-top:14px;font-size:12px;color:var(--ink-dim);letter-spacing:.08em}
+#sticky{
+  position:fixed;left:50%;transform:translate(-50%,110%);
+  bottom:0;width:100%;max-width:480px;z-index:80;
+  padding:10px 14px calc(env(safe-area-inset-bottom, 0px) + 12px);
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.88) 40%);
+  transition:transform .6s ease;
+}
+#sticky.on{transform:translate(-50%,0)}
+#sticky a{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(160deg,#a3701c,#5c3c0a);color:#fff;text-decoration:none;
+  font-size:15.5px;font-weight:700;letter-spacing:.1em;text-align:center;
+  padding:16px;border-radius:3px;border:1px solid rgba(255,255,255,.15);
+  box-shadow:0 4px 24px rgba(150,96,26,.5);
+}
+#sticky .blink{width:7px;height:7px;border-radius:50%;background:#ffd166;animation:bk 1.2s infinite}
+@keyframes bk{50%{opacity:.2}}
+/* footer */
+footer{
+  padding:60px 26px calc(env(safe-area-inset-bottom, 0px) + 120px);
+  text-align:center;color:#544c46;font-size:11px;line-height:2;letter-spacing:.05em;
+  border-top:1px solid rgba(232,224,216,.06);
+  font-family:'Noto Sans KR',sans-serif;
+}
+footer b{color:#7a6f66}
+.splat{
+  position:absolute;font-family:'Nanum Myeongjo',serif;color:rgba(150,96,26,.12);
+  font-size:150px;font-weight:900;z-index:0;pointer-events:none;user-select:none;
+}
+/* ── 인증/구매 모달 ── */
+.modal-veil{
+  position:fixed;inset:0;z-index:220;display:none;
+  background:rgba(2,1,1,.82);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:22px;
+}
+.modal-veil.on{display:flex}
+.modal{
+  width:100%;max-width:400px;
+  background:linear-gradient(170deg,#140d0b,#080505);
+  border:1px solid rgba(208,140,58,.35);border-radius:8px;
+  padding:30px 24px 26px;position:relative;
+  box-shadow:0 24px 80px rgba(0,0,0,.8), 0 0 60px rgba(150,96,26,.15);
+  animation:modalin .5s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes modalin{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.modal .m-close{
+  position:absolute;top:12px;right:14px;appearance:none;background:none;border:none;
+  color:#6b5f57;font-size:20px;cursor:pointer;padding:6px;font-family:inherit;
+}
+.modal .m-tag{font-size:12px;letter-spacing:.35em;color:var(--ember);text-align:center;font-family:'Nanum Myeongjo',serif}
+.modal h3{font-size:21px;font-weight:900;text-align:center;margin:10px 0 4px;color:var(--paper)}
+.modal .m-sub{font-size:13px;color:var(--ink-dim);text-align:center;line-height:1.9;margin-bottom:20px;word-break:keep-all}
+.modal .m-field{margin-bottom:12px}
+.modal .m-field input{
+  width:100%;appearance:none;border:1px solid rgba(232,224,216,.22);border-radius:3px;
+  background:rgba(5,4,4,.7);color:var(--paper);
+  font-family:inherit;font-size:16px;letter-spacing:.04em;
+  padding:14px 15px;outline:none;
+}
+.modal .m-field input:focus{border-color:var(--blood-bright);box-shadow:0 0 16px rgba(150,96,26,.25)}
+.modal .m-field input::placeholder{color:#5c534c}
+.modal .m-err{display:none;font-size:12.5px;color:var(--blood-bright);line-height:1.7;margin:4px 0 10px;word-break:keep-all}
+.modal .m-btn{
+  display:block;width:100%;appearance:none;cursor:pointer;
+  background:linear-gradient(160deg,#a3701c,#5c3c0a);color:#fff;
+  border:1px solid rgba(255,255,255,.14);border-radius:3px;
+  font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:.1em;
+  padding:15px;margin-top:6px;
+}
+.modal .m-btn:disabled{opacity:.55;cursor:wait}
+.modal .m-switch{
+  margin-top:16px;text-align:center;font-size:13px;color:var(--ink-dim);
+}
+.modal .m-switch a{color:var(--ember);text-decoration:underline;cursor:pointer}
+/* 구매 모달 */
+.buy-card{
+  border:1px solid rgba(224,164,60,.35);border-radius:5px;overflow:hidden;margin-bottom:16px;
+}
+.buy-card .b-head{background:var(--blood);color:#fff;font-size:12.5px;letter-spacing:.12em;padding:10px 14px}
+.buy-card .b-body{background:rgba(240,234,226,.97);color:#181210;padding:16px 14px}
+.buy-card .b-name{font-size:15px;font-weight:900}
+.buy-card .b-price{font-family:'Noto Sans KR',sans-serif;font-weight:900;font-size:24px;margin-top:6px}
+.buy-card .b-price s{font-weight:400;font-size:13px;color:#7a6f66;margin-right:8px}
+.buy-card .b-price .pct{color:#8a5e18;font-size:14px;margin-left:6px}
+.m-note{font-size:12px;color:#5c534c;text-align:center;line-height:1.8;margin-top:12px;word-break:keep-all}
+/* ── PC/태블릿: 흐린 배경 + 폰 프레임 ── */
+.back-home{
+  position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);left:18px;z-index:60;
+  display:none;align-items:center;gap:8px;
+  color:rgba(232,224,216,.75);text-decoration:none;
+  font-size:12.5px;letter-spacing:.18em;
+  background:rgba(5,4,4,.55);backdrop-filter:blur(6px);
+  border:1px solid rgba(232,224,216,.18);border-radius:999px;
+  padding:9px 16px;
+}
+.back-home:hover{color:var(--paper);border-color:rgba(224,164,60,.5)}
+@media (min-width:768px){
+  body::before{
+    content:"";position:fixed;inset:-40px;z-index:-2;
+    background:url('../assets/hw_steps.jpg') center/cover no-repeat;
+    filter:blur(46px) brightness(.24) saturate(.8);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:-1;
+    background:radial-gradient(90% 80% at 50% 40%,transparent 40%,rgba(0,0,0,.6) 100%);
+  }
+  #app{
+    border-left:1px solid rgba(232,224,216,.09);
+    border-right:1px solid rgba(232,224,216,.09);
+  }
+  .back-home{display:inline-flex}
+  .scene-tag{top:calc(env(safe-area-inset-top,0px) + 70px)}
+  #gate .gate-frame{
+    border-left:1px solid rgba(232,224,216,.08);
+    border-right:1px solid rgba(232,224,216,.08);
+  }
+  #gate{background:transparent}
+  #gate::before{
+    content:"";position:absolute;inset:-40px;z-index:-1;
+    background:url('../assets/hw_gate.jpg') center/cover no-repeat;
+    filter:blur(46px) brightness(.24) saturate(.8);
+  }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="flicker-veil"></div>
+<div id="redflash"></div>
+<a class="back-home" href="../">← 심곡사</a>
+
+<!-- ═══════════ 도입 게이트 ═══════════ -->
+<div id="gate">
+  <div class="gate-frame"><video class="gate-bg" src="../assets/hw_gate.mp4" muted loop playsinline autoplay poster="../assets/hw_gate.jpg"></video></div>
+  <div class="gate-veil"></div>
+  <div class="gate-inner">
+    <div class="gate-brand">
+      <div class="gate-hanja">藏經閣</div>
+      <div class="gate-sub">심곡사 뒤편, 장부가 잠든 전각</div>
+    </div>
+    <p class="gate-warn">풍경(風磬)이 우는 자리에서<br><b>스님이 장부를 덮지 못하고 있습니다</b></p>
+    <button class="gate-btn" id="enterBtn">장경각에 오른다</button>
+    <p class="gate-note">· 소리와 함께 오르시길 바랍니다 ·</p>
+  </div>
+</div>
+
+<!-- ═══════════ 로딩 오버레이 ═══════════ -->
+<div id="loading">
+  <video class="load-bg" src="../assets/hw_gate.mp4" muted loop playsinline preload="none" poster="../assets/hw_gate.jpg"></video>
+  <div class="load-veil"></div>
+  <div class="load-ring">
+    <div class="ring"></div>
+    <div class="ring2"></div>
+    <div class="ring3"></div>
+    <div class="core">財</div>
+  </div>
+  <p id="loadtext"></p>
+</div>
+
+<div id="app">
+
+  <!-- ═══════════ SCENE 0 : 히어로 ═══════════ -->
+  <section class="scene" id="hero">
+    <video class="bg" src="../assets/hw_bell.mp4" muted loop playsinline preload="auto" poster="../assets/hw_bell.jpg"></video>
+    <div class="veil"></div>
+    <div class="title-wrap">
+      <div class="hanja"><span>藏</span><span>經</span><span>閣</span></div>
+      <div class="sub">심 곡 사 · 장 경 각</div>
+      <div class="title-glow"></div>
+    </div>
+    <div class="dialog" data-scene="0">
+      <p class="line whisper">— 심곡사 뒤편, 가장 깊은 전각 —</p>
+      <p class="line">수천 권의 장부가 잠든 장경각.<br>밤마다 불이 꺼지지 않는 이유를,<br>아는 이는 <em>없다.</em></p>
+      <div class="choices">
+        <button class="choice" data-next="1">풍경 소리를 따라 오른다</button>
+      </div>
+    </div>
+    <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
+  </section>
+
+  <!-- ═══════════ SCENE 1 : 숲길 ═══════════ -->
+  <section class="scene hidden-scene" id="scene1" style="display:none">
+    <video class="bg" src="../assets/hw_steps.mp4" muted loop playsinline preload="none" poster="../assets/hw_steps.jpg"></video>
+    <div class="veil"></div>
+    <span class="scene-tag">壹</span>
+    <div class="dialog" data-scene="1">
+      <p class="line whisper">돌계단이 어둠 속으로 이어진다.</p>
+      <p class="line">계단 끝, 무거운 문 하나.<br>문틈으로 <em>등불</em>이 새어 나오고 있다.</p>
+      <p class="line whisper">…안에서, 엽전 세는 소리가 난다.<br>짤랑. 짤랑. 한 닢씩.</p>
+      <div class="choices">
+        <button class="choice" data-next="2">문을 민다</button>
+        <button class="choice" data-next="2" data-hesitate="1">잠시 숨을 고른다</button>
+      </div>
+    </div>
+    <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
+  </section>
+
+  <!-- ═══════════ SCENE 2 : 현월과 대면 ═══════════ -->
+  <section class="scene hidden-scene" id="scene2" style="display:none">
+    <video class="bg" src="../assets/hw_door.mp4" muted loop playsinline preload="none" poster="../assets/hw_door.jpg"></video>
+    <div class="veil"></div>
+    <span class="scene-tag">貳</span>
+    <div class="dialog" data-scene="2">
+      <p class="line whisper" data-hesitate-line style="display:none">…숨을 고르는 사이, 문이 안에서 열렸다.</p>
+      <p class="line voice">"올 줄 알았다."</p>
+      <p class="line">책장 사이, 등불 아래—<br>잿빛 승복의 사내가<br>고개도 들지 않고 말한다.</p>
+      <p class="line voice">"이 각(閣)을 지킨 지 <em>마흔 해</em>.<br>돈 때문에 산을 오른 얼굴은…<br>문소리부터 다르지."</p>
+      <div class="choices">
+        <button class="choice" data-ask="start">"…스님이, 그걸 어떻게 아십니까?"</button>
+      </div>
+    </div>
+    <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
+  </section>
+
+  <!-- ═══════════ SCENE 2.5 : 인적사항 문답 ═══════════ -->
+  <section class="scene hidden-scene" id="sceneAsk" style="display:none">
+    <video class="bg" id="askBg" src="../assets/hw_desk.mp4" muted loop playsinline preload="none" poster="../assets/hw_desk.jpg"></video>
+    <div id="askFade" style="position:absolute;inset:0;z-index:0;background:#000;opacity:1;transition:opacity 3s ease;pointer-events:none"></div>
+    <div class="veil"></div>
+    <span class="scene-tag">問</span>
+    <div class="dialog" data-scene="ask">
+      <!-- step 1 : 이름 -->
+      <div class="ask-step" id="ask1">
+        <p class="line voice">"내가 아는 게 아니다.<br><em>장부가 아는 것이지.</em>"</p>
+        <p class="line voice" style="margin-top:12px">"허나 네 손으로 적어야 장부가 열린다.<br>이름부터 적거라."</p>
+        <div class="ask-wrap on">
+          <div class="ask-field">
+            <input class="ask-input" id="inName" type="text" maxlength="10" placeholder="이름을 적는다" autocomplete="off">
+            <button class="ask-go" onclick="askName()">적는다</button>
+          </div>
+          <p class="ask-err" id="errName">…이름을 말해야 한다.</p>
+        </div>
+      </div>
+      <!-- step 2 : 생년월일 -->
+      <div class="ask-step" id="ask2" style="display:none">
+        <p class="line voice">"태어난 날을 적거라.<br><em>해와 달과 날</em>— 셈이 어긋나면 아니 된다."</p>
+        <div class="ask-wrap on">
+          <div class="ask-field">
+            <input class="ask-input" id="inBirth" type="text" inputmode="numeric" maxlength="10" placeholder="1995.03.14" autocomplete="off">
+            <button class="ask-go" onclick="askBirth()">적는다</button>
+          </div>
+          <p class="ask-err" id="errBirth">…여덟 자리로 말하거라. (예: 1995.03.14)</p>
+        </div>
+      </div>
+      <!-- step 3 : 성별 -->
+      <div class="ask-step" id="ask3" style="display:none">
+        <p class="line voice">"마지막이다."</p>
+        <div class="ask-wrap on">
+          <div class="ask-row">
+            <button class="ask-opt" onclick="askGender('여',this)">女 · 여자</button>
+            <button class="ask-opt" onclick="askGender('남',this)">男 · 남자</button>
+          </div>
+          <p style="font-size:11px;color:#5c534c;letter-spacing:.06em;line-height:1.8;text-align:center;margin-top:4px">
+            선택 시 적은 이름·생년월일·성별이 풀이 접수 목적으로만 기록됩니다.
+          </p>
+        </div>
+      </div>
+      <!-- step 4 : 반응 -->
+      <div class="ask-step" id="ask4" style="display:none">
+        <p class="line whisper">스님이 낡은 장부를 넘긴다.<br>붓끝이— 한 자리에서 멈춘다.</p>
+        <p class="line voice" id="reactLine1">"……"</p>
+        <p class="line voice"><em>"셈이 맞지 않는군."</em></p>
+        <p class="line whisper">처음으로, 스님이 붓을 내려놓고<br>당신을 똑바로 본다.</p>
+        <div class="choices">
+          <button class="choice" data-next="3">"…뭐가, 맞지 않습니까?"</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCENE 3 : 선고 (가면 벗기) ═══════════ -->
+  <section class="scene hidden-scene" id="scene3" style="display:none">
+    <video class="bg" src="../assets/hw_counting.mp4" muted loop playsinline preload="none" poster="../assets/hw_counting.jpg"></video>
+    <div class="veil"></div>
+    <span class="scene-tag">參</span>
+    <div class="dialog" data-scene="3">
+      <p class="line voice" id="sorryLine">"그랬던 게로구나…"</p>
+      <p class="line voice">"<em>모자란 게 아니라, 새고 있던 것이야.</em>"</p>
+      <p class="line" style="margin-top:8px">스님이 엽전 한 닢을,<br>소리 나게— 내려놓는다.</p>
+      <p class="line voice" data-quake>"네 재물 장부에 <em>구멍(漏)</em>이 뚫려 있다."</p>
+      <p class="line">낮은 목소리가<br>서가 전체에 가라앉는다.</p>
+      <p class="line voice">"벌이가 문제가 아니야.<br><em>새는 자리를 모르고 살았던 것뿐이지.</em>"</p>
+      <p class="line voice" id="showLine">"보여주랴 —<br>네 돈이 빠져나가는 <em>진짜 구멍.</em>"</p>
+      <div class="choices">
+        <button class="choice" data-next="sales">"…보여주십시오."</button>
+      </div>
+    </div>
+    <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
+  </section>
+
+  <!-- ═══════════ 세일즈 랜딩 (결과지) ═══════════ -->
+  <div id="sales" style="display:none">
+
+    <!-- 개인화 선고 -->
+    <section class="sec img-sec">
+      <video class="bg" src="../assets/hw_gaze.mp4" muted loop playsinline preload="none" poster="../assets/hw_gaze.jpg"></video>
+      <div class="veil2"></div>
+      <div class="inner">
+        <p class="h-red rv" id="pTag" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 8px #000,0 0 24px #000">— 장경각 재물 감정 —</p>
+        <h2 class="h-big rv" id="pHead" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 12px rgba(0,0,0,.96),0 6px 26px #000,0 0 44px #000">허어…<br><span class="r">너, 크게 새고 있다</span></h2>
+        <p class="p-body rv" id="pSub" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">"장경각을 지키는 승려로서 말한다.<br>지금부터— <em>네 재물의 원국(原局)</em>이다."</p>
+      </div>
+    </section>
+
+    <!-- 사용자 정보 낭독 -->
+    <section class="sec" style="padding:74px 26px 8px">
+      <div class="recite">
+        <p class="rv" id="rcBirth" style="transition-delay:.1s">─ 년생, ─월 ─일…</p>
+        <p class="rv" id="rcGender" style="transition-delay:.6s">─</p>
+        <p class="rv rc-name" id="rcName" style="transition-delay:1.1s">이름은— ─.</p>
+      </div>
+    </section>
+
+    <!-- 원국 차트 -->
+    <section class="sec" style="padding-top:0">
+      <div class="chart-frame rv">
+        <img class="chart-bg" src="../assets/chart.jpg" alt="">
+        <div class="chart-inner">
+          <div class="chart-title" id="chartOwner">四柱原局</div>
+          <div class="pillars">
+            <div class="pillar locked" id="pillarHour">
+              <div class="plabel">時柱</div>
+              <div class="pchar"><div>甲</div><div>子</div></div>
+            </div>
+            <div class="pillar locked" id="pillarDay">
+              <div class="plabel">日柱</div>
+              <div class="pchar"><div>丙</div><div>午</div></div>
+            </div>
+            <div class="pillar locked cursed" id="pillarMonth">
+              <span class="curse-mark">漏</span>
+              <div class="plabel">月柱</div>
+              <div class="pchar"><div>庚</div><div>申</div></div>
+            </div>
+            <div class="pillar" id="pillarYear">
+              <div class="plabel">年柱</div>
+              <div class="pchar"><div id="yStem">乙</div><div id="yBranch">亥</div></div>
+            </div>
+          </div>
+          <p class="chart-note">붉은 표식 — <b>재물이 새는 자리</b><br>잠긴 기둥은, 풀이에서 전부 열어 주마</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 흉살 진단 -->
+    <section class="sec" style="padding-top:30px">
+      <p class="h-red rv">네 재물 장부에서 나온</p>
+      <h2 class="h-big rv"><span class="r" id="salCount">2개의 구멍</span></h2>
+      <div id="salCards"></div>
+      <p class="toc-note rv">* 구멍이 벌어지는 해, 크기, 막는 법—<br>전부 셈해 뒀다. 풀이에서 열어 봐라.</p>
+    </section>
+
+    <!-- 후크 -->
+    <section class="sec">
+      <p class="h-red rv">"왜 이렇게</p>
+      <h2 class="h-big rv">벌어도 <span class="r">안 모이지?"</span></h2>
+      <div class="h-hanja rv">漏財</div>
+      <p class="p-body rv">사주 속 <em>새는 구멍(漏)</em>이<br>네 돈을 흘려보내고 있다.</p>
+      <ul class="chk">
+        <li class="rv" style="transition-delay:.05s">월급은 오르는데, 통장은 그대로고</li>
+        <li class="rv" style="transition-delay:.25s">목돈 좀 모이면, 꼭 나갈 일이 생기고</li>
+        <li class="rv" style="transition-delay:.45s">남 좋은 일만 하고, 내 몫은 없고</li>
+        <li class="rv" style="transition-delay:.65s">투자만 하면, 꼭 꼭지에서 물리고</li>
+        <li class="rv" style="transition-delay:.85s">열심히 버는데— 잔고는 멈춰 있고</li>
+      </ul>
+      <p class="p-dim rv">"돈복이 없다"고 넘겨 왔겠지.<br>아니야.<br><b style="color:var(--ink)">새는 자리를 모르고 있었을 뿐이다.</b></p>
+    </section>
+
+    <!-- 살이란 -->
+    <section class="sec img-sec">
+      <video class="bg" src="../assets/hw_coins.mp4" muted loop playsinline preload="none" poster="../assets/hw_coins.jpg"></video>
+      <div class="veil2"></div>
+      <div class="inner">
+        <div class="hr-knife rv"></div>
+        <p class="p-body rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">구멍(漏)은—</p>
+        <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">모르고 두면<br>평생 너를 마르게 하는 <em>가난</em>이지만,</p>
+        <p class="p-body rv" style="margin-top:44px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">막아 내면<br>그 자리부터 고이기 시작하는 <em>복(福)</em>이다.</p>
+        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">네가 외면해 온,<br>장부 속 뒷 페이지.<br><br>정면으로 마주하고— 막아라.</p>
+      </div>
+    </section>
+
+    <!-- 현월 소개 -->
+    <section class="sec img-sec">
+      <img class="bg" src="../assets/hw_aisle.jpg" alt="">
+      <div class="veil2"></div>
+      <div class="inner">
+        <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">심곡사 뒤편, 장경각</p>
+        <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">마흔 해째 장부를<br>지키는 스님, <span class="r">현월</span></h2>
+        <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">
+          수천 권의 만세력과<br><em>재물 장부의 기록</em>이 잠든 전각.<br>그 문을 40년째 지켜 온 승려.<br><br>
+          스무 해,<br><em>4,000명</em>의 재물 사주를 셈했다.
+        </p>
+        <p class="p-dim rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">
+          신점(神占)이 아니다.<br>정통 명리학 · 만세력 기반의 사주 풀이다.
+        </p>
+      </div>
+    </section>
+
+    <!-- 재물운 그래프 -->
+    <section class="sec">
+      <p class="h-red rv">셈 미리보기 · 壹</p>
+      <h2 class="h-big rv">"돈이 한 번 크게<br><span class="r">고이는 판이던데."</span></h2>
+      <div class="graph-frame rv">
+        <div class="graph-title" id="graphOwner">財物運 흐름도</div>
+        <svg viewBox="0 0 320 150" width="100%" style="display:block">
+          <defs>
+            <linearGradient id="gline" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#6b511f"/><stop offset="1" stop-color="#e0a43c"/>
+            </linearGradient>
+            <linearGradient id="gfill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(224,164,60,.28)"/><stop offset="1" stop-color="rgba(224,164,60,0)"/>
+            </linearGradient>
+          </defs>
+          <path d="M10,95 L60,78 L105,112 L150,60 L195,88 L245,30 L310,55 L310,150 L10,150 Z" fill="url(#gfill)"/>
+          <path d="M10,95 L60,78 L105,112 L150,60 L195,88 L245,30 L310,55" fill="none" stroke="url(#gline)" stroke-width="2.5"/>
+          <circle cx="105" cy="112" r="6" fill="#3d2c0d" stroke="#e8d5a7" stroke-width="1.5"/>
+          <circle cx="245" cy="30" r="7" fill="#a3701c" stroke="#ffe4b0" stroke-width="2">
+            <animate attributeName="r" values="7;9;7" dur="2s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+        <div class="graph-tags">
+          <span class="gtag bad"><b>줄줄 새는 해</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
+          <span class="gtag good"><b>크게 고이는 해</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
+        </div>
+      </div>
+      <p class="toc-note rv">재물이 크게 고이는 해와, 줄줄 새는 해.<br>정확한 연도는— 풀이에서 보여주마.</p>
+    </section>
+
+    <!-- 잠긴 티저 목록 -->
+    <section class="sec" style="background:var(--bg2)">
+      <p class="h-red rv">셈 미리보기 · 貳</p>
+      <h2 class="h-big rv">"이미 다<br><span class="r">셈해 뒀다."</span></h2>
+      <p class="p-dim rv">네 장부를 보고 전부 셈해 뒀다.<br>열람만 잠겨 있을 뿐.</p>
+      <div class="locklist">
+        <div class="lockitem rv">
+          <div class="li-head"><span class="li-no">其一</span><span class="li-title">평생 담을 수 있는<br>내 재물 그릇의 최대치</span></div>
+          <div class="li-body"><p>재성의 흐름이 대운과 맞물려 그릇이 가득 차는 구간이 두 번 존재하며 그 정점은 당신의 나이로 셈했을 때 대략…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+        </div>
+        <div class="lockitem rv">
+          <div class="li-head"><span class="li-no">其二</span><span class="li-title">내 돈을 걷어가는 얼굴 vs<br>돈길을 열어 줄 귀인 구별법</span></div>
+          <div class="li-body"><p>당신의 원국은 특정 오행의 사람에게 재물이 새는 구조라서 지금까지 돈이 얽혔던 사람 중에서도…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+        </div>
+        <div class="lockitem rv">
+          <div class="li-head"><span class="li-no">其三</span><span class="li-title">월급·사업·투자 —<br>내 돈이 붙는 밥벌이의 생김새</span></div>
+          <div class="li-body"><p>같은 노력으로도 재물이 배로 붙는 업의 방향이 원국마다 정해져 있는데 당신의 재성 구조로 보면…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+        </div>
+        <div class="lockitem rv">
+          <div class="li-head"><span class="li-no">其四</span><span class="li-title">지긋지긋한 마름이 끝나고<br>돈이 고이기 시작하는 시기</span></div>
+          <div class="li-body"><p>지금의 마른 구간은 당신 탓이 아니라 재물 대운의 골짜기이며 이 골짜기를 빠져나가는 정확한 시점은…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+        </div>
+        <div class="lockitem rv">
+          <div class="li-head"><span class="li-no">其五</span><span class="li-title">잃지 않고 불리는,<br>내 원국만의 지키는 법(藏)</span></div>
+          <div class="li-body"><p>드러나면 새고 감추면 고이는 것이 재물인데, 당신의 구조에서 돈을 감춰 둘 자리와 방위는…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3단 심층 살풀이 -->
+    <section class="sec">
+      <p class="h-red rv">현월의</p>
+      <h2 class="h-big rv">3단 재물 <span class="r">셈법</span></h2>
+
+      <div style="margin-top:70px">
+        <div class="stepnum rv">壹</div>
+        <div class="stepline"></div>
+        <h3 class="h-big rv" style="font-size:20px">언제, 어디서 새는지</h3>
+        <div class="timeline rv" id="salTimeline"></div>
+        <p class="toc-note rv">* 가려진 자리는 풀이에서 열린다.</p>
+      </div>
+
+      <div style="margin-top:80px">
+        <div class="stepnum rv">貳</div>
+        <div class="stepline"></div>
+        <h3 class="h-big rv" style="font-size:20px">구멍부터, 막는 법까지</h3>
+        <div class="card rv" id="salDeepCard">
+          <h4>비겁탈재 <span>(比劫奪財)</span></h4>
+          <p>곁의 사람이 재물을 걷어가는 구멍.
+          동업, 보증, 빌려준 돈으로 작동한다.<br><br>
+          — 네게 유독 크게 새는 이유<br>
+          — 막는 방위·시기·방법까지<br>
+          하나하나 셈해 주마.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:80px">
+        <div class="stepnum rv">參</div>
+        <div class="stepline"></div>
+        <h3 class="h-big rv" style="font-size:20px">막고 난 뒤</h3>
+        <div class="ba rv">
+          <div class="b">
+            <h5>막기 전</h5>
+            <p>월말마다 잔고를 보며 한숨 쉬는 밤.
+            벌어도 벌어도 제자리인
+            패턴이 굳는다.</p>
+          </div>
+          <div class="a">
+            <h5>막고 난 후</h5>
+            <p>같은 벌이가 <b>고이기 시작한다.</b>
+            언제 지키고 언제 굴릴지—
+            새는 자리를 아는 자의 돈은 다르다.</p>
+          </div>
+        </div>
+        <p class="toc-note rv" style="margin-top:26px">* 심곡사의 재물 풀이는 굿·부적 판매가 아닌,<br>명리학 재성론(財星論)에 근거한 서면 분석입니다.</p>
+      </div>
+    </section>
+
+    <!-- 보고서 목업 + 목차 -->
+    <section class="sec img-sec">
+      <video class="bg" src="../assets/hw_seal.mp4" muted loop playsinline preload="none" poster="../assets/hw_seal.jpg"></video>
+      <div class="veil2"></div>
+      <div class="inner">
+        <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">네가 받을 것</p>
+        <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">장경각의 기록,<br><span class="r">재물의 경(經)</span></h2>
+        <p class="p-dim rv" id="bookOwner" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">네 이름이 적힌, 단 한 권의 장부.<br>평생 소장하는 상세 분석서.</p>
+        <div class="toc rv">
+          <div class="t"><span class="n">壹</span><span class="x">재물 원국 — 네 돈의 그릇부터 잰다</span></div>
+          <div class="t"><span class="n">貳</span><span class="x">구멍(漏) — 새는 자리, 전부 짚는다</span></div>
+          <div class="t"><span class="n">參</span><span class="x">물길 — 돈이 들어오는 길, 막힌 길</span></div>
+          <div class="t"><span class="n">肆</span><span class="x">그릇 — 평생 담을 재물의 최대치</span></div>
+          <div class="t"><span class="n">伍</span><span class="x">때 — 고이는 해, 새는 해, 크게 열리는 해</span></div>
+          <div class="t"><span class="n">陸</span><span class="x">업(業) — 돈이 붙는 밥벌이의 생김새</span></div>
+          <div class="t"><span class="n">柒</span><span class="x">장(藏) — 지키고 감추고 불리는 법</span></div>
+          <div class="t"><span class="n">捌</span><span class="x">귀인 — 돈길을 열어 줄 얼굴들</span></div>
+          <div class="t"><span class="n">玖</span><span class="x">열두 달 — 다가올 한 해, 재물 달력</span></div>
+          <div class="t"><span class="n">拾</span><span class="x">십 년 — 재물 대운의 능선을 그려 준다</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 후기 -->
+    <section class="sec">
+      <p class="h-red rv">구멍을 막은 뒤</p>
+      <h2 class="h-big rv">그들에게 일어난 일</h2>
+      <div class="review rv">
+        <div class="who">이○훈 · 41세 · 자영업</div>
+        <div class="quote">"가게 10년에, 남은 게 없었는데…"</div>
+        <p>새는 자리 세 군데를 딱 짚어주는데 소름이었어요. 동업 건 정리하고 나서 처음으로 월말에 돈이 남았습니다. 장부 넘기듯 설명해 줘서 어렵지도 않았고요.</p>
+      </div>
+      <div class="review rv">
+        <div class="who">김○아 · 33세 · 직장인</div>
+        <div class="quote">"제가 돈을 못 모으는 이유가, 있었어요"</div>
+        <p>적금 깨는 게 버릇이었는데 그릇 이야기를 읽고 관리 방식을 통째로 바꿨어요. 반년 만에 처음으로 목돈이라는 게 생겼습니다.</p>
+      </div>
+      <div class="review rv">
+        <div class="who">정○석 · 38세 · 프리랜서</div>
+        <div class="quote">"투자만 하면 물리는 게, 팔자였다니"</div>
+        <p>움직여야 돈이 붙는 판이라는 말에 일하는 방식을 바꿨는데 진짜 수입 구조가 달라졌어요. 40만원 주고 봤던 대면 상담보다 낫습니다.</p>
+      </div>
+      <p class="review-src rv">* 실제 상담 후기를 재구성한 예시입니다.</p>
+    </section>
+
+    <!-- 가격 -->
+    <section class="sec" style="background:var(--bg2)">
+      <p class="h-red rv">답답할 때마다</p>
+      <h2 class="h-big rv">재테크 강의 듣고,<br>부적 쓰고, 굿까지…</h2>
+      <p class="price-strike rv">
+        강의 <s>–39만원</s> · 부적 <s>–55만원</s> · 굿 <s>–120만원</s><br>
+        <b style="color:var(--ink)">수백만 원, 쓸 필요 없다.</b>
+      </p>
+      <p class="p-body rv">집에서 받는 <em>맞춤형 재물 풀이</em></p>
+      <p class="p-body rv" style="margin-top:50px"><span style="font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-size:22px">기간 한정, 특별 혜택가</span></p>
+
+      <div class="plan hot rv">
+        <div class="head"><span>먼저 문을 두드린 값 · 현월의 재물 셈법</span><span class="tag">한정</span></div>
+        <div class="body">
+          <div class="row1">
+            <div>
+              <div class="amount">38,900<small>원</small></div>
+              <div class="was"><s>정가 229,000원</s> · 선착순 마감</div>
+            </div>
+            <div class="off">83<small>%</small></div>
+          </div>
+          <ul>
+            <li>현월이 네 재물 판을 직접 셈하고, 직접 적는다</li>
+            <li>「재물의 경(經)」 상세 분석서 (평생 소장)</li>
+            <li>구멍의 뿌리 — 시기·크기·막는 법까지</li>
+            <li>그릇·물길·때 + 업·귀인·십년 대운</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="plan base rv">
+        <div class="head"><span>정가</span><span class="tag">기간 후</span></div>
+        <div class="body">
+          <div class="row1">
+            <div>
+              <div class="amount">229,000<small>원</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="toc-note rv" style="margin-top:20px">한 번 셈한 장부는, 평생 네 것이다.</p>
+
+      <p class="toc-note rv" style="margin-top:30px">결제가 끝나는 그 순간,<br>네 「재물의 경(經)」이 서고에 꽂힌다.</p>
+
+      <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 돈 새는 구멍(漏) 확인하기</a>
+    </section>
+
+    <!-- 공유 (맨 하단 — 푸터 직전) -->
+    <section class="sec" style="padding-top:80px;padding-bottom:60px">
+      <div class="hr-knife rv"></div>
+      <p class="h-red rv" style="margin-top:50px">혼자 알기엔</p>
+      <h2 class="h-big rv">아까운 셈이라면</h2>
+      <p class="p-dim rv" style="margin-top:18px">네 곁에도, 벌어도 벌어도<br>모이지 않는다는 얼굴이 하나쯤 있을 것이다.<br>그 사람에게— 이 각(閣)을 열어줘라.</p>
+      <button class="rv" id="shareBtn" onclick="shareSite()" style="
+        display:inline-flex;align-items:center;gap:12px;margin-top:30px;
+        appearance:none;cursor:pointer;font-family:'Nanum Myeongjo','Noto Serif KR',serif;
+        background:rgba(12,8,7,.85);color:var(--paper);
+        border:1px solid rgba(208,140,58,.55);border-radius:3px;
+        font-size:15px;font-weight:700;letter-spacing:.2em;text-indent:.1em;
+        padding:17px 34px;
+        box-shadow:0 0 26px rgba(150,96,26,.18), inset 0 0 16px rgba(208,140,58,.06);">
+        <span style="width:8px;height:8px;border-radius:50%;background:#FEE500;box-shadow:0 0 10px rgba(254,229,0,.6)"></span>
+        카카오톡으로 문을 전한다
+      </button>
+      <p class="toc-note rv" id="shareDone" style="display:none;margin-top:14px">문이 전해졌다.</p>
+    </section>
+
+    <footer style="user-select:none;-webkit-user-select:none;pointer-events:none">
+      深谷寺 심곡사 · 장경각 현월<br>
+      상호명 이공이사랩 · 대표자 송승환<br>
+      사업자등록번호 579-21-01801<br>
+      문의 메일 simgoksa.com@gmail.com (전화 상담 미운영)<br>
+      © 2026 이공이사랩 · 심곡사(simgoksa). All rights reserved.
+    </footer>
+  </div><!-- /sales -->
+
+</div><!-- /app -->
+
+<!-- ═══════════ 로그인/회원가입 모달 ═══════════ -->
+<div class="modal-veil" id="authModal">
+  <div class="modal">
+    <button class="m-close" onclick="closeAuth()">✕</button>
+    <p class="m-tag">深谷寺 書庫</p>
+    <h3 id="authTitle">서고의 열쇠</h3>
+    <p class="m-sub" id="authSub">풀이는 네 서고(書庫)에 꽂힌다.<br>열쇠부터 만들어라.</p>
+    <div class="m-field"><input type="email" id="authEmail" placeholder="이메일" autocomplete="email"></div>
+    <div class="m-field"><input type="password" id="authPw" placeholder="비밀번호 (6자 이상)" autocomplete="new-password"></div>
+    <div class="m-field" id="authPw2Wrap"><input type="password" id="authPw2" placeholder="비밀번호 다시 한 번" autocomplete="new-password"></div>
+    <p class="m-err" id="authErr"></p>
+    <button class="m-btn" id="authGo" onclick="submitAuth()">열쇠 받기 · 회원가입</button>
+    <p class="m-switch" id="authSwitch">이미 열쇠가 있다면 <a onclick="toggleAuthMode()">로그인</a></p>
+  </div>
+</div>
+
+<!-- ═══════════ 구매 모달 ═══════════ -->
+<div class="modal-veil" id="buyModal">
+  <div class="modal">
+    <button class="m-close" onclick="closeBuy()">✕</button>
+    <p class="m-tag">深谷寺</p>
+    <h3 id="buyTitle">셈을 받는다</h3>
+    <p class="m-sub" id="buySub">결제가 끝나는 그 순간,<br>네 서고에 「재물의 경(經)」이 꽂힌다.</p>
+    <div class="buy-card">
+      <div class="b-head">현월의 재물 셈법 · 재물의 경(經)</div>
+      <div class="b-body">
+        <div class="b-name" id="buyFor">—</div>
+        <div class="b-price"><s>229,000원</s>38,900<small>원</small><span class="pct">83%↓</span></div>
+      </div>
+    </div>
+    <button class="m-btn" id="buyGo" onclick="startPay()">결제하기</button>
+    <p class="m-note">결제 완료 즉시 접수되며,<br>완성된 풀이는 <a href="../library/" style="color:var(--ember)">내 서고</a>에서 언제든 읽을 수 있습니다.</p>
+  </div>
+</div>
+
+<!-- 하단 고정 CTA -->
+<div id="sticky">
+  <a href="#" onclick="goCTA(event)"><span class="blink"></span><span id="stickyText">새는 구멍(漏)의 셈을 받아라</span></a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* ───────── state ───────── */
+const user = { name:'', birth:null, gender:'' };
+
+/* ───────── Supabase 리드 수집 (INSERT 전용 키 — RLS로 조회 차단됨) ───────── */
+const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
+const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
+const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+let lastSals = [];
+function track(event, extra){
+  try{
+    const row = {
+      event,
+      ...(extra || {}),
+      session_id: sessionId,
+      name: user.name || null,
+      birth: user.birth ? `${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}` : null,
+      gender: user.gender || null,
+      sals: lastSals.length ? lastSals : null,
+      year_pillar: user.birth ? (STEMS[(user.birth.y-4)%10] + BRANCHES[(user.birth.y-4)%12]) : null,
+      product: 'hyunwol',
+      user_agent: navigator.userAgent.slice(0, 250)
+    };
+    fetch(SUPA_URL + '/rest/v1/leads', {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'apikey': SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(row)
+    }).catch(()=>{});
+  }catch(e){}
+}
+
+/* ───────── ambient sound (WebAudio drone) ───────── */
+let actx = null, master = null;
+function startSound(){
+  try{
+    actx = new (window.AudioContext||window.webkitAudioContext)();
+    master = actx.createGain(); master.gain.value = 0; master.connect(actx.destination);
+    const o1 = actx.createOscillator(); o1.type='sine'; o1.frequency.value = 54;
+    const o2 = actx.createOscillator(); o2.type='sine'; o2.frequency.value = 54.7;
+    const og = actx.createGain(); og.gain.value = .12;
+    o1.connect(og); o2.connect(og); og.connect(master);
+    const len = actx.sampleRate * 4;
+    const buf = actx.createBuffer(1, len, actx.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
+    const noise = actx.createBufferSource(); noise.buffer = buf; noise.loop = true;
+    const nf = actx.createBiquadFilter(); nf.type='lowpass'; nf.frequency.value = 320; nf.Q.value = .6;
+    const ng = actx.createGain(); ng.gain.value = .05;
+    noise.connect(nf); nf.connect(ng); ng.connect(master);
+    const lfo = actx.createOscillator(); lfo.frequency.value = .07;
+    const lg = actx.createGain(); lg.gain.value = .035;
+    lfo.connect(lg); lg.connect(ng.gain);
+    o1.start(); o2.start(); noise.start(); lfo.start();
+    // 즉시 인입 — 빠르게 차오르는 드론+바람
+    master.gain.linearRampToValueAtTime(.6, actx.currentTime + 1.1);
+  }catch(e){}
+}
+
+/* 목탁 소리 (톡, 톡) — 선고 순간용 */
+function playTsk(){
+  if (!actx) return;
+  try{
+    const t0 = actx.currentTime + 0.05;
+    [0, 0.42].forEach(off => {
+      const dur = 0.09;
+      const buf = actx.createBuffer(1, Math.floor(actx.sampleRate * dur), actx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.2);
+      const src = actx.createBufferSource(); src.buffer = buf;
+      const bp = actx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 780; bp.Q.value = 9;
+      const g = actx.createGain();
+      g.gain.setValueAtTime(.0001, t0 + off);
+      g.gain.exponentialRampToValueAtTime(.7, t0 + off + 0.005);
+      g.gain.exponentialRampToValueAtTime(.0001, t0 + off + dur);
+      src.connect(bp); bp.connect(g); g.connect(master);
+      src.start(t0 + off);
+    });
+  }catch(e){}
+}
+
+/* ───────── 씬 앰비언스 (영상 루프와 동기화) ───────── */
+const sceneAudios = [];
+function attachAmbience(videoEl, src, vol){
+  if (!videoEl) return null;
+  const a = new Audio(src);
+  a.preload = 'none'; a.volume = vol;
+  sceneAudios.push(a);
+  let lastT = 0;
+  videoEl.addEventListener('play', () => {
+    a.preload = 'auto';
+    try{ a.currentTime = 0; }catch(e){}
+    a.play().catch(()=>{});
+  });
+  videoEl.addEventListener('pause', () => a.pause());
+  videoEl.addEventListener('timeupdate', () => {
+    // 영상이 루프로 되감기면 사운드도 처음부터 다시
+    if (videoEl.currentTime + 0.3 < lastT){
+      try{ a.currentTime = 0; }catch(e){}
+      a.play().catch(()=>{});
+    }
+    lastT = videoEl.currentTime;
+  });
+  return a;
+}
+function pauseAllScenes(){
+  document.querySelectorAll('.scene video, #loading video').forEach(v => { try{ v.pause(); }catch(e){} });
+  sceneAudios.forEach(a => { try{ a.pause(); }catch(e){} });
+}
+function bellChime(){
+  if(!actx) return;
+  try{
+    const t = actx.currentTime;
+    [1244,1866,2489].forEach((f,i) => {
+      const o = actx.createOscillator(); o.type='sine'; o.frequency.value = f;
+      const g = actx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(.08/(i+1), t+.01);
+      g.gain.exponentialRampToValueAtTime(.0001, t+2.2);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t+2.3);
+    });
+  }catch(e){}
+}
+
+/* ───────── 진행 상태 저장/복원 (구매 퍼널 단축) ───────── */
+function saveProgress(){
+  try{ localStorage.setItem('sgs_hyunwol', JSON.stringify({name:user.name, birth:user.birth, gender:user.gender, t:Date.now()})); }catch(e){}
+}
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem('sgs_hyunwol');
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || !d.name || !d.birth || !d.gender) return null;
+    return d;
+  }catch(e){ return null; }
+}
+
+/* ───────── gate ───────── */
+/* 게이트 첫 터치 → 풍경(風磬)+숲바람 앰비언스 즉시 시작 (사전 로딩으로 지연 없음) */
+const gateAmbBells = new Audio('../assets/sfx_hw_bell.mp3');   // 풍경 울림 + 산바람
+gateAmbBells.loop = true; gateAmbBells.volume = 1; gateAmbBells.preload = 'auto';
+const gateAmbSteps = new Audio('../assets/sfx_hw_gate.mp3');   // 밤 숲 룸톤 + 벌레 소리
+gateAmbSteps.loop = true; gateAmbSteps.volume = .72; gateAmbSteps.preload = 'auto';
+let gateAmbOn = false;
+let soundStarted = false;
+function ensureSound(){
+  if (!soundStarted){ soundStarted = true; startSound(); }
+}
+let gateClosed = false;
+function startGateAmb(){
+  if (gateAmbOn || gateClosed) return;
+  const p1 = gateAmbBells.play(), p2 = gateAmbSteps.play();
+  Promise.all([p1, p2].map(p => p || Promise.resolve())).then(() => {
+    if (gateClosed){ gateAmbBells.pause(); gateAmbSteps.pause(); return; }
+    gateAmbOn = true;
+    ensureSound();
+    const note = document.querySelector('#gate .gate-note');
+    if (note) note.textContent = '· 풍경 소리가 들리기 시작합니다 ·';
+  }).catch(()=>{ /* 자동재생 차단 — 첫 제스처를 기다린다 */ });
+}
+// 랜딩 즉시 재생 시도 (재방문·인앱 브라우저 등 자동재생이 허용되는 환경은 바로 들린다)
+startGateAmb();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) startGateAmb(); });
+// 차단된 환경은 화면에 손이 닿는 최초의 순간(스크롤 시작 포함) 바로 시작
+['pointerdown','touchstart','keydown'].forEach(ev =>
+  window.addEventListener(ev, startGateAmb, {capture:true, passive:true}));
+
+function fadeOutGateAmb(){
+  gateClosed = true;
+  [gateAmbBells, gateAmbSteps].forEach(a => {
+    const iv = setInterval(()=>{
+      a.volume = Math.max(0, a.volume - .08);
+      if (a.volume <= 0.01){ a.pause(); clearInterval(iv); }
+    }, 110);
+  });
+}
+
+document.getElementById('enterBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const gate = document.getElementById('gate');
+  gate.classList.add('off');
+  ensureSound();
+  fadeOutGateAmb();
+  setTimeout(bellChime, 600);
+  const v = document.querySelector('#hero video'); if (v) v.play().catch(()=>{});
+  document.querySelector('#hero .title-wrap').classList.add('go');
+  playScene(document.querySelector('#hero .dialog'));
+  if (navigator.vibrate) navigator.vibrate(30);
+}, {once:true});
+
+/* (지난 결과 바로가기 버튼은 이탈 방지를 위해 제거 — 모든 방문자는 처음처럼 시작) */
+
+/* ───────── story engine ───────── */
+const order = ['hero','scene1','scene2','sceneAsk','scene3'];
+let hesitated = false;
+
+function playScene(dialog, root){
+  const scope = root || dialog;
+  const lines = Array.from(scope.querySelectorAll('.line'))
+    .filter(l => !(l.hasAttribute('data-hesitate-line') && !hesitated));
+  const choices = scope.querySelectorAll('.choice');
+  let t = 400;
+  lines.forEach(l => {
+    setTimeout(()=>{
+      l.classList.add('on');
+      if (l.hasAttribute('data-quake')) { quake(); }
+      // 대사가 화면을 넘으면 자동으로 최신 대사를 따라간다 (모바일 잘림 방지)
+      try{ l.scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){}
+    }, t);
+    t += 1400;
+  });
+  choices.forEach(c => setTimeout(()=>{
+    c.classList.add('on');
+    try{ c.scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){}
+  }, t + 300));
+  scope.querySelectorAll('.ask-field,.ask-opt').forEach((el,i) => {
+    setTimeout(()=>el.classList.add('on'), t + 300 + i*250);
+  });
+}
+
+function quake(){
+  document.getElementById('app').classList.remove('shake');
+  void document.getElementById('app').offsetWidth;
+  document.getElementById('app').classList.add('shake');
+  if (navigator.vibrate) navigator.vibrate([60,40,80]);
+}
+
+function gotoScene(id){
+  pauseAllScenes(); // 이전 씬 영상·사운드 정지
+  order.forEach(s => { const el = document.getElementById(s); if (el) el.style.display = 'none'; });
+  const nxt = document.getElementById(id);
+  nxt.style.display = 'flex';
+  const v = nxt.querySelector('video'); if (v) { v.preload='auto'; v.play().catch(()=>{}); }
+  window.scrollTo(0,0);
+  return nxt;
+}
+
+/* 앰비언스 바인딩 (파일: assets/sfx_*.mp3) */
+attachAmbience(document.querySelector('#hero video'), '../assets/sfx_hw_bell.mp3', .85);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_hw_steps.mp3', .9);
+attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_hw_door.mp3', .8);
+const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_hw_desk.mp3', .7);
+attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_counting.mp3', .78);
+attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_hw_gate.mp3', .55);
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.choice');
+  if (!btn) return;
+  if (btn.dataset.hesitate) hesitated = true;
+  if (navigator.vibrate) navigator.vibrate(20);
+  const ask = btn.dataset.ask;
+  if (ask === 'start') { startAsk(); return; }
+  const next = btn.dataset.next;
+  if (!next) return;
+  if (next === 'sales') { enterLoading(); return; }
+  const map = {'1':'scene1','2':'scene2','3':'scene3'};
+  const nxt = gotoScene(map[next]);
+  const hl = nxt.querySelector('[data-hesitate-line]');
+  if (hl && hesitated) hl.style.display = '';
+  if (next === '3') prepScene3();
+  playScene(nxt.querySelector('.dialog'));
+});
+
+function skipStory(){
+  if (!user.name) { startAsk(); return; }
+  enterLoading();
+}
+
+/* ───────── 인적사항 문답 ───────── */
+function startAsk(){
+  const nxt = gotoScene('sceneAsk');
+  // 완전한 어둠에서 시작 → 촛불이 켜지며 서서히 드러남
+  const fade = document.getElementById('askFade');
+  fade.style.opacity = '1';
+  setTimeout(()=>{ fade.style.opacity = '0'; }, 900);
+  showAskStep('ask1');
+}
+function showAskStep(id){
+  ['ask1','ask2','ask3','ask4'].forEach(s => document.getElementById(s).style.display = 'none');
+  const step = document.getElementById(id);
+  step.style.display = 'block';
+  // 생년월일 단계부터: 장부에 붓글씨를 적어 내려가는 배경으로 전환
+  if (id === 'ask2') {
+    const bg = document.getElementById('askBg');
+    if (bg && !bg.dataset.writing) {
+      bg.dataset.writing = '1';
+      bg.style.transition = 'opacity 1.2s ease';
+      bg.style.opacity = '0';
+      setTimeout(() => {
+        bg.src = '../assets/hw_writing.mp4';
+        bg.poster = '../assets/hw_writing.jpg';
+        if (askAmb){ askAmb.src = '../assets/sfx_hw_writing.mp3'; } // 붓글씨 사운드로 교체
+        bg.play().catch(()=>{});
+        bg.style.opacity = '1';
+      }, 1200);
+    }
+  }
+  playScene(null, step);
+  const inp = step.querySelector('.ask-input');
+  if (inp) setTimeout(()=>inp.focus(), 1600);
+}
+function askName(){
+  const v = document.getElementById('inName').value.trim();
+  const err = document.getElementById('errName');
+  if (v.length < 2) { err.style.display='block'; return; }
+  err.style.display='none';
+  user.name = v;
+  if (navigator.vibrate) navigator.vibrate(20);
+  showAskStep('ask2');
+}
+function askBirth(){
+  const raw = document.getElementById('inBirth').value.trim().replace(/[^0-9]/g,'');
+  const err = document.getElementById('errBirth');
+  if (raw.length !== 8) { err.style.display='block'; return; }
+  const y = +raw.slice(0,4), m = +raw.slice(4,6), d = +raw.slice(6,8);
+  if (y < 1920 || y > 2015 || m < 1 || m > 12 || d < 1 || d > 31) { err.style.display='block'; return; }
+  err.style.display='none';
+  user.birth = {y, m, d};
+  if (navigator.vibrate) navigator.vibrate(20);
+  showAskStep('ask3');
+}
+function askGender(g, el){
+  user.gender = g;
+  el.classList.add('sel');
+  if (navigator.vibrate) navigator.vibrate(20);
+  const age = new Date().getFullYear() - user.birth.y + 1;
+  document.getElementById('reactLine1').innerHTML =
+    '"…' + esc(user.name) + '.<br>' + age + '해를 살아왔구나."';
+  setTimeout(()=>showAskStep('ask4'), 500);
+}
+function esc(s){ const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+/* ───────── scene3 개인화 ───────── */
+function prepScene3(){
+  if (user.name) {
+    document.getElementById('sorryLine').innerHTML = '"그랬던 게로구나… ' + esc(user.name) + '."';
+  }
+}
+
+/* ───────── 만세력 : 년주 계산 (갑자) ───────── */
+const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const SAL_POOL = [
+  {h:'奪', name:'비겁탈재', hanja:'比劫奪財', lv:'심각', desc:'곁의 사람이 네 돈을 걷어가는 구멍이다. 동업, 보증, 빌려주고 못 받은 돈— 전부 이 구멍으로 샜다.', lock:'누가, 어느 방향의 사람이 가져가는지는 네 경우'},
+  {h:'弱', name:'재다신약', hanja:'財多身弱', lv:'심각', desc:'그릇보다 물이 많은 격이다. 큰돈이 들어와도 쥐지 못하고 흘려보낸다— 담을 그릇부터 길러야 한다.', lock:'네 그릇이 여물어 큰물을 담아내는 때는'},
+  {h:'洩', name:'식상설기', hanja:'食傷洩氣', lv:'위험', desc:'버는 재주보다 쓰는 구멍이 큰 자리다. 들어오는 족족 빠져나가는 씀씀이— 네 탓만은 아니다, 판이 그렇게 생겼다.', lock:'설기를 막아 재(財)로 돌리는 길목은'},
+  {h:'空', name:'재고공망', hanja:'財庫空亡', lv:'위험', desc:'돈이 머무는 창고 자리가 비어 있다. 모아도 쌓이지 않고, 쌓여도 오래가지 못한 이유— 이거다.', lock:'빈 창고를 채우는 보(補)의 방위와 때는'},
+  {h:'驛', name:'역마재', hanja:'驛馬財', lv:'주의', desc:'돈이 길 위에 떠 있는 격이다. 앉아서 버는 재물은 얇고, 움직여야 돈이 붙는다— 방향이 문제다.', lock:'역마가 재와 만나 크게 열리는 방위와 해는'},
+  {h:'劫', name:'겁재노출', hanja:'劫財露出', lv:'주의', desc:'드러난 돈은 뺏기는 격이다. 벌이가 알려질수록 새는 속도가 빨라진다— 감추는 법을 알아야 한다.', lock:'재물을 감추고 불리는 장(藏)의 법은 네 원국에서'}
+];
+function hashUser(){
+  const s = user.name + (user.birth ? user.birth.y+''+user.birth.m+''+user.birth.d : '') + user.gender;
+  let h = 0;
+  for (let i = 0; i < s.length; i++){ h = ((h<<5)-h+s.charCodeAt(i))|0; }
+  return Math.abs(h);
+}
+function fillSales(){
+  const nm = user.name ? esc(user.name) : '';
+  if (nm){
+    document.getElementById('pHead').innerHTML = nm + '. 허어…<br><span class="r">너, 크게 새고 있다</span>';
+    document.getElementById('chartOwner').textContent = user.name + ' — 財物原局';
+    document.getElementById('graphOwner').textContent = user.name + ' — 財物運 흐름도';
+    document.getElementById('stickyText').textContent = nm + ', 네 재물의 셈을 받아라';
+    document.getElementById('ctaMain').textContent = nm + ', 네 재물의 셈을 받아라';
+    document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>네 이름이 적힌, 단 한 권의 장부.<br>평생 소장하는 상세 분석서.';
+  }
+  if (user.birth){
+    const y = user.birth.y;
+    document.getElementById('yStem').textContent = STEMS[(y - 4) % 10];
+    document.getElementById('yBranch').textContent = BRANCHES[(y - 4) % 12];
+    document.getElementById('rcBirth').textContent = y + '년생, ' + user.birth.m + '월 ' + user.birth.d + '일…';
+  }
+  if (user.gender){
+    document.getElementById('rcGender').textContent = user.gender === '여' ? '여자.' : '남자.';
+  }
+  if (nm){
+    document.getElementById('rcName').innerHTML = '이름은— ' + nm + '.';
+  }
+  // 흉살 진단 (이름+생일 기반 고정 선택 · 2~3개 가변)
+  const h = hashUser();
+  const count = 2 + ((h >> 5) % 2);
+  const picks = [];
+  let idx = h % SAL_POOL.length;
+  const step = ((h >> 7) % 2) ? 5 : 1; // 6과 서로소인 걸음만 사용 → 전체 순환 보장
+  while (picks.length < count){
+    if (!picks.includes(SAL_POOL[idx])) picks.push(SAL_POOL[idx]);
+    idx = (idx + step) % SAL_POOL.length;
+  }
+  document.getElementById('salCount').textContent = picks.length + '개의 구멍';
+  document.getElementById('salCards').innerHTML = picks.map(s => `
+    <div class="sal-card rv">
+      <div class="sal-head">
+        <span class="sal-hanja">${s.h}</span>
+        <span class="sal-name">${s.name}<small>${s.hanja}</small></span>
+        <span class="sal-lv">${s.lv}</span>
+      </div>
+      <div class="sal-body">
+        <p>${s.desc}</p>
+        <div class="sal-lock">
+          <p>${s.lock} ■■■■■■■■■■■■■■■■■■■■■■■■■■■■</p>
+          <div class="lock-tag">🔒 심층 풀이에서 공개</div>
+        </div>
+      </div>
+    </div>`).join('');
+  // 타임라인 (연도·살 개인화 + 핵심 블러)
+  const nowY = new Date().getFullYear();
+  const pastY = nowY - 2 - (h % 3);
+  const futureY = nowY + 2 + ((h >> 4) % 3);
+  const effects = ['목돈이 깨지는 <b>지출 사고</b>','곁 사람에게 <b>새어 나간 돈</b>','투자에서 <b>물리는 자리</b>','벌이가 <b>끊기는 고비</b>','창고가 <b>비어 버리는 시기</b>'];
+  const eff = i => effects[(h + i*3) % effects.length];
+  lastSals = picks.map(s => s.name);
+  const t = [
+    {yr: pastY, s: picks[0], tx: eff(0), tag:'이미 지나온 자리'},
+    {yr: nowY, s: picks[1] || picks[0], tx: eff(1), tag:'<b>지금, 한창 움직이는 중</b>'},
+    {yr: futureY, s: picks[2] || picks[0], tx: eff(2), tag:'다가오는 고비'}
+  ];
+  document.getElementById('salTimeline').innerHTML = t.map(r => `
+    <div class="row"><span class="yr">${r.yr}</span><span class="tx">${r.s.name}(${r.s.hanja}) — ${r.tag}<br>
+    <span style="filter:blur(4.5px);user-select:none">${r.tx}, ■월과 ■월에 정점</span> 🔒</span></div>`).join('');
+  // 심층 카드 = 첫 번째 살 연동
+  const d = picks[0];
+  document.getElementById('salDeepCard').innerHTML = `
+    <h4>${d.name} <span>(${d.hanja})</span></h4>
+    <p>${d.desc}<br><br>
+    — 네게 유독 크게 새는 이유<br>
+    — 막는 방위·시기·방법까지<br>
+    하나하나 셈해 주마.</p>`;
+}
+
+/* ───────── 로딩 → 결과 ───────── */
+function enterLoading(){
+  track('input_complete');
+  saveProgress();
+  pauseAllScenes();
+  order.forEach(id => { const s = document.getElementById(id); if(s) s.style.display='none'; });
+  const ld = document.getElementById('loading');
+  ld.classList.add('on');
+  const lbg = ld.querySelector('.load-bg');
+  if (lbg) { lbg.preload='auto'; lbg.play().catch(()=>{}); }
+  const msgs = user.name ? [
+    '장부를 펼친다…',
+    '<b>' + esc(user.name) + '</b>… 네 재물의 판을 센다…',
+    '새는 자리를 짚는다…'
+  ] : ['장부를 펼친다…','재물의 판을 센다…','새는 자리를 짚는다…'];
+  const lt = document.getElementById('loadtext');
+  let i = 0;
+  lt.innerHTML = msgs[0];
+  const iv = setInterval(()=>{
+    i++;
+    if (i < msgs.length){ lt.style.opacity = 0; setTimeout(()=>{ lt.innerHTML = msgs[i]; lt.style.opacity = 1; }, 350); }
+  }, 950);
+  setTimeout(()=>{
+    clearInterval(iv);
+    enterSales();
+    // 크로스 디졸브: 결과지가 아래에서 떠오르는 동안 로딩이 서서히 걷힌다
+    requestAnimationFrame(()=>{
+      document.getElementById('sales').classList.add('show');
+      ld.classList.add('fade');
+    });
+    setTimeout(()=>{ ld.classList.remove('on'); ld.classList.remove('fade'); const lb = ld.querySelector('.load-bg'); if (lb) lb.pause(); }, 1300);
+  }, 2900);
+}
+
+function enterSales(){
+  fillSales();
+  document.body.classList.add('insales');
+  document.getElementById('app').classList.remove('shake');
+  document.getElementById('sales').style.display = 'block';
+  window.scrollTo(0,0);
+  document.getElementById('sticky').classList.add('on');
+  bellChime();
+  setTimeout(playTsk, 1500); // 선고("쯧쯧…")가 눈에 들어올 즈음 혀 차는 소리
+  document.querySelectorAll('#sales video').forEach(v => { v.preload='auto'; v.play().catch(()=>{}); });
+  observeReveals();
+}
+
+/* 엔터키로 문답 진행 */
+document.getElementById('inName').addEventListener('keydown', e => { if (e.key === 'Enter') askName(); });
+document.getElementById('inBirth').addEventListener('keydown', e => { if (e.key === 'Enter') askBirth(); });
+
+/* ───────── scroll reveals ───────── */
+function observeReveals(){
+  const els = Array.from(document.querySelectorAll('#sales .rv'));
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
+  }, {threshold:.14});
+  els.forEach(el => io.observe(el));
+  const manual = () => {
+    const vh = window.innerHeight;
+    els.forEach(el => {
+      if (el.classList.contains('on')) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * .92 && r.bottom > 0) el.classList.add('on');
+    });
+  };
+  window.addEventListener('scroll', manual, {passive:true});
+  manual();
+}
+
+/* ───────── Auth (Supabase) ───────── */
+const sb = window.supabase ? window.supabase.createClient(SUPA_URL, SUPA_KEY) : null;
+let authMode = 'signup'; // 'signup' | 'login'
+let afterAuth = null;
+
+function openAuth(next){
+  afterAuth = next || null;
+  document.getElementById('authErr').style.display = 'none';
+  document.getElementById('authModal').classList.add('on');
+  setTimeout(()=>document.getElementById('authEmail').focus(), 300);
+}
+function closeAuth(){ document.getElementById('authModal').classList.remove('on'); }
+function toggleAuthMode(){
+  authMode = authMode === 'signup' ? 'login' : 'signup';
+  document.getElementById('authGo').textContent = authMode === 'signup' ? '열쇠 받기 · 회원가입' : '서고 열기 · 로그인';
+  document.getElementById('authSwitch').innerHTML = authMode === 'signup'
+    ? '이미 열쇠가 있다면 <a onclick="toggleAuthMode()">로그인</a>'
+    : '열쇠가 없다면 <a onclick="toggleAuthMode()">회원가입</a>';
+  document.getElementById('authSub').innerHTML = authMode === 'signup'
+    ? '풀이는 네 서고(書庫)에 꽂힌다.<br>열쇠부터 만들어라.'
+    : '돌아왔군.<br>네 서고가 기다리고 있다.';
+  // 비밀번호 확인 필드는 회원가입 모드에서만
+  document.getElementById('authPw2Wrap').style.display = authMode === 'signup' ? 'block' : 'none';
+  document.getElementById('authPw').autocomplete = authMode === 'signup' ? 'new-password' : 'current-password';
+  document.getElementById('authErr').style.display = 'none';
+}
+function authError(msg){
+  const el = document.getElementById('authErr');
+  el.textContent = msg; el.style.display = 'block';
+}
+async function submitAuth(){
+  if (!sb) { authError('연결에 문제가 생겼다. 잠시 후 다시 시도하라.'); return; }
+  const email = document.getElementById('authEmail').value.trim();
+  const pw = document.getElementById('authPw').value;
+  if (!/.+@.+\..+/.test(email)) { authError('이메일이 온전치 않다.'); return; }
+  if (pw.length < 6) { authError('비밀번호는 여섯 자 이상이어야 한다.'); return; }
+  if (authMode === 'signup' && pw !== document.getElementById('authPw2').value){
+    authError('두 번 적은 비밀번호가 서로 다르다.'); return;
+  }
+  const btn = document.getElementById('authGo');
+  btn.disabled = true;
+  try{
+    let res;
+    if (authMode === 'signup'){
+      res = await sb.auth.signUp({ email, password: pw });
+      if (res.error && /already|registered/i.test(res.error.message)){
+        res = await sb.auth.signInWithPassword({ email, password: pw });
+      }
+    } else {
+      res = await sb.auth.signInWithPassword({ email, password: pw });
+    }
+    if (res.error){
+      const m = res.error.message || '';
+      if (/invalid login|credentials/i.test(m)) authError('이메일 또는 비밀번호가 틀렸다.');
+      else if (/already|registered/i.test(m)) authError('이미 등록된 이메일이다. 로그인하라.');
+      else if (/at least|password/i.test(m)) authError('비밀번호는 여섯 자 이상이어야 한다.');
+      else authError('문이 열리지 않는다. 잠시 후 다시 시도하라.');
+      btn.disabled = false;
+      return;
+    }
+    track(authMode === 'signup' ? 'signup' : 'login');
+    btn.disabled = false;
+    closeAuth();
+    if (afterAuth) { const f = afterAuth; afterAuth = null; f(); }
+  }catch(e){
+    authError('문이 열리지 않는다. 잠시 후 다시 시도하라.');
+    btn.disabled = false;
+  }
+}
+document.getElementById('authPw').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+document.getElementById('authPw2').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+
+/* ───────── 구매 모달 ───────── */
+/* 그로블 결제 URL — 현월 상품 등록 후 여기에 채운다 (비어 있으면 開門 대기 안내) */
+const PAY_URL = '';
+function openBuy(){
+  document.getElementById('buyFor').textContent = user.name ? (user.name + ' — 재물의 경(經)') : '재물의 경(經)';
+  document.getElementById('buyModal').classList.add('on');
+}
+function closeBuy(){ document.getElementById('buyModal').classList.remove('on'); }
+async function startPay(){
+  track('pay_click');
+  if (!PAY_URL){
+    const btn = document.getElementById('buyGo');
+    btn.textContent = '開門 준비 중 — 곧 문이 열린다';
+    btn.disabled = true;
+    return;
+  }
+  // 결제 의향 기록: 사이트 계정 이메일 + 사주 정보 → 웹훅이 이걸로 구매-계정-사주를 잇는다
+  try{
+    const { data } = await sb.auth.getSession();
+    const email = data && data.session && data.session.user ? data.session.user.email : null;
+    if (email) track('pay_intent', { email });
+  }catch(e){}
+  // 그로블 결제창 (결제 완료 → simgoksa.com/library/ 로 자동 이동)
+  location.href = PAY_URL;
+}
+
+/* ───────── 공유 (모바일: OS 공유시트 → 카카오톡 / PC: 링크 복사) ───────── */
+async function shareSite(){
+  track('share_click');
+  const data = {
+    title: '심곡사(深谷寺) 장경각',
+    text: '수천 권의 장부가 잠든 장경각. 스님 현월이 네 돈이 새는 구멍(漏)을 셈한다.',
+    url: 'https://simgoksa.com/hyunwol/'
+  };
+  const done = document.getElementById('shareDone');
+  try{
+    if (navigator.share){
+      await navigator.share(data);
+      done.textContent = '문이 전해졌다.';
+      done.style.display = 'block';
+    } else {
+      await navigator.clipboard.writeText(data.url);
+      done.textContent = '주소가 복사되었다 — 카카오톡에 붙여넣어라.';
+      done.style.display = 'block';
+    }
+  }catch(e){ /* 사용자가 공유 시트를 닫음 — 무시 */ }
+}
+
+/* ───────── CTA ───────── */
+async function goCTA(e){
+  e.preventDefault();
+  track('cta_click');
+  if (!sb) { openBuy(); return; }
+  const { data } = await sb.auth.getSession();
+  if (data && data.session) openBuy();
+  else openAuth(openBuy);
+}
+</script>
+</body>
+</html>
