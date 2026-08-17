@@ -200,7 +200,7 @@ async function loadBooks(){
   loading.style.display = 'block'; booksEl.innerHTML = ''; emptyEl.style.display = 'none'; noteEl.style.display = 'none';
   try{
     const { data, error } = await sb.from('purchases')
-      .select('id,created_at,product_name,amount,status')
+      .select('id,created_at,product_name,amount,status,saju_answer')
       .order('created_at', { ascending: false });
     loading.style.display = 'none';
     if (error) throw error;
@@ -214,14 +214,22 @@ async function loadBooks(){
       const d = new Date(p.created_at);
       const dateStr = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
       const name = (p.product_name || '심곡사 심층 살풀이 분석서').replace(/</g,'&lt;');
-      return `<div class="book">
+      // 도착(delivered)한 책은 클릭하면 보고서가 열린다 — 결제 시 적은 사주 정보로
+      let href = null;
+      if (p.status === 'delivered' && p.saju_answer){
+        const m = p.saju_answer.match(/([^\/,]+)[\/,]\s*(\d{4})[.\-년\s]*(\d{1,2})[.\-월\s]*(\d{1,2})[일\s]*[\/,]\s*(남|여)/);
+        if (m) href = `../report/?name=${encodeURIComponent(m[1].trim())}&y=${m[2]}&m=${+m[3]}&d=${+m[4]}&g=${m[5]}`;
+      }
+      const inner = `
         <div class="spine">書</div>
         <div class="b-info">
           <div class="b-t">${name}</div>
           <div class="b-s">${dateStr} 접수${p.amount ? ' · ' + p.amount.toLocaleString() + '원' : ''}</div>
         </div>
-        <span class="b-badge ${s.cls}">${s.label}</span>
-      </div>`;
+        <span class="b-badge ${s.cls}">${s.label}</span>`;
+      return href
+        ? `<a class="book" href="${href}">${inner}</a>`
+        : `<div class="book">${inner}</div>`;
     }).join('');
     noteEl.style.display = 'block';
   }catch(e){
