@@ -45,16 +45,18 @@ body{
 }
 #progress{flex:none;height:2px;background:rgba(232,224,216,.08)}
 #progressBar{height:100%;width:0;background:linear-gradient(90deg,var(--blood),var(--blood-bright));transition:width .3s ease}
-/* ── pager ── */
+/* ── pager (JS 제어 — 스와이프당 무조건 1장) ── */
 #pager{
-  flex:1;display:flex;overflow-x:auto;overflow-y:hidden;
-  scroll-snap-type:x mandatory;scrollbar-width:none;
-  overscroll-behavior-x:contain;
+  flex:1;overflow:hidden;position:relative;
+  touch-action:pan-y; /* 세로 스크롤은 브라우저, 가로 넘김은 JS */
 }
-#pager::-webkit-scrollbar{display:none}
+#track{
+  display:flex;height:100%;
+  transition:transform .38s cubic-bezier(.22,.8,.3,1);
+  will-change:transform;
+}
 .page{
   flex:none;width:100%;height:100%;
-  scroll-snap-align:start;scroll-snap-stop:always;
   overflow-y:auto;scrollbar-width:none;
   padding:34px 28px 60px;
   position:relative;
@@ -584,24 +586,63 @@ addPage(`
 
 /* ═══ 렌더 ═══ */
 const pager = document.getElementById('pager');
-pager.innerHTML = pages.map((p, i) => `<div class="page ${p.cls}" data-i="${i}">${p.html}</div>`).join('');
+pager.innerHTML = `<div id="track">${pages.map((p, i) => `<div class="page ${p.cls}" data-i="${i}">${p.html}</div>`).join('')}</div>`;
+const track = document.getElementById('track');
 
 const total = pages.length;
-function currentPage(){ return Math.round(pager.scrollLeft / pager.clientWidth); }
+let cur = 0;
+function currentPage(){ return cur; }
 function updateBar(){
-  const i = currentPage();
-  document.getElementById('pageNo').textContent = `第 ${i + 1} 章 / ${total}`;
-  document.getElementById('progressBar').style.width = ((i + 1) / total * 100) + '%';
+  document.getElementById('pageNo').textContent = `第 ${cur + 1} 章 / ${total}`;
+  document.getElementById('progressBar').style.width = ((cur + 1) / total * 100) + '%';
 }
-pager.addEventListener('scroll', () => { requestAnimationFrame(updateBar); }, {passive:true});
-updateBar();
-
 function goPage(i){
-  pager.scrollTo({left: i * pager.clientWidth, behavior: 'instant'});
+  cur = Math.max(0, Math.min(total - 1, i));
+  track.style.transition = '';
+  track.style.transform = `translateX(${-cur * 100}%)`;
+  // 새 장은 맨 위에서 시작
+  const pg = track.children[cur];
+  if (pg) pg.scrollTop = 0;
   updateBar();
 }
-document.getElementById('tapPrev').addEventListener('click', () => goPage(Math.max(0, currentPage() - 1)));
-document.getElementById('tapNext').addEventListener('click', () => goPage(Math.min(total - 1, currentPage() + 1)));
+updateBar();
+
+/* 스와이프 — 손가락을 따라오되, 놓으면 무조건 ±1장만 */
+(function(){
+  let startX = 0, startY = 0, mode = null, dx = 0;
+  const W = () => pager.clientWidth;
+  pager.addEventListener('pointerdown', e => {
+    startX = e.clientX; startY = e.clientY; mode = null; dx = 0;
+  }, {passive:true});
+  pager.addEventListener('pointermove', e => {
+    if (e.pressure === 0 && e.pointerType === 'mouse') return; // 마우스는 드래그 중일 때만
+    const mx = e.clientX - startX, my = e.clientY - startY;
+    if (mode === null){
+      if (Math.abs(mx) > 10 && Math.abs(mx) > Math.abs(my) * 1.2) mode = 'h';
+      else if (Math.abs(my) > 10) mode = 'v';
+    }
+    if (mode === 'h'){
+      dx = mx;
+      // 가장자리 저항
+      if ((cur === 0 && dx > 0) || (cur === total - 1 && dx < 0)) dx = dx * .3;
+      track.style.transition = 'none';
+      track.style.transform = `translateX(calc(${-cur * 100}% + ${dx}px))`;
+    }
+  }, {passive:true});
+  const finish = () => {
+    if (mode !== 'h'){ mode = null; return; }
+    const TH = Math.min(70, W() * .18);
+    if (dx < -TH) goPage(cur + 1);
+    else if (dx > TH) goPage(cur - 1);
+    else goPage(cur);
+    mode = null; dx = 0;
+  };
+  pager.addEventListener('pointerup', finish, {passive:true});
+  pager.addEventListener('pointercancel', finish, {passive:true});
+})();
+
+document.getElementById('tapPrev').addEventListener('click', () => goPage(cur - 1));
+document.getElementById('tapNext').addEventListener('click', () => goPage(cur + 1));
 
 /* 목차 오버레이 */
 const tocList = document.getElementById('tocList');
@@ -626,7 +667,8 @@ document.addEventListener('keydown', e => {
   document.body.appendChild(hint);
   let dismissed = false;
   const dismiss = () => { if (dismissed) return; dismissed = true; hint.style.opacity = '0'; setTimeout(()=>hint.remove(), 1100); };
-  pager.addEventListener('scroll', dismiss, {once:true, passive:true});
+  pager.addEventListener('pointerdown', dismiss, {once:true, passive:true});
+  document.getElementById('tapNext').addEventListener('click', dismiss, {once:true});
   setTimeout(dismiss, 6000);
 })();
 </script>
