@@ -218,7 +218,7 @@ function show(logged, email){
 /* 구매 내역 (RLS: 본인 이메일 결제 건만 조회됨) */
 const STATUS_MAP = {
   paid:      { label: '풀이 준비 중', cls: 'prep' },
-  preparing: { label: '묘담이 적는 중', cls: 'prep' },
+  preparing: { label: '적는 중', cls: 'prep' },
   delivered: { label: '도착 — 읽기', cls: 'done' },
   refunded:  { label: '환불됨', cls: 'refund' }
 };
@@ -230,7 +230,7 @@ async function loadBooks(){
   loading.style.display = 'block'; booksEl.innerHTML = ''; emptyEl.style.display = 'none'; noteEl.style.display = 'none';
   try{
     const { data, error } = await sb.from('purchases')
-      .select('id,created_at,product_name,amount,status,saju_answer')
+      .select('id,created_at,product,product_name,amount,status,saju_answer')
       .order('created_at', { ascending: false });
     loading.style.display = 'none';
     if (error) throw error;
@@ -243,8 +243,12 @@ async function loadBooks(){
       const s = STATUS_MAP[p.status] || STATUS_MAP.paid;
       const d = new Date(p.created_at);
       const dateStr = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
-      // 캐릭터 매핑 (추후 현월·홍단 확장)
-      const CHAR = { myodam: { name: '무녀 묘담', img: '../assets/hero.jpg' } };
+      // 캐릭터 매핑 — 새 캐릭터 출시 시 여기에 추가 (label=썸네일 글자, book=책 제목, report=결과지 경로)
+      const CHAR = {
+        myodam:  { name: '무녀 묘담',  label: '묘담', img: '../assets/hero.jpg',    book: '운명 사용설명서 · 아흔아홉 장', report: '../report/' },
+        hyunwol: { name: '스님 현월',  label: '현월', img: '../assets/hyunwol.jpg', book: '재물의 경(經)',                report: null },
+        hongdan: { name: '아씨 홍단',  label: '홍단', img: '../assets/hongdan.jpg', book: '붉은 실의 기록',               report: null }
+      };
       const ch = CHAR[p.product] || CHAR.myodam;
       // 사주 정보 파싱 (이름 / 생년월일 / 성별)
       let owner = null, href = null;
@@ -252,25 +256,25 @@ async function loadBooks(){
         const m = p.saju_answer.match(/([^\/,]+)[\/,]\s*(\d{4})[.\-년\s]*(\d{1,2})[.\-월\s]*(\d{1,2})[일\s]*[\/,]\s*(남|여)/);
         if (m){
           owner = m[1].trim();
-          if (p.status === 'delivered'){
-            href = `../report/?name=${encodeURIComponent(owner)}&y=${m[2]}&m=${+m[3]}&d=${+m[4]}&g=${m[5]}`;
+          if (p.status === 'delivered' && ch.report){
+            href = `${ch.report}?name=${encodeURIComponent(owner)}&y=${m[2]}&m=${+m[3]}&d=${+m[4]}&g=${m[5]}`;
           }
         }
       }
       const ownerEsc = owner ? owner.replace(/</g,'&lt;') : null;
       const inner = `
         <div class="b-row">
-          <div class="b-thumb" style="background-image:url('${ch.img}')"><span class="b-char">묘담</span></div>
+          <div class="b-thumb" style="background-image:url('${ch.img}')"><span class="b-char">${ch.label}</span></div>
           <div class="b-info">
             <div class="b-kicker">${ch.name} · 深谷寺</div>
-            <div class="b-t">운명 사용설명서 · 아흔아홉 장</div>
+            <div class="b-t">${ch.book}</div>
             ${ownerEsc ? `<div class="b-owner"><b>${ownerEsc}</b>의 원국으로 엮음</div>` : ''}
             <div class="b-s">${dateStr} 접수${p.amount ? ' · ' + p.amount.toLocaleString() + '원' : ''}</div>
           </div>
         </div>
         <div class="b-foot">
           <span class="b-badge ${s.cls}">${s.label}</span>
-          ${href ? `<span class="b-go">확인하러 가기 →</span>` : `<span class="b-wait">묘담이 적는 중이다 — 곧 꽂힌다</span>`}
+          ${href ? `<span class="b-go">확인하러 가기 →</span>` : `<span class="b-wait">${ch.label}이 적는 중이다 — 곧 꽂힌다</span>`}
         </div>`;
       return href
         ? `<a class="book" href="${href}">${inner}</a>`

@@ -29,6 +29,12 @@ Deno.serve(async (req) => {
     return null;
   };
 
+  // 그로블 상품 ID → 캐릭터 매핑. 새 캐릭터(현월·홍단 등) 출시 시 여기에 한 줄씩 추가한다.
+  const CONTENT_PRODUCT: Record<string, string> = {
+    "kAAJFx": "myodam",
+  };
+  const contentId = pick("contentId", "content_id", "data.contentId", "content.id");
+
   const row = {
     buyer_email: pick("buyerEmail", "buyer_email", "email", "purchaserEmail", "data.buyerEmail", "data.email", "user.email", "customer.email"),
     buyer_name: pick("buyerName", "buyer_name", "name", "purchaserName", "data.buyerName", "data.name", "customer.name"),
@@ -36,9 +42,10 @@ Deno.serve(async (req) => {
     product_name: pick("contentTitle", "productName", "product_name", "title", "data.contentTitle", "data.productName", "content.title"),
     amount: Number(pick("finalPrice", "amount", "price", "totalPrice", "data.finalPrice", "data.amount", "data.price") ?? 0) || null,
     saju_answer: pick("customAnswer", "answers", "surveyAnswer", "data.customAnswer", "data.answers", "optionAnswer"),
-    groble_content_id: pick("contentId", "content_id", "data.contentId", "content.id"),
+    groble_content_id: contentId,
     groble_purchase_id: pick("purchaseId", "purchase_id", "orderId", "merchantUid", "data.purchaseId", "data.orderId", "data.merchantUid"),
-    product: "myodam",
+    // 매핑에 없는 ID는 묘담으로 폴백 (contentId 추출 실패 시에도 기존 구매 흐름이 끊기지 않도록)
+    product: (contentId && CONTENT_PRODUCT[contentId]) || "myodam",
     status: "paid",
     payload: body,
   };
