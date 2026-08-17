@@ -27,6 +27,7 @@
   --paper:#e8ddc7;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* 인앱 브라우저 글자 자동확대로 인한 레이아웃 밀림 방지 */
 html{scroll-behavior:smooth}
 body{
   background:#000;
@@ -238,7 +239,7 @@ body{
 }
 .ask-field.on{opacity:1;transform:none}
 .ask-input{
-  flex:1;appearance:none;border:1px solid rgba(232,224,216,.35);
+  flex:1;min-width:0;width:100%;appearance:none;border:1px solid rgba(232,224,216,.35);
   background:rgba(5,4,4,.6);backdrop-filter:blur(3px);
   color:var(--paper);font-family:inherit;font-size:16px;letter-spacing:.1em;
   padding:15px 16px;border-radius:2px;outline:none;text-align:center;
@@ -246,10 +247,11 @@ body{
 .ask-input::placeholder{color:#5c534c;letter-spacing:.08em}
 .ask-input:focus{border-color:var(--blood-bright);box-shadow:0 0 18px rgba(164,22,26,.25)}
 .ask-go{
+  flex-shrink:0;white-space:nowrap;
   appearance:none;border:1px solid rgba(229,56,59,.6);
   background:rgba(120,0,0,.5);color:var(--paper);
   font-family:inherit;font-size:14px;letter-spacing:.15em;
-  padding:0 22px;border-radius:2px;cursor:pointer;
+  padding:0 clamp(12px, 4vw, 22px);border-radius:2px;cursor:pointer;
 }
 .ask-go:active{background:rgba(164,22,26,.7)}
 .ask-row{display:flex;gap:10px}
