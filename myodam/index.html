@@ -146,8 +146,18 @@ body{
   background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 32%,rgba(0,0,0,.15) 60%,rgba(5,4,4,.96) 100%);
 }
 .dialog{
-  padding:0 26px 40px;
+  padding:60px 26px 40px;
   display:flex;flex-direction:column;gap:18px;
+  max-height:calc(100dvh - 10px);
+  overflow-y:auto;
+  scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 52px,#000 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 52px,#000 100%);
+}
+.dialog::-webkit-scrollbar{display:none}
+@media (max-width:400px){
+  #app .scene .dialog .line{font-size:16px;line-height:1.9}
+  #app .scene .dialog{padding-left:22px;padding-right:22px}
 }
 .dialog .line{
   font-size:17.5px;line-height:1.95;
@@ -730,6 +740,7 @@ footer b{color:#7a6f66}
     </div>
     <p class="gate-warn">방울이 멈춘 자리에서<br><b>당신을 기다리고 있습니다</b></p>
     <button class="gate-btn" id="enterBtn">신당에 들어선다</button>
+    <button class="gate-btn" id="resumeBtn" style="display:none;margin-top:14px;border-color:rgba(232,224,216,.35);box-shadow:none;animation:ghostin 2.4s ease 3s forwards">지난 풀이 결과로 바로 간다</button>
     <p class="gate-note">· 소리와 함께 입장하시길 바랍니다 ·</p>
   </div>
 </div>
@@ -1293,8 +1304,37 @@ function startSound(){
     const lg = actx.createGain(); lg.gain.value = .025;
     lfo.connect(lg); lg.connect(ng.gain);
     o1.start(); o2.start(); noise.start(); lfo.start();
-    master.gain.linearRampToValueAtTime(.9, actx.currentTime + 4);
+    master.gain.linearRampToValueAtTime(.55, actx.currentTime + 4); // 앰비언스가 주인공이 되도록 드론은 낮게
   }catch(e){}
+}
+
+/* ───────── 씬 앰비언스 (영상 루프와 동기화) ───────── */
+const sceneAudios = [];
+function attachAmbience(videoEl, src, vol){
+  if (!videoEl) return null;
+  const a = new Audio(src);
+  a.preload = 'none'; a.volume = vol;
+  sceneAudios.push(a);
+  let lastT = 0;
+  videoEl.addEventListener('play', () => {
+    a.preload = 'auto';
+    try{ a.currentTime = 0; }catch(e){}
+    a.play().catch(()=>{});
+  });
+  videoEl.addEventListener('pause', () => a.pause());
+  videoEl.addEventListener('timeupdate', () => {
+    // 영상이 루프로 되감기면 사운드도 처음부터 다시
+    if (videoEl.currentTime + 0.3 < lastT){
+      try{ a.currentTime = 0; }catch(e){}
+      a.play().catch(()=>{});
+    }
+    lastT = videoEl.currentTime;
+  });
+  return a;
+}
+function pauseAllScenes(){
+  document.querySelectorAll('.scene video, #loading video').forEach(v => { try{ v.pause(); }catch(e){} });
+  sceneAudios.forEach(a => { try{ a.pause(); }catch(e){} });
 }
 function bellChime(){
   if(!actx) return;
@@ -1311,7 +1351,24 @@ function bellChime(){
   }catch(e){}
 }
 
+/* ───────── 진행 상태 저장/복원 (구매 퍼널 단축) ───────── */
+function saveProgress(){
+  try{ localStorage.setItem('sgs_myodam', JSON.stringify({name:user.name, birth:user.birth, gender:user.gender, t:Date.now()})); }catch(e){}
+}
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem('sgs_myodam');
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || !d.name || !d.birth || !d.gender) return null;
+    return d;
+  }catch(e){ return null; }
+}
+
 /* ───────── gate ───────── */
+const savedProgress = loadProgress();
+if (savedProgress) document.getElementById('resumeBtn').style.display = 'block';
+
 document.getElementById('enterBtn').addEventListener('click', (e) => {
   e.stopPropagation();
   const gate = document.getElementById('gate');
@@ -1322,6 +1379,16 @@ document.getElementById('enterBtn').addEventListener('click', (e) => {
   document.querySelector('#hero .title-wrap').classList.add('go');
   playScene(document.querySelector('#hero .dialog'));
   if (navigator.vibrate) navigator.vibrate(30);
+}, {once:true});
+
+document.getElementById('resumeBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const d = loadProgress();
+  if (!d) return;
+  user.name = d.name; user.birth = d.birth; user.gender = d.gender;
+  document.getElementById('gate').classList.add('off');
+  startSound();
+  enterLoading();
 }, {once:true});
 
 /* ───────── story engine ───────── */
@@ -1338,10 +1405,15 @@ function playScene(dialog, root){
     setTimeout(()=>{
       l.classList.add('on');
       if (l.hasAttribute('data-quake')) { quake(); }
+      // 대사가 화면을 넘으면 자동으로 최신 대사를 따라간다 (모바일 잘림 방지)
+      try{ l.scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){}
     }, t);
     t += 1400;
   });
-  choices.forEach(c => setTimeout(()=>c.classList.add('on'), t + 300));
+  choices.forEach(c => setTimeout(()=>{
+    c.classList.add('on');
+    try{ c.scrollIntoView({block:'nearest', behavior:'smooth'}); }catch(e){}
+  }, t + 300));
   scope.querySelectorAll('.ask-field,.ask-opt').forEach((el,i) => {
     setTimeout(()=>el.classList.add('on'), t + 300 + i*250);
   });
@@ -1355,6 +1427,7 @@ function quake(){
 }
 
 function gotoScene(id){
+  pauseAllScenes(); // 이전 씬 영상·사운드 정지
   order.forEach(s => { const el = document.getElementById(s); if (el) el.style.display = 'none'; });
   const nxt = document.getElementById(id);
   nxt.style.display = 'flex';
@@ -1362,6 +1435,14 @@ function gotoScene(id){
   window.scrollTo(0,0);
   return nxt;
 }
+
+/* 앰비언스 바인딩 (파일: assets/sfx_*.mp3) */
+attachAmbience(document.querySelector('#hero video'), '../assets/sfx_treesign.mp3', .6);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_forest.mp3', .6);
+attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_door.mp3', .65);
+const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_candles.mp3', .6);
+attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_maskwear.mp3', .7);
+attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_shinmok.mp3', .55);
 
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.choice');
@@ -1409,6 +1490,7 @@ function showAskStep(id){
       setTimeout(() => {
         bg.src = '../assets/writing.mp4';
         bg.poster = '../assets/writing.jpg';
+        if (askAmb){ askAmb.src = '../assets/sfx_writing.mp3'; } // 붓글씨 사운드로 교체
         bg.play().catch(()=>{});
         bg.style.opacity = '1';
       }, 1200);
@@ -1549,6 +1631,8 @@ function fillSales(){
 /* ───────── 로딩 → 결과 ───────── */
 function enterLoading(){
   track('input_complete');
+  saveProgress();
+  pauseAllScenes();
   order.forEach(id => { const s = document.getElementById(id); if(s) s.style.display='none'; });
   const ld = document.getElementById('loading');
   ld.classList.add('on');
@@ -1574,7 +1658,7 @@ function enterLoading(){
       document.getElementById('sales').classList.add('show');
       ld.classList.add('fade');
     });
-    setTimeout(()=>{ ld.classList.remove('on'); ld.classList.remove('fade'); }, 1300);
+    setTimeout(()=>{ ld.classList.remove('on'); ld.classList.remove('fade'); const lb = ld.querySelector('.load-bg'); if (lb) lb.pause(); }, 1300);
   }, 2900);
 }
 

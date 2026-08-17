@@ -96,8 +96,20 @@ header a.back:hover{color:var(--paper)}
   display:flex;align-items:center;justify-content:center;
   font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:18px;
 }
-.book .b-t{font-size:15px;font-weight:700;color:var(--paper);line-height:1.5}
+.book .b-info{flex:1;min-width:0}
+.book .b-t{font-size:15px;font-weight:700;color:var(--paper);line-height:1.5;word-break:keep-all}
 .book .b-s{font-size:12px;color:var(--ink-dim);margin-top:4px;letter-spacing:.05em}
+.book .b-badge{
+  flex:none;font-size:11.5px;letter-spacing:.08em;padding:6px 11px;border-radius:999px;white-space:nowrap;
+}
+.b-badge.prep{background:rgba(208,140,58,.14);color:var(--ember);border:1px solid rgba(208,140,58,.4)}
+.b-badge.done{background:rgba(164,22,26,.2);color:var(--blood-bright);border:1px solid rgba(229,56,59,.5)}
+.b-badge.refund{background:rgba(232,224,216,.06);color:var(--ink-dim);border:1px solid rgba(232,224,216,.2)}
+.shelf-note{
+  margin-top:18px;font-size:12.5px;color:#5c534c;text-align:center;line-height:1.9;word-break:keep-all;
+}
+.shelf-note a{color:var(--ember)}
+.loading-books{text-align:center;color:var(--ink-dim);font-size:13px;padding:40px 0;letter-spacing:.1em}
 footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-height:2;font-family:'Noto Sans KR',sans-serif}
 @media (min-width:768px){
   body::before{content:"";position:fixed;inset:-40px;z-index:-1;
@@ -135,12 +147,19 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
   <!-- 서고 -->
   <div class="shelf" id="shelf">
     <h2>꽂혀 있는 풀이</h2>
+    <p class="loading-books" id="booksLoading">서가를 살피는 중…</p>
     <div id="books"></div>
-    <div class="empty" id="emptyBox">
+    <div class="empty" id="emptyBox" style="display:none">
       <div class="e-hanja">空</div>
       <p>아직 도착한 풀이가 없다.<br>풀이를 받으면, 이곳에 꽂힌다.</p>
       <a href="../myodam/">묘담에게 풀이 받기</a>
     </div>
+    <p class="shelf-note" id="shelfNote" style="display:none">
+      결제 직후에는 「풀이 준비 중」으로 표시된다.<br>
+      묘담이 다 적으면 이곳에서 바로 읽을 수 있다. (24시간 이내)<br>
+      결제한 풀이가 보이지 않으면, <b>결제 시 적은 이메일</b>과<br>
+      지금 로그인한 이메일이 같은지 확인하라.
+    </p>
   </div>
 
   <footer>深谷寺 심곡사 · 書庫</footer>
@@ -159,7 +178,56 @@ function show(logged, email){
   document.getElementById('logoutBtn').style.display = logged ? 'inline-block' : 'none';
   const who = document.getElementById('who');
   who.style.display = logged ? 'block' : 'none';
-  if (logged) who.innerHTML = '열쇠 주인 — <b>' + email.replace(/</g,'&lt;') + '</b>';
+  if (logged){
+    who.innerHTML = '열쇠 주인 — <b>' + email.replace(/</g,'&lt;') + '</b>';
+    loadBooks();
+  }
+}
+
+/* 구매 내역 (RLS: 본인 이메일 결제 건만 조회됨) */
+const STATUS_MAP = {
+  paid:      { label: '풀이 준비 중', cls: 'prep' },
+  preparing: { label: '묘담이 적는 중', cls: 'prep' },
+  delivered: { label: '도착 — 읽기', cls: 'done' },
+  refunded:  { label: '환불됨', cls: 'refund' }
+};
+async function loadBooks(){
+  const loading = document.getElementById('booksLoading');
+  const booksEl = document.getElementById('books');
+  const emptyEl = document.getElementById('emptyBox');
+  const noteEl = document.getElementById('shelfNote');
+  loading.style.display = 'block'; booksEl.innerHTML = ''; emptyEl.style.display = 'none'; noteEl.style.display = 'none';
+  try{
+    const { data, error } = await sb.from('purchases')
+      .select('id,created_at,product_name,amount,status')
+      .order('created_at', { ascending: false });
+    loading.style.display = 'none';
+    if (error) throw error;
+    if (!data || data.length === 0){
+      emptyEl.style.display = 'block';
+      noteEl.style.display = 'block';
+      return;
+    }
+    booksEl.innerHTML = data.map(p => {
+      const s = STATUS_MAP[p.status] || STATUS_MAP.paid;
+      const d = new Date(p.created_at);
+      const dateStr = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+      const name = (p.product_name || '심곡사 심층 살풀이 분석서').replace(/</g,'&lt;');
+      return `<div class="book">
+        <div class="spine">書</div>
+        <div class="b-info">
+          <div class="b-t">${name}</div>
+          <div class="b-s">${dateStr} 접수${p.amount ? ' · ' + p.amount.toLocaleString() + '원' : ''}</div>
+        </div>
+        <span class="b-badge ${s.cls}">${s.label}</span>
+      </div>`;
+    }).join('');
+    noteEl.style.display = 'block';
+  }catch(e){
+    loading.style.display = 'none';
+    emptyEl.style.display = 'block';
+    noteEl.style.display = 'block';
+  }
 }
 async function init(){
   if (!sb) { show(false); return; }
