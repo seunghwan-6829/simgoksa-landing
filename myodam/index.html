@@ -1686,8 +1686,8 @@ function openBuy(){
 function closeBuy(){ document.getElementById('buyModal').classList.remove('on'); }
 function startPay(){
   track('pay_click');
-  // TODO: 그로블 결제 모달 연결
-  alert('그로블 결제 모달이 이 자리에 연결됩니다.');
+  // 그로블 결제창 (결제 완료 → simgoksa.com/library/ 로 자동 이동)
+  location.href = 'https://www.groble.im/payment/kAAJFx';
 }
 
 /* ───────── CTA ───────── */
