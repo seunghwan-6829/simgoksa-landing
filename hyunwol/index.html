@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://simgoksa.com/hyunwol/">
 <meta property="og:title" content="심곡사(深谷寺) — 당신의 돈이 모이지 않는 이유">
-<meta property="og:description" content="수천 권의 장부가 잠든 장경각. 스님 현월이 네 돈이 새는 구멍(漏)을 셈한다.">
+<meta property="og:description" content="심곡사 아랫길. 지나가던 당신의 손목을 스님이 낚아챈다 — '너, 놓치는 게 너무 많구나.'">
 <meta property="og:image" content="https://simgoksa.com/assets/og_hyunwol.jpg">
 <meta name="theme-color" content="#050404">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -427,6 +427,75 @@ body{
 }
 .chart-note{margin-top:18px;font-size:13px;color:var(--ink-dim);letter-spacing:.1em;line-height:1.9}
 .chart-note b{color:var(--blood-bright);font-weight:400}
+/* ---------- 재물 장부 (現月記) ---------- */
+.ledger-frame{
+  position:relative;text-align:left;
+  background:linear-gradient(175deg,#171008,#0e0a05 70%);
+  border:1px solid rgba(208,140,58,.28);border-radius:3px;
+  padding:26px 22px 22px;
+  box-shadow:0 10px 40px rgba(0,0,0,.6), inset 0 0 60px rgba(208,140,58,.05);
+}
+.ledger-frame::before{
+  content:"";position:absolute;inset:8px;pointer-events:none;
+  border:1px solid rgba(208,140,58,.14);border-radius:2px;
+}
+.ledger-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;
+  border-bottom:1px solid rgba(208,140,58,.3);padding-bottom:14px;margin-bottom:6px}
+.lh-title{font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:16px;color:var(--paper);letter-spacing:.12em}
+.lh-sub{font-size:10.5px;color:#6b5c44;letter-spacing:.18em}
+.lrow{
+  display:flex;align-items:center;gap:12px;
+  padding:15px 2px;border-bottom:1px dashed rgba(232,224,216,.12);
+  font-size:14px;
+}
+.lrow:last-child{border-bottom:none}
+.lrow .lk{flex-shrink:0;width:86px;color:#8a7a60;letter-spacing:.1em;font-size:12.5px}
+.lrow .lv{flex:1;color:var(--ink);font-family:'Nanum Myeongjo',serif;letter-spacing:.06em}
+.lrow .lv b{color:var(--paper);font-size:17px;font-weight:800;margin-right:2px}
+.inkblot{
+  display:inline-block;background:#090705;color:transparent;
+  border-radius:2px;padding:0 3px;transform:rotate(-.6deg);
+  box-shadow:0 0 0 1.5px #090705, 2px 1px 0 #0c0906;
+  user-select:none;
+}
+.lmark{
+  flex-shrink:0;width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:16px;border-radius:3px;
+}
+.lmark.done{color:#9a8a68;border:1.5px solid rgba(154,138,104,.5);transform:rotate(3deg)}
+.lmark.seal{color:#c9a25c;border:1.5px solid rgba(201,162,92,.55);transform:rotate(-4deg)}
+.lmark.loo{
+  color:#d24a3e;border:2px solid rgba(210,74,62,.75);transform:rotate(-7deg);
+  box-shadow:0 0 16px rgba(210,74,62,.25);
+  animation:loopulse 2.4s ease-in-out infinite;
+}
+@keyframes loopulse{50%{box-shadow:0 0 26px rgba(210,74,62,.5)}}
+.lrow.leak .lv{color:#d8b8a8}
+/* ---------- 잃은 돈 셈 ---------- */
+.lost-frame{
+  position:relative;margin-top:34px;
+  background:linear-gradient(180deg,#120d07,#0a0705);
+  border:1px solid rgba(208,140,58,.3);border-radius:3px;
+  padding:34px 20px 28px;overflow:hidden;
+}
+.lost-label{font-size:11.5px;color:#8a7a60;letter-spacing:.3em;margin-bottom:16px}
+.lost-amount{
+  font-family:'Nanum Myeongjo',serif;font-weight:800;
+  font-size:52px;color:var(--paper);letter-spacing:.02em;line-height:1;
+  text-shadow:0 0 30px rgba(224,164,60,.25);
+}
+.lost-amount small{font-size:19px;color:var(--ink-dim);margin-left:6px;font-weight:400}
+.lost-amount small em{font-style:normal;font-size:14px;color:#6b5c44}
+.lost-stamp{
+  position:absolute;top:16px;right:18px;
+  width:58px;height:58px;display:flex;align-items:center;justify-content:center;
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:30px;
+  color:#d24a3e;border:3px solid rgba(210,74,62,.8);border-radius:4px;
+  transform:rotate(12deg) scale(2.6);opacity:0;
+  transition:transform .35s cubic-bezier(.2,1.6,.4,1), opacity .35s ease;
+}
+.lost-stamp.on{opacity:.92;transform:rotate(-8deg) scale(1)}
+.lost-note{margin-top:18px;font-size:12.5px;color:var(--ink-dim);letter-spacing:.1em;line-height:1.9}
 /* ---------- 흉살 진단 카드 ---------- */
 .sal-card{
   margin-top:26px;text-align:left;border-radius:5px;overflow:hidden;position:relative;
@@ -722,7 +791,7 @@ footer b{color:#7a6f66}
   #gate{background:transparent}
   #gate::before{
     content:"";position:absolute;inset:-40px;z-index:-1;
-    background:url('../assets/hw_gate.jpg') center/cover no-repeat;
+    background:url('../assets/hw_road.jpg') center/cover no-repeat;
     filter:blur(46px) brightness(.24) saturate(.8);
   }
 }
@@ -736,16 +805,16 @@ footer b{color:#7a6f66}
 
 <!-- ═══════════ 도입 게이트 ═══════════ -->
 <div id="gate">
-  <div class="gate-frame"><video class="gate-bg" src="../assets/hw_gate.mp4" muted loop playsinline autoplay poster="../assets/hw_gate.jpg"></video></div>
+  <div class="gate-frame"><video class="gate-bg" src="../assets/hw_road.mp4" muted loop playsinline autoplay poster="../assets/hw_road.jpg"></video></div>
   <div class="gate-veil"></div>
   <div class="gate-inner">
     <div class="gate-brand">
-      <div class="gate-hanja">藏經閣</div>
-      <div class="gate-sub">심곡사 뒤편, 장부가 잠든 전각</div>
+      <div class="gate-hanja">深谷寺</div>
+      <div class="gate-sub">심곡사 아랫길 — 해 질 무렵</div>
     </div>
-    <p class="gate-warn">풍경(風磬)이 우는 자리에서<br><b>스님이 장부를 덮지 못하고 있습니다</b></p>
-    <button class="gate-btn" id="enterBtn">장경각에 오른다</button>
-    <p class="gate-note">· 소리와 함께 오르시길 바랍니다 ·</p>
+    <p class="gate-warn">길 끝에서, 누군가<br><b>당신이 오기를 기다리고 있습니다</b></p>
+    <button class="gate-btn" id="enterBtn">길을 지나간다</button>
+    <p class="gate-note">· 소리와 함께 걸으시길 바랍니다 ·</p>
   </div>
 </div>
 
@@ -766,18 +835,19 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 0 : 히어로 ═══════════ -->
   <section class="scene" id="hero">
-    <video class="bg" src="../assets/hw_bell.mp4" muted loop playsinline preload="auto" poster="../assets/hw_bell.jpg"></video>
+    <video class="bg" src="../assets/hw_grab.mp4" muted loop playsinline preload="auto" poster="../assets/hw_grab.jpg"></video>
     <div class="veil"></div>
     <div class="title-wrap">
-      <div class="hanja"><span>藏</span><span>經</span><span>閣</span></div>
-      <div class="sub">심 곡 사 · 장 경 각</div>
+      <div class="hanja"><span>深</span><span>谷</span><span>寺</span></div>
+      <div class="sub">심 곡 사 · 아 랫 길</div>
       <div class="title-glow"></div>
     </div>
     <div class="dialog" data-scene="0">
-      <p class="line whisper">— 심곡사 뒤편, 가장 깊은 전각 —</p>
-      <p class="line">수천 권의 장부가 잠든 장경각.<br>밤마다 불이 꺼지지 않는 이유를,<br>아는 이는 <em>없다.</em></p>
+      <p class="line whisper">— 해 질 무렵, 심곡사 아랫길 —</p>
+      <p class="line">바쁜 걸음으로<br>스쳐 지나가려던, 그 순간.</p>
+      <p class="line" data-quake>마른 손 하나가—<br><em>네 손목을 낚아챈다.</em></p>
       <div class="choices">
-        <button class="choice" data-next="1">풍경 소리를 따라 오른다</button>
+        <button class="choice" data-next="1">"…뭐야, 놓으세요!"</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -785,16 +855,17 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 1 : 숲길 ═══════════ -->
   <section class="scene hidden-scene" id="scene1" style="display:none">
-    <video class="bg" src="../assets/hw_steps.mp4" muted loop playsinline preload="none" poster="../assets/hw_steps.jpg"></video>
+    <video class="bg" src="../assets/hw_glare.mp4" muted loop playsinline preload="none" poster="../assets/hw_glare.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">壹</span>
     <div class="dialog" data-scene="1">
-      <p class="line whisper">돌계단이 어둠 속으로 이어진다.</p>
-      <p class="line">계단 끝, 무거운 문 하나.<br>문틈으로 <em>등불</em>이 새어 나오고 있다.</p>
-      <p class="line whisper">…안에서, 엽전 세는 소리가 난다.<br>짤랑. 짤랑. 한 닢씩.</p>
+      <p class="line voice">"…잠깐."</p>
+      <p class="line">잿빛 승복의 노승이<br>손목을 쥔 채, 눈을 좁힌다.</p>
+      <p class="line voice">"너… <em>놓치는 게 너무 많구나.</em>"</p>
+      <p class="line voice">"관상이 아니다. 손금도 아니다.<br>네게서— <em>새는 소리가 들린다.</em>"</p>
       <div class="choices">
-        <button class="choice" data-next="2">문을 민다</button>
-        <button class="choice" data-next="2" data-hesitate="1">잠시 숨을 고른다</button>
+        <button class="choice" data-next="2">"…무슨 소리예요, 그게?"</button>
+        <button class="choice" data-next="2" data-hesitate="1">(손을 뿌리치려 한다)</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -802,16 +873,17 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 2 : 현월과 대면 ═══════════ -->
   <section class="scene hidden-scene" id="scene2" style="display:none">
-    <video class="bg" src="../assets/hw_door.mp4" muted loop playsinline preload="none" poster="../assets/hw_door.jpg"></video>
+    <video class="bg" src="../assets/hw_pull.mp4" muted loop playsinline preload="none" poster="../assets/hw_pull.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">貳</span>
     <div class="dialog" data-scene="2">
-      <p class="line whisper" data-hesitate-line style="display:none">…숨을 고르는 사이, 문이 안에서 열렸다.</p>
-      <p class="line voice">"올 줄 알았다."</p>
-      <p class="line">책장 사이, 등불 아래—<br>잿빛 승복의 사내가<br>고개도 들지 않고 말한다.</p>
-      <p class="line voice">"이 각(閣)을 지킨 지 <em>마흔 해</em>.<br>돈 때문에 산을 오른 얼굴은…<br>문소리부터 다르지."</p>
+      <p class="line whisper" data-hesitate-line style="display:none">…뿌리쳤지만, 노승의 손은 바위 같았다.</p>
+      <p class="line voice">"말로는 못 믿을 터."</p>
+      <p class="line">노승이 손목을 쥔 채<br>돌계단을 오르기 시작한다.<br>끌려가는 건지, 따라가는 건지—</p>
+      <p class="line voice">"장경각(藏經閣).<br>사십 년 치 <em>재물 장부</em>가 잠든 곳이다."</p>
+      <p class="line voice">"네 장부도— <em>거기 있다.</em>"</p>
       <div class="choices">
-        <button class="choice" data-ask="start">"…스님이, 그걸 어떻게 아십니까?"</button>
+        <button class="choice" data-ask="start">"…내, 장부요?"</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -826,8 +898,8 @@ footer b{color:#7a6f66}
     <div class="dialog" data-scene="ask">
       <!-- step 1 : 이름 -->
       <div class="ask-step" id="ask1">
-        <p class="line voice">"내가 아는 게 아니다.<br><em>장부가 아는 것이지.</em>"</p>
-        <p class="line voice" style="margin-top:12px">"허나 네 손으로 적어야 장부가 열린다.<br>이름부터 적거라."</p>
+        <p class="line whisper">등불 아래, 낮은 책상.<br>노승이 손목을 놓아주며— 붓을 내민다.</p>
+        <p class="line voice">"장부는 제 주인의 글씨에만 열린다.<br><em>이름부터 적거라.</em>"</p>
         <div class="ask-wrap on">
           <div class="ask-field">
             <input class="ask-input" id="inName" type="text" maxlength="10" placeholder="이름을 적는다" autocomplete="off">
@@ -916,33 +988,48 @@ footer b{color:#7a6f66}
       </div>
     </section>
 
-    <!-- 원국 차트 -->
+    <!-- 재물 장부 (現月記) — 묘담의 만세력 차트와 다른, 먹칠·인장의 장부 언어 -->
     <section class="sec" style="padding-top:0">
-      <div class="chart-frame rv">
-        <img class="chart-bg" src="../assets/chart.jpg" alt="">
-        <div class="chart-inner">
-          <div class="chart-title" id="chartOwner">四柱原局</div>
-          <div class="pillars">
-            <div class="pillar locked" id="pillarHour">
-              <div class="plabel">時柱</div>
-              <div class="pchar"><div>甲</div><div>子</div></div>
-            </div>
-            <div class="pillar locked" id="pillarDay">
-              <div class="plabel">日柱</div>
-              <div class="pchar"><div>丙</div><div>午</div></div>
-            </div>
-            <div class="pillar locked cursed" id="pillarMonth">
-              <span class="curse-mark">漏</span>
-              <div class="plabel">月柱</div>
-              <div class="pchar"><div>庚</div><div>申</div></div>
-            </div>
-            <div class="pillar" id="pillarYear">
-              <div class="plabel">年柱</div>
-              <div class="pchar"><div id="yStem">乙</div><div id="yBranch">亥</div></div>
-            </div>
-          </div>
-          <p class="chart-note">붉은 표식 — <b>재물이 새는 자리</b><br>잠긴 기둥은, 풀이에서 전부 열어 주마</p>
+      <div class="ledger-frame rv">
+        <div class="ledger-head">
+          <span class="lh-title" id="chartOwner">現月記 — 재물 장부</span>
+          <span class="lh-sub">장경각 검증 필사본 · 제 4,001호</span>
         </div>
+        <div class="ledger-rows">
+          <div class="lrow">
+            <span class="lk">타고난 판</span>
+            <span class="lv">년주(年柱) <b id="yStem">乙</b><b id="yBranch">亥</b> — 적었다</span>
+            <span class="lmark done">記</span>
+          </div>
+          <div class="lrow">
+            <span class="lk">그릇의 크기</span>
+            <span class="lv"><span class="inkblot">■■■■</span> 섬(石) <span class="inkblot">■</span>말</span>
+            <span class="lmark seal">封</span>
+          </div>
+          <div class="lrow leak">
+            <span class="lk">새는 자리</span>
+            <span class="lv"><span class="inkblot">■■</span>방(方) · <span class="inkblot">■■</span>살 무렵부터</span>
+            <span class="lmark loo">漏</span>
+          </div>
+          <div class="lrow">
+            <span class="lk">고이는 해</span>
+            <span class="lv">20<span class="inkblot">■■</span>년 <span class="inkblot">■</span>월</span>
+            <span class="lmark seal">封</span>
+          </div>
+        </div>
+        <p class="chart-note">먹으로 덮은 자리 — <b>값을 치르면 걷어 준다</b><br>붉은 漏 — 지금 이 순간에도 새는 자리다</p>
+      </div>
+    </section>
+
+    <!-- 잃은 돈 셈 — 주판 연출 -->
+    <section class="sec" style="padding-top:44px">
+      <p class="h-red rv">스님이 주판을 놓는다</p>
+      <h2 class="h-big rv">여태 새어 나간 돈,<br><span class="r">셈해 보았다</span></h2>
+      <div class="lost-frame rv">
+        <div class="lost-label" id="lostOwner">— 누적 누재(漏財) 추산 —</div>
+        <div class="lost-amount"><span id="lostNum">0</span><small>만 원<em>어치</em></small></div>
+        <div class="lost-stamp" id="lostStamp">漏</div>
+        <p class="lost-note">앞자리는 가려 두마.<br>정확한 셈은— 값을 치르고 보거라.</p>
       </div>
     </section>
 
@@ -985,7 +1072,7 @@ footer b{color:#7a6f66}
 
     <!-- 현월 소개 -->
     <section class="sec img-sec">
-      <img class="bg" src="../assets/hw_aisle.jpg" alt="">
+      <video class="bg" src="../assets/hw_door.mp4" muted loop playsinline preload="none" poster="../assets/hw_door.jpg"></video>
       <div class="veil2"></div>
       <div class="inner">
         <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">심곡사 뒤편, 장경각</p>
@@ -1005,22 +1092,32 @@ footer b{color:#7a6f66}
       <p class="h-red rv">셈 미리보기 · 壹</p>
       <h2 class="h-big rv">"돈이 한 번 크게<br><span class="r">고이는 판이던데."</span></h2>
       <div class="graph-frame rv">
-        <div class="graph-title" id="graphOwner">財物運 흐름도</div>
+        <div class="graph-title" id="graphOwner">財物運 능선도</div>
         <svg viewBox="0 0 320 150" width="100%" style="display:block">
           <defs>
-            <linearGradient id="gline" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#6b511f"/><stop offset="1" stop-color="#e0a43c"/>
+            <linearGradient id="gbar" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#8a6420"/><stop offset="1" stop-color="#3d2c0d"/>
             </linearGradient>
-            <linearGradient id="gfill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="rgba(224,164,60,.28)"/><stop offset="1" stop-color="rgba(224,164,60,0)"/>
+            <linearGradient id="gbarhot" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e0a43c"/><stop offset="1" stop-color="#7a4a12"/>
             </linearGradient>
           </defs>
-          <path d="M10,95 L60,78 L105,112 L150,60 L195,88 L245,30 L310,55 L310,150 L10,150 Z" fill="url(#gfill)"/>
-          <path d="M10,95 L60,78 L105,112 L150,60 L195,88 L245,30 L310,55" fill="none" stroke="url(#gline)" stroke-width="2.5"/>
-          <circle cx="105" cy="112" r="6" fill="#3d2c0d" stroke="#e8d5a7" stroke-width="1.5"/>
-          <circle cx="245" cy="30" r="7" fill="#a3701c" stroke="#ffe4b0" stroke-width="2">
-            <animate attributeName="r" values="7;9;7" dur="2s" repeatCount="indefinite"/>
-          </circle>
+          <line x1="8" y1="132" x2="312" y2="132" stroke="rgba(232,224,216,.18)" stroke-width="1"/>
+          <rect x="14"  y="92"  width="20" height="40" rx="2" fill="url(#gbar)" opacity=".8"/>
+          <rect x="44"  y="78"  width="20" height="54" rx="2" fill="url(#gbar)" opacity=".8"/>
+          <rect x="74"  y="112" width="20" height="20" rx="2" fill="#2a1512" stroke="rgba(210,74,62,.7)" stroke-width="1.5"/>
+          <rect x="104" y="70"  width="20" height="62" rx="2" fill="url(#gbar)" opacity=".8"/>
+          <rect x="134" y="96"  width="20" height="36" rx="2" fill="url(#gbar)" opacity=".8"/>
+          <rect x="164" y="118" width="20" height="14" rx="2" fill="#2a1512" stroke="rgba(210,74,62,.7)" stroke-width="1.5"/>
+          <rect x="194" y="58"  width="20" height="74" rx="2" fill="url(#gbar)" opacity=".8"/>
+          <rect x="224" y="24"  width="20" height="108" rx="2" fill="url(#gbarhot)" stroke="#ffe4b0" stroke-width="1.5">
+            <animate attributeName="opacity" values="1;.75;1" dur="2.2s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="254" y="66"  width="20" height="66" rx="2" fill="url(#gbar)" opacity=".8"/>
+          <rect x="284" y="84"  width="20" height="48" rx="2" fill="url(#gbar)" opacity=".8"/>
+          <text x="234" y="16" font-size="11" fill="#ffe4b0" font-family="serif" text-anchor="middle">湊</text>
+          <text x="84" y="108" font-size="10" fill="#d24a3e" font-family="serif" text-anchor="middle">漏</text>
+          <text x="174" y="114" font-size="10" fill="#d24a3e" font-family="serif" text-anchor="middle">漏</text>
         </svg>
         <div class="graph-tags">
           <span class="gtag bad"><b>줄줄 새는 해</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
@@ -1038,23 +1135,23 @@ footer b{color:#7a6f66}
       <div class="locklist">
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其一</span><span class="li-title">평생 담을 수 있는<br>내 재물 그릇의 최대치</span></div>
-          <div class="li-body"><p>재성의 흐름이 대운과 맞물려 그릇이 가득 차는 구간이 두 번 존재하며 그 정점은 당신의 나이로 셈했을 때 대략…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+          <div class="li-body"><p>재성의 흐름이 대운과 맞물려 그릇이 가득 차는 구간이 두 번 존재하며 그 정점은 당신의 나이로 셈했을 때 대략…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其二</span><span class="li-title">내 돈을 걷어가는 얼굴 vs<br>돈길을 열어 줄 귀인 구별법</span></div>
-          <div class="li-body"><p>당신의 원국은 특정 오행의 사람에게 재물이 새는 구조라서 지금까지 돈이 얽혔던 사람 중에서도…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+          <div class="li-body"><p>당신의 원국은 특정 오행의 사람에게 재물이 새는 구조라서 지금까지 돈이 얽혔던 사람 중에서도…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其三</span><span class="li-title">월급·사업·투자 —<br>내 돈이 붙는 밥벌이의 생김새</span></div>
-          <div class="li-body"><p>같은 노력으로도 재물이 배로 붙는 업의 방향이 원국마다 정해져 있는데 당신의 재성 구조로 보면…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+          <div class="li-body"><p>같은 노력으로도 재물이 배로 붙는 업의 방향이 원국마다 정해져 있는데 당신의 재성 구조로 보면…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其四</span><span class="li-title">지긋지긋한 마름이 끝나고<br>돈이 고이기 시작하는 시기</span></div>
-          <div class="li-body"><p>지금의 마른 구간은 당신 탓이 아니라 재물 대운의 골짜기이며 이 골짜기를 빠져나가는 정확한 시점은…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+          <div class="li-body"><p>지금의 마른 구간은 당신 탓이 아니라 재물 대운의 골짜기이며 이 골짜기를 빠져나가는 정확한 시점은…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其五</span><span class="li-title">잃지 않고 불리는,<br>내 원국만의 지키는 법(藏)</span></div>
-          <div class="li-body"><p>드러나면 새고 감추면 고이는 것이 재물인데, 당신의 구조에서 돈을 감춰 둘 자리와 방위는…</p><div class="li-veil">🔒 심층 풀이에서 공개</div></div>
+          <div class="li-body"><p>드러나면 새고 감추면 고이는 것이 재물인데, 당신의 구조에서 돈을 감춰 둘 자리와 방위는…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
       </div>
     </section>
@@ -1416,11 +1513,11 @@ function loadProgress(){
 }
 
 /* ───────── gate ───────── */
-/* 게이트 첫 터치 → 풍경(風磬)+숲바람 앰비언스 즉시 시작 (사전 로딩으로 지연 없음) */
-const gateAmbBells = new Audio('../assets/sfx_hw_bell.mp3');   // 풍경 울림 + 산바람
+/* 게이트 첫 터치 → 발소리+귀뚜라미+멀리 풍경 앰비언스 즉시 시작 (사전 로딩으로 지연 없음) */
+const gateAmbBells = new Audio('../assets/sfx_hw_road.mp3');   // 흙길 발소리 + 저녁 벌레 + 바람
 gateAmbBells.loop = true; gateAmbBells.volume = 1; gateAmbBells.preload = 'auto';
-const gateAmbSteps = new Audio('../assets/sfx_hw_gate.mp3');   // 밤 숲 룸톤 + 벌레 소리
-gateAmbSteps.loop = true; gateAmbSteps.volume = .72; gateAmbSteps.preload = 'auto';
+const gateAmbSteps = new Audio('../assets/sfx_hw_bell.mp3');   // 멀리서 우는 풍경(風磬)
+gateAmbSteps.loop = true; gateAmbSteps.volume = .45; gateAmbSteps.preload = 'auto';
 let gateAmbOn = false;
 let soundStarted = false;
 function ensureSound(){
@@ -1435,7 +1532,7 @@ function startGateAmb(){
     gateAmbOn = true;
     ensureSound();
     const note = document.querySelector('#gate .gate-note');
-    if (note) note.textContent = '· 풍경 소리가 들리기 시작합니다 ·';
+    if (note) note.textContent = '· 발소리가 들리기 시작합니다 ·';
   }).catch(()=>{ /* 자동재생 차단 — 첫 제스처를 기다린다 */ });
 }
 // 랜딩 즉시 재생 시도 (재방문·인앱 브라우저 등 자동재생이 허용되는 환경은 바로 들린다)
@@ -1516,9 +1613,9 @@ function gotoScene(id){
 }
 
 /* 앰비언스 바인딩 (파일: assets/sfx_*.mp3) */
-attachAmbience(document.querySelector('#hero video'), '../assets/sfx_hw_bell.mp3', .85);
-attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_hw_steps.mp3', .9);
-attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_hw_door.mp3', .8);
+attachAmbience(document.querySelector('#hero video'), '../assets/sfx_hw_grab.mp3', .9);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_hw_glare.mp3', .85);
+attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_hw_pull.mp3', .85);
 const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_hw_desk.mp3', .7);
 attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_counting.mp3', .78);
 attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_hw_gate.mp3', .55);
@@ -1638,8 +1735,9 @@ function fillSales(){
   const nm = user.name ? esc(user.name) : '';
   if (nm){
     document.getElementById('pHead').innerHTML = nm + '. 허어…<br><span class="r">너, 크게 새고 있다</span>';
-    document.getElementById('chartOwner').textContent = user.name + ' — 財物原局';
-    document.getElementById('graphOwner').textContent = user.name + ' — 財物運 흐름도';
+    document.getElementById('chartOwner').textContent = '現月記 — ' + user.name + '의 재물 장부';
+    document.getElementById('lostOwner').textContent = '— ' + user.name + '의 누적 누재(漏財) 추산 —';
+    document.getElementById('graphOwner').textContent = user.name + ' — 財物運 능선도';
     document.getElementById('stickyText').textContent = nm + ', 네 재물의 셈을 받아라';
     document.getElementById('ctaMain').textContent = nm + ', 네 재물의 셈을 받아라';
     document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>네 이름이 적힌, 단 한 권의 장부.<br>평생 소장하는 상세 분석서.';
@@ -1678,7 +1776,7 @@ function fillSales(){
         <p>${s.desc}</p>
         <div class="sal-lock">
           <p>${s.lock} ■■■■■■■■■■■■■■■■■■■■■■■■■■■■</p>
-          <div class="lock-tag">🔒 심층 풀이에서 공개</div>
+          <div class="lock-tag">封 — 값을 치르면 열린다</div>
         </div>
       </div>
     </div>`).join('');
@@ -1696,7 +1794,7 @@ function fillSales(){
   ];
   document.getElementById('salTimeline').innerHTML = t.map(r => `
     <div class="row"><span class="yr">${r.yr}</span><span class="tx">${r.s.name}(${r.s.hanja}) — ${r.tag}<br>
-    <span style="filter:blur(4.5px);user-select:none">${r.tx}, ■월과 ■월에 정점</span> 🔒</span></div>`).join('');
+    <span style="filter:blur(4.5px);user-select:none">${r.tx}, ■월과 ■월에 정점</span> <b style="color:#c9a25c;font-weight:800">封</b></span></div>`).join('');
   // 심층 카드 = 첫 번째 살 연동
   const d = picks[0];
   document.getElementById('salDeepCard').innerHTML = `
@@ -1705,6 +1803,38 @@ function fillSales(){
     — 네게 유독 크게 새는 이유<br>
     — 막는 방위·시기·방법까지<br>
     하나하나 셈해 주마.</p>`;
+  // 잃은 돈 셈 — 화면에 들어오는 순간 주판 굴러가듯 차오르고, 끝에 앞자리를 먹으로 가린다
+  setupLostCounter(h);
+}
+
+let lostDone = false;
+function setupLostCounter(h){
+  const numEl = document.getElementById('lostNum');
+  const stamp = document.getElementById('lostStamp');
+  if (!numEl) return;
+  lostDone = false; stamp.classList.remove('on');
+  const target = 1800 + (h % 4200);            // 1,800 ~ 6,000만 원 사이 — 사람마다 고정
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (!e.isIntersecting || lostDone) return;
+      lostDone = true; io.disconnect();
+      const t0 = performance.now(), DUR = 1900;
+      (function tick(now){
+        const p = Math.min(1, (now - t0) / DUR);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const v = Math.round(target * eased);
+        numEl.textContent = v.toLocaleString();
+        if (p < 1) requestAnimationFrame(tick);
+        else {
+          // 앞자리를 먹칠로 가린다 (예: 3,417 → ■,417)
+          const s = target.toLocaleString();
+          numEl.innerHTML = '<span class="inkblot" style="font-size:.92em">■</span>' + s.slice(1);
+          setTimeout(()=>{ stamp.classList.add('on'); playTsk(); if (navigator.vibrate) navigator.vibrate([40,60,40]); }, 350);
+        }
+      })(t0);
+    });
+  }, {threshold:.5});
+  io.observe(numEl);
 }
 
 /* ───────── 로딩 → 결과 ───────── */
