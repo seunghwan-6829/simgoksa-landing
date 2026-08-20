@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>재물의 경(經) — 深谷寺 장경각</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0a0705">
@@ -12,219 +12,164 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0705; --paper:#e8ddc7; --ink:#e2d7c2; --ink-dim:#9a8a6c; --dim2:#6b5c44;
-  --brass:#c9a25c; --brass-hi:#e0a43c; --loo:#d24a3e;
+  --bg:#0a0705; --bg2:#120d07; --ink:#e2d7c2; --ink-dim:#9a8a6c; --dim2:#6b5c44;
+  --brass:#c9a25c; --brass-hi:#e0a43c; --loo:#d24a3e; --paper:#e8ddc7;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
-body{
-  background:#050403;color:var(--ink);
-  font-family:'Noto Serif KR','Nanum Myeongjo',serif;
-  overflow-x:hidden;
-}
-#doc{
-  position:relative;max-width:480px;margin:0 auto;background:var(--bg);
-  min-height:100dvh;box-shadow:0 0 80px rgba(0,0,0,.9);
-  padding-bottom:80px;
-}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{height:100%;overflow:hidden}
+body{background:#050403;color:var(--ink);font-family:'Noto Serif KR','Nanum Myeongjo',serif}
 .grain{
   pointer-events:none;position:fixed;inset:-100%;width:300%;height:300%;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   opacity:.06;z-index:90;
 }
-/* 상단바 */
+#frame{position:fixed;inset:0;max-width:480px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column}
 #topbar{
-  position:sticky;top:0;z-index:50;
-  display:flex;align-items:center;gap:10px;
-  padding:12px 16px;background:rgba(10,7,5,.92);backdrop-filter:blur(6px);
-  border-bottom:1px solid rgba(201,162,92,.22);
+  flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 10px;
+  border-bottom:1px solid rgba(201,162,92,.16);background:rgba(10,7,5,.94);z-index:10;
 }
-#topbar a,#topbar button{
-  appearance:none;background:none;border:none;cursor:pointer;
-  font-family:inherit;color:var(--ink-dim);font-size:12.5px;letter-spacing:.12em;text-decoration:none;
+#topbar .t-brand{font-family:'Nanum Myeongjo',serif;font-size:13px;letter-spacing:.25em;color:var(--brass)}
+#topbar .t-page{font-size:12px;letter-spacing:.15em;color:var(--ink-dim)}
+#topbar button{
+  appearance:none;background:none;border:1px solid rgba(201,162,92,.3);border-radius:999px;
+  color:var(--ink-dim);font-family:inherit;font-size:11.5px;letter-spacing:.1em;padding:6px 13px;cursor:pointer;
 }
-#topbar a:hover,#topbar button:hover{color:var(--paper)}
-#topbar .t{flex:1;text-align:center;font-family:'Nanum Myeongjo',serif;font-weight:800;color:var(--paper);font-size:14px;letter-spacing:.2em}
-/* 표지 머리 */
-#head{
-  position:relative;overflow:hidden;
-  background:url('../assets/hw_cover.jpg') center/cover no-repeat;
-  min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:60px 26px;
+#progress{flex:none;height:2px;background:rgba(232,224,216,.08)}
+#progressBar{height:100%;width:0;background:linear-gradient(90deg,#7a4a12,var(--brass-hi));transition:width .3s ease}
+#pager{flex:1;overflow:hidden;position:relative;touch-action:pan-y}
+#track{display:flex;height:100%;transition:transform .38s cubic-bezier(.22,.8,.3,1);will-change:transform}
+.page{flex:none;width:100%;height:100%;overflow-y:auto;scrollbar-width:none;padding:34px 28px 60px;position:relative}
+.page::-webkit-scrollbar{display:none}
+/* typography */
+.pg-no{font-family:'Nanum Myeongjo',serif;font-size:11px;letter-spacing:.3em;color:var(--dim2);text-align:center;margin-bottom:26px}
+.pg-label{font-size:12px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-bottom:14px}
+h2.pg-title{font-size:23px;font-weight:900;line-height:1.7;text-align:center;word-break:keep-all;margin-bottom:8px;color:var(--paper)}
+h2.pg-title .r{color:var(--brass-hi)}
+.pg-hanja{font-family:'Nanum Myeongjo',serif;font-size:46px;font-weight:800;color:var(--brass);text-align:center;margin:20px 0 6px;text-shadow:0 0 34px rgba(201,162,92,.3)}
+.pg-sub{font-size:13px;color:var(--ink-dim);text-align:center;letter-spacing:.12em;margin-bottom:26px}
+.pg-body{font-size:15.5px;line-height:2.15;word-break:keep-all;color:var(--ink)}
+.pg-body + .pg-body{margin-top:18px}
+.pg-body em{font-style:normal;color:var(--brass-hi);font-weight:700}
+.pg-body b{color:var(--paper)}
+.pg-quote{
+  margin:26px 0;padding:16px 20px;border-left:3px double rgba(201,162,92,.55);
+  background:rgba(201,162,92,.05);font-family:'Nanum Myeongjo',serif;
+  font-size:15.5px;line-height:2.05;word-break:keep-all;color:var(--paper);
 }
-#head::after{content:"";position:absolute;inset:0;background:radial-gradient(90% 80% at 50% 45%,transparent 30%,rgba(5,4,3,.72) 100%)}
-#head > *{position:relative;z-index:2}
-#head .h-kicker{font-size:11px;letter-spacing:.4em;color:var(--brass);margin-bottom:16px;text-shadow:0 1px 4px #000}
-#head h1{
-  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:44px;letter-spacing:.18em;
-  color:#efe4cd;text-shadow:0 2px 6px rgba(0,0,0,.9),0 0 40px rgba(224,164,60,.25);
-}
-#head .owner{
-  margin-top:18px;display:inline-block;
-  background:linear-gradient(175deg,#e4d7bc,#cdbb95);color:#241708;
-  font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:14px;letter-spacing:.12em;
-  padding:8px 16px;border-radius:2px;box-shadow:0 4px 14px rgba(0,0,0,.6);transform:rotate(-.8deg);
-}
-#head .reg{margin-top:14px;font-size:11px;letter-spacing:.2em;color:#cbbb99;text-shadow:0 1px 4px #000}
-#head .no{margin-top:6px;font-size:10px;letter-spacing:.24em;color:#8a7a60;text-shadow:0 1px 4px #000}
-#head .seal{
-  position:absolute;right:26px;bottom:30px;z-index:2;
-  width:52px;height:52px;display:flex;align-items:center;justify-content:center;
-  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:26px;
-  color:var(--loo);border:3px solid rgba(210,74,62,.8);border-radius:4px;transform:rotate(-8deg);
-}
-/* 목차 */
-#toc{
-  margin:34px 22px 10px;padding:20px 20px 14px;
-  border:1px solid rgba(201,162,92,.3);border-radius:3px;background:rgba(23,16,8,.5);
-}
-#toc .tt{font-family:'Nanum Myeongjo',serif;font-weight:800;color:var(--paper);font-size:14px;letter-spacing:.24em;margin-bottom:12px}
-#toc a{
-  display:flex;gap:10px;align-items:baseline;padding:7px 0;text-decoration:none;
-  border-bottom:1px dashed rgba(232,224,216,.1);font-size:13px;color:var(--ink-dim);
-}
-#toc a:last-child{border-bottom:none}
-#toc a b{color:var(--brass);font-family:'Nanum Myeongjo',serif;font-weight:800;min-width:22px}
-#toc a:hover{color:var(--paper)}
-/* 권(卷) */
-.kwon{position:relative;padding:64px 26px 10px 26px;max-width:100%}
-.kwon .vtag{
-  position:absolute;top:70px;right:14px;writing-mode:vertical-rl;
-  font-family:'Nanum Myeongjo',serif;font-size:11.5px;letter-spacing:.4em;
-  color:rgba(201,162,92,.5);border-left:1px solid rgba(201,162,92,.25);padding-left:8px;user-select:none;
-}
-.kwon .k-no{font-size:11px;letter-spacing:.34em;color:var(--brass);margin-bottom:10px}
-.kwon h2{
-  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:24px;line-height:1.55;
-  color:var(--paper);word-break:keep-all;padding-right:36px;
-}
-.kwon h2 .r{color:var(--brass-hi)}
-.k-rule{width:56px;height:2px;background:linear-gradient(90deg,var(--brass),transparent);margin:18px 0 22px}
-.kwon p{font-size:15px;line-height:2.05;color:var(--ink);word-break:keep-all;margin-bottom:16px;padding-right:30px}
-.kwon p em{font-style:normal;color:var(--brass-hi)}
-.kwon p.dim{color:var(--ink-dim);font-size:13.5px}
-.k-voice{
-  border-left:3px double rgba(201,162,92,.5);padding:4px 26px 4px 16px;margin:22px 0;
-  font-family:'Nanum Myeongjo',serif;font-size:15.5px;line-height:2.05;color:var(--paper);word-break:keep-all;
-}
-.k-voice em{font-style:normal;color:var(--brass-hi)}
+.pg-quote em{font-style:normal;color:var(--brass-hi)}
+.pg-note{margin-top:26px;font-size:12px;color:var(--dim2);line-height:1.9;text-align:center;word-break:keep-all}
+.hr{width:44px;height:1px;background:rgba(201,162,92,.5);margin:26px auto}
 /* 장부 행 */
-.rows{margin:20px 0;border-top:1px solid rgba(201,162,92,.3)}
-.row{
-  display:flex;gap:12px;align-items:baseline;
-  padding:13px 2px;border-bottom:1px dashed rgba(232,224,216,.12);font-size:14px;
+.rows{margin:18px 0;border-top:1px solid rgba(201,162,92,.3)}
+.rowl{display:flex;gap:12px;align-items:baseline;padding:13px 2px;border-bottom:1px dashed rgba(232,224,216,.12);font-size:14px;text-align:left}
+.rowl .k{flex-shrink:0;width:86px;color:#8a7a60;font-size:12.5px;letter-spacing:.06em}
+.rowl .v{flex:1;font-family:'Nanum Myeongjo',serif;color:var(--ink)}
+.rowl .v b{color:var(--paper);font-weight:800}
+.rowl .v em{font-style:normal;color:var(--brass-hi)}
+.rowl .m{flex-shrink:0;font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:13px}
+.rowl .m.good{color:var(--brass)} .rowl .m.bad{color:var(--loo)}
+/* 규(規) */
+.fix{margin:20px 0 0;padding:16px 18px;border:1px dashed rgba(201,162,92,.4);border-radius:3px;background:rgba(23,16,8,.5);text-align:left}
+.fix .ft{font-size:11.5px;letter-spacing:.26em;color:var(--brass);margin-bottom:10px;text-align:center}
+.fix li{display:flex;gap:9px;list-style:none;font-size:14px;line-height:2;color:var(--ink);word-break:keep-all;padding:4px 0}
+.fix li::before{content:"規";flex-shrink:0;font-size:11px;color:var(--dim2);padding-top:5px;font-family:'Nanum Myeongjo',serif}
+/* 도장류 */
+.stamp-sq{
+  display:flex;align-items:center;justify-content:center;margin:30px auto 0;
+  width:64px;height:84px;writing-mode:vertical-rl;text-orientation:upright;
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:24px;letter-spacing:5px;line-height:1;padding-top:4px;
+  color:var(--loo);border:3px solid rgba(210,74,62,.8);border-radius:5px;transform:rotate(-5deg);
 }
-.row .k{flex-shrink:0;width:88px;color:#8a7a60;font-size:12.5px;letter-spacing:.08em}
-.row .v{flex:1;font-family:'Nanum Myeongjo',serif;color:var(--ink);letter-spacing:.04em}
-.row .v b{color:var(--paper);font-weight:800}
-.row .v em{font-style:normal;color:var(--brass-hi)}
-.row .m{flex-shrink:0;font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:13px}
-.row .m.good{color:var(--brass)}
-.row .m.bad{color:var(--loo)}
-/* 구멍 항목 */
-.hole{
-  margin:26px 0;border-left:3px double rgba(210,74,62,.55);padding:2px 26px 4px 16px;
+/* 표지 */
+.cover{padding:0!important;display:flex;flex-direction:column}
+.cover .cv-img{position:absolute;inset:0;background:url('../assets/hw_cover.jpg') center/cover no-repeat;filter:brightness(.92)}
+.cover .cv-veil{position:absolute;inset:0;background:radial-gradient(95% 80% at 50% 42%,transparent 34%,rgba(4,3,2,.78) 100%),linear-gradient(180deg,rgba(0,0,0,.35),transparent 26%,transparent 60%,rgba(4,3,2,.9) 94%)}
+.cover .cv-inner{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 30px}
+.cover .cv-brand{margin-top:12vh;font-family:'Nanum Myeongjo',serif;font-size:12px;letter-spacing:.5em;color:var(--brass);text-shadow:0 2px 8px #000}
+.cover .cv-title{font-family:'Nanum Myeongjo',serif;font-size:52px;font-weight:800;color:#efe4cd;margin:16px 0 4px;letter-spacing:.14em;text-shadow:0 2px 8px rgba(0,0,0,.95),0 0 44px rgba(224,164,60,.3)}
+.cover .cv-88{font-size:12.5px;letter-spacing:.34em;color:#cbbb99;text-shadow:0 1px 6px #000}
+.cover .cv-label{
+  margin-top:26px;display:inline-block;background:linear-gradient(175deg,#e4d7bc,#cdbb95);color:#241708;
+  font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:14.5px;letter-spacing:.12em;
+  padding:9px 18px;border-radius:2px;box-shadow:0 5px 16px rgba(0,0,0,.65);transform:rotate(-.9deg);
 }
-.hole .hh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.hole .hz{font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:26px;color:var(--loo)}
-.hole .hn{font-weight:700;font-size:16px;color:var(--paper)}
-.hole .hn small{display:block;font-weight:300;font-size:11px;color:var(--ink-dim);letter-spacing:.14em;margin-top:2px}
-.hole .lv{margin-left:auto;font-size:11px;letter-spacing:.1em;color:#d8968c;border:1.5px solid rgba(210,74,62,.6);border-radius:3px;padding:3px 8px;transform:rotate(-3deg)}
-.fix{
-  margin:14px 0 6px;padding:14px 16px;border:1px dashed rgba(201,162,92,.4);
-  border-radius:3px;background:rgba(23,16,8,.5);
+.cover .cv-reg{margin-top:16px;font-size:11px;letter-spacing:.2em;color:#cbbb99;text-shadow:0 1px 6px #000}
+.cover .cv-no{margin-top:7px;font-size:10px;letter-spacing:.24em;color:#8a7a60;text-shadow:0 1px 6px #000}
+.cover .cv-seal{
+  margin-top:auto;margin-bottom:6vh;align-self:flex-end;margin-right:2px;
+  width:56px;height:56px;display:flex;align-items:center;justify-content:center;
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:28px;color:var(--loo);
+  border:3px solid rgba(210,74,62,.85);border-radius:5px;transform:rotate(-8deg);
+  text-shadow:0 0 16px rgba(210,74,62,.4);
 }
-.fix .ft{font-size:11.5px;letter-spacing:.26em;color:var(--brass);margin-bottom:8px}
-.fix ol{list-style:none}
-.fix li{display:flex;gap:9px;font-size:13.8px;line-height:1.95;color:var(--ink);word-break:keep-all;padding:3px 0}
-.fix li::before{content:"규(規)";flex-shrink:0;font-size:10.5px;color:var(--dim2);letter-spacing:.08em;padding-top:4px}
-/* 달력/십년 */
-.cal .row .k{width:56px}
-.hr-k{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,92,.4),transparent);margin:46px 0 0}
-/* 맺음 */
-#tail{padding:70px 26px 30px;text-align:center}
-#tail .z{font-family:'Nanum Myeongjo',serif;font-size:26px;font-weight:800;color:var(--paper);letter-spacing:.3em;margin-bottom:22px}
-#tail p{font-size:14.5px;line-height:2.1;color:var(--ink-dim);word-break:keep-all}
-#tail .sign{margin-top:26px;display:inline-flex;align-items:center;gap:10px;font-size:12.5px;letter-spacing:.18em;color:var(--ink-dim)}
-#tail .sign b{color:var(--paper)}
-#tail .stamp{
-  width:27px;height:42px;display:flex;align-items:center;justify-content:center;
-  writing-mode:vertical-rl;text-orientation:upright;
-  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:14px;line-height:1;letter-spacing:3px;
-  padding-top:3px;
-  color:var(--loo);border:2px solid rgba(210,74,62,.75);border-radius:3px;transform:rotate(6deg);
-}
-#tail .home{
-  display:inline-block;margin-top:36px;color:var(--brass);text-decoration:none;
-  font-size:13px;letter-spacing:.18em;border:1px solid rgba(201,162,92,.4);
-  padding:13px 26px;border-radius:2px;
-}
-.demo-bar{
-  position:sticky;top:0;z-index:60;text-align:center;
-  background:#3a2c10;color:#e8d5a7;font-size:11.5px;letter-spacing:.14em;padding:8px;
-}
-@media print{
-  .grain,#topbar,.demo-bar,#tail .home{display:none!important}
-  body,#doc{background:#fff;color:#222;box-shadow:none}
-  #head{min-height:300px}
-  .kwon p,.row .v{color:#333}
-}
+.cover .cv-hint{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);font-size:10.5px;letter-spacing:.3em;color:#8a7a60;animation:hint 2.4s ease-in-out infinite}
+@keyframes hint{50%{opacity:.35;transform:translateX(-6px)}}
+/* 간지 */
+.divider{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.divider .dv-hanja{font-family:'Nanum Myeongjo',serif;font-size:72px;font-weight:800;color:rgba(201,162,92,.85);text-shadow:0 0 50px rgba(201,162,92,.35)}
+.divider .dv-t{margin-top:18px;font-size:17px;font-weight:700;letter-spacing:.2em;color:var(--paper)}
+.divider .dv-s{margin-top:10px;font-size:12.5px;letter-spacing:.15em;color:var(--ink-dim);line-height:2.1}
+.divider .dv-line{width:1px;height:60px;background:linear-gradient(180deg,transparent,var(--brass),transparent);margin-top:26px}
+/* 목차 */
+.toc-list{margin-top:10px}
+.toc-item{display:flex;gap:12px;align-items:baseline;padding:11px 4px;border-bottom:1px dashed rgba(232,224,216,.08);cursor:pointer}
+.toc-item .n{font-family:'Nanum Myeongjo',serif;font-size:13px;color:var(--brass);white-space:nowrap}
+.toc-item .x{font-size:13.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
+.toc-item .p{margin-left:auto;font-size:11px;color:var(--dim2);white-space:nowrap}
+#tapPrev,#tapNext{position:fixed;top:120px;bottom:60px;width:20%;z-index:5}
+#tapPrev{left:0}#tapNext{right:0}
+#tocOverlay{position:fixed;inset:0;z-index:120;display:none;background:rgba(5,4,3,.95);backdrop-filter:blur(8px);overflow-y:auto;padding:70px 28px 60px}
+#tocOverlay.on{display:block}
+#tocOverlay .close{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);right:18px;appearance:none;background:none;border:none;color:var(--ink-dim);font-size:22px;cursor:pointer}
+#tocOverlay h3{font-family:'Nanum Myeongjo',serif;font-size:15px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-bottom:20px}
+#demoBar{display:none;flex:none;text-align:center;font-size:11px;letter-spacing:.15em;color:#e8d5a7;background:rgba(90,60,16,.4);padding:7px 10px}
 @media (min-width:768px){
-  body::before{content:"";position:fixed;inset:-40px;z-index:-1;background:url('../assets/hw_aisle.jpg') center/cover no-repeat;filter:blur(46px) brightness(.22)}
-  #doc{border-left:1px solid rgba(232,224,216,.08);border-right:1px solid rgba(232,224,216,.08)}
+  body::before{content:"";position:fixed;inset:-40px;z-index:-1;background:url('../assets/hw_aisle.jpg') center/cover no-repeat;filter:blur(46px) brightness(.2)}
+  #frame{border-left:1px solid rgba(232,224,216,.08);border-right:1px solid rgba(232,224,216,.08)}
 }
+@media print{.grain,#topbar,#progress,#tapPrev,#tapNext{display:none!important}}
 </style>
 </head>
 <body>
 <div class="grain"></div>
-<div class="demo-bar" id="demoBar" style="display:none">미리보기 열람 — 실제 구매 시 본인의 원국으로 셈해집니다</div>
-
-<div id="doc">
+<div id="frame">
   <div id="topbar">
-    <a href="../">⌂ 深谷寺</a>
-    <span class="t">財物經</span>
-    <button onclick="saveReport()">[갈무리]</button>
-    <a href="#toc">目次</a>
+    <a class="t-brand" href="../" style="text-decoration:none" title="심곡사 메인으로">⌂ 深谷寺</a>
+    <span class="t-page" id="pageNo">第 1 張 / 88</span>
+    <span style="display:flex;gap:8px">
+      <button onclick="saveReport()" title="PDF로 저장">갈무리</button>
+      <button onclick="openToc()">목차</button>
+    </span>
   </div>
-
-  <header id="head">
-    <p class="h-kicker">深谷寺 藏經閣 · 檢證 筆寫本</p>
-    <h1>재물의 경</h1>
-    <div class="owner" id="ownerTag">그대의 재물 장부</div>
-    <p class="reg" id="regLine">— 년 — 월 — 일생</p>
-    <p class="no" id="bookNo">제 —호 · 현월 셈하여 적다</p>
-    <div class="seal">漏</div>
-  </header>
-
-  <nav id="toc"></nav>
-  <main id="kwons"></main>
-
-  <footer id="tail">
-    <div class="z">終</div>
-    <p id="tailWords">여기까지가, 네 장부다.</p>
-    <div class="sign">셈하고 적다 — 장경각 <b>현월</b><span class="stamp">玄月</span></div>
-    <br>
-    <a class="home" href="../">深谷寺 메인으로 돌아가기 →</a>
-  </footer>
+  <div id="progress"><div id="progressBar"></div></div>
+  <div id="demoBar">미리보기 — 실제 구매 시 본인의 원국으로 셈해집니다</div>
+  <div id="pager"></div>
+</div>
+<div id="tapPrev"></div>
+<div id="tapNext"></div>
+<div id="tocOverlay">
+  <button class="close" onclick="closeToc()">✕</button>
+  <h3>目 次 · 十卷</h3>
+  <div class="toc-list" id="tocList"></div>
 </div>
 
 <script>
-/* ═══ 입력 (하이언월 랜딩과 동일 규약) ═══ */
+/* ═══ 입력 (hyunwol 랜딩과 동일 규약) ═══ */
 const qs = new URLSearchParams(location.search);
 let user = null;
 if (qs.get('name') || qs.get('demo')){
-  user = { name: (qs.get('name') || '김심곡').trim(), birth: {y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender: (qs.get('g') || '여').trim() };
+  user = { name:(qs.get('name')||'김심곡').trim(), birth:{y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender:(qs.get('g')||'여').trim() };
   if (qs.get('demo')) document.getElementById('demoBar').style.display = 'block';
 } else {
-  try{
-    const raw = localStorage.getItem('sgs_hyunwol');
-    if (raw){ const d = JSON.parse(raw); if (d && d.name && d.birth) user = d; }
-  }catch(e){}
+  try{ const raw = localStorage.getItem('sgs_hyunwol'); if (raw){ const d = JSON.parse(raw); if (d && d.name && d.birth) user = d; } }catch(e){}
   if (!user){ location.replace('../hyunwol/'); }
 }
 const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+const nm = esc(user.name);
 
-/* ═══ 해시 — 랜딩(hyunwol)과 완전 동일: 같은 사람 = 같은 경(經) ═══ */
+/* ═══ 해시 — 랜딩과 완전 동일 (같은 사람 = 같은 경) ═══ */
 function hashUser(){
   const s = user.name + user.birth.y + user.birth.m + user.birth.d + user.gender;
   let h = 0; for (let i = 0; i < s.length; i++){ h = ((h<<5)-h+s.charCodeAt(i))|0; }
@@ -237,29 +182,29 @@ const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','�
 const sIdx = (y-4)%10, bIdx = (y-4)%12;
 const yearPillar = STEMS[sIdx] + BRANCHES[bIdx];
 
-/* 구멍 선택 — 랜딩과 동일 로직 (진단 일치 보장) */
+/* 구멍 — 랜딩과 동일 선택 로직 */
 const SAL_POOL = [
-  {h:'奪', name:'비겁탈재', hanja:'比劫奪財', lv:'심각',
+  {h:'奪',name:'비겁탈재',hanja:'比劫奪財',lv:'심각',
    root:'네 원국은 비견(比肩)과 겁재(劫財)가 재성(財星)의 곁에 바짝 붙어 앉은 자리다. 같은 기운끼리 한 그릇의 밥을 나누는 격이니, 돈이 생기는 족족 곁의 손이 먼저 닿는다.',
    shape:'동업에서 내 몫이 얇아지고, 보증과 빌려준 돈이 돌아오지 않고, 가까운 이의 급한 사정이 꼭 네 지갑 앞에서 터진다. 인정이 많은 것이 죄가 아니라— 새는 자리를 모르는 것이 죄다.',
    fixes:['돈이 오가는 일은 아무리 가까워도 문서를 세워라. 정(情)은 정이고 셈은 셈이다.','동업은 지분을 나누지 말고 역할을 갈라라. 돈줄은 한 손에 쥐어야 샐 틈이 없다.','거절을 배워라. 네 장부의 첫 규(規)는— 못 돌려받을 돈은 처음부터 주지 않는 것이다.']},
-  {h:'弱', name:'재다신약', hanja:'財多身弱', lv:'심각',
+  {h:'弱',name:'재다신약',hanja:'財多身弱',lv:'심각',
    root:'재성은 왕(旺)한데 일간(日干)이 그를 감당하지 못하는 자리다. 그릇보다 물이 많으니, 큰물이 들어올수록 그릇이 먼저 상한다.',
    shape:'목돈이 생기면 꼭 탈이 나고, 벌이가 커질수록 몸과 마음이 먼저 지치고, 돈이 나를 부리는 형국이 된다. 재물복이 없는 게 아니라— 아직 그릇이 덜 여문 것이다.',
    fixes:['큰돈은 한 그릇에 담지 말고 쪼개 묶어라. 작은 그릇 여럿이 큰 그릇 하나를 이긴다.','버는 공부보다 지키는 공부를 먼저 하라. 그릇이 여문 뒤에는 같은 물도 넘치지 않는다.','몸이 상하면 재물이 먼저 샌다. 잠과 끼니를 지키는 것이 곧 재테크다.']},
-  {h:'洩', name:'식상설기', hanja:'食傷洩氣', lv:'위험',
+  {h:'洩',name:'식상설기',hanja:'食傷洩氣',lv:'위험',
    root:'식신(食神)과 상관(傷官)이 일간의 기운을 밖으로 쏟아내는 자리다. 재주가 많고 쓰는 손이 커서, 들어오는 길보다 나가는 길이 넓다.',
    shape:'월급날과 카드값 날이 맞물려 돌고, 기분이 곧 지출이 되고, 벌이가 늘어도 잔고는 그대로다. 씀씀이는 네 탓만이 아니다— 판이 그렇게 생겼으니, 판을 고쳐야 한다.',
    fixes:['고정 지출부터 봉(封)하라. 나가는 구멍의 수를 줄이는 것이 버는 것보다 빠르다.','들어온 돈의 일 할은 보기 전에 떼어 감춰라. 눈에 보이는 돈은 이미 쓴 돈이다.','단, 배움과 연장에 쓰는 돈은 아끼지 마라. 설기(洩氣)는 재주로 돌리면 돈길이 된다.']},
-  {h:'空', name:'재고공망', hanja:'財庫空亡', lv:'위험',
+  {h:'空',name:'재고공망',hanja:'財庫空亡',lv:'위험',
    root:'재물이 머물러야 할 창고(庫) 자리가 공망(空亡)으로 비어 있는 격이다. 물은 흐르는데 담아 둘 독이 없으니, 모아도 쌓이지 않고 쌓여도 오래가지 못한다.',
    shape:'통장을 스치는 돈, 이유 없이 깨지는 적금, 목돈이 모일 만하면 생기는 지출 사고. 창고가 빈 팔자는 창고를 새로 지으면 된다— 자리는 이미 봐 두었다.',
    fixes:['이름 붙은 창고를 세워라. 쓰임을 정하지 않은 돈은 반드시 샌다.','창고는 손이 닿기 어려울수록 좋다. 해지 어려운 곳에 묶는 것이 빈 창고를 채우는 법이다.','창고가 차기 시작하는 때가 온다. 그때까지는 크게 벌리기보다 새는 곳을 막아라.']},
-  {h:'驛', name:'역마재', hanja:'驛馬財', lv:'주의',
+  {h:'驛',name:'역마재',hanja:'驛馬財',lv:'주의',
    root:'재성이 역마(驛馬) 위에 앉은 자리다. 돈이 길 위에 떠 있으니, 앉은 자리에서 버는 재물은 얇고 움직이는 곳에 돈이 붙는다.',
    shape:'한 자리 벌이가 답답하고, 옮기면 풀리고 머물면 막힌다. 떠돎이 팔자가 아니라— 길이 곧 네 돈줄이라는 뜻이다.',
    fixes:['벌이의 반경을 넓혀라. 출장·타지·바깥 거래에 재물의 물꼬가 있다.','움직임에도 방향이 있다. 네 물꼬가 트인 방(方)을 따라 움직여라.','다만 거처는 자주 옮기지 마라. 돈은 길에서 벌고, 창고는 한자리에 두는 것이다.']},
-  {h:'劫', name:'겁재노출', hanja:'劫財露出', lv:'주의',
+  {h:'劫',name:'겁재노출',hanja:'劫財露出',lv:'주의',
    root:'겁재(劫財)가 천간에 드러난 자리다. 드러난 재물은 뺏기는 법— 벌이가 알려질수록 새는 속도가 빨라진다.',
    shape:'수입이 알려지면 꼭 손 벌리는 이가 나타나고, 자랑한 투자는 꼭 물리고, 보여준 지갑은 꼭 얇아진다. 네 재산의 반은— 감추는 법을 모르는 값으로 새었다.',
    fixes:['벌이를 묻거든 웃어라. 장부는 보여주는 것이 아니다.','재산은 겉과 속을 나눠라. 보이는 지갑은 얇게, 감춘 창고는 두껍게.','큰 셈(계약·투자)은 이뤄지기 전에 입 밖에 내지 마라. 말이 새면 돈이 샌다.']}
@@ -275,20 +220,18 @@ const sals = [];
   }
 })();
 
-/* ═══ 랜딩의 가림값과 동일 공식 — 흐렸던 값이 여기서 열린다 ═══ */
+/* 랜딩 가림값과 동일 공식 — 흐렸던 값이 여기서 열린다 */
 const BOWLS = ['여섯 섬 두 말','여덟 섬 한 말','아홉 섬 반','열두 섬 두 말','일곱 섬 세 말'];
 const DIRS  = ['동북','서남','정남','서북','정동','북서'];
-const bowl   = BOWLS[H % 5];
-const dirMain= DIRS[H % 6];
-const dirG   = DIRS[(H >> 3) % 6];
-const leakAge= 19 + ((H >> 2) % 17);
-const gatherY= nowY + 1 + ((H >> 4) % 4), gatherM = 1 + ((H >> 6) % 12);
-const leakY  = nowY - 1 - (H % 3),        leakM   = 1 + ((H >> 3) % 12);
-const m1 = 1 + (H % 12), m2 = 1 + ((m1 + 3 + ((H >> 5) % 6)) % 12);
-const openY  = gatherY + 2 + ((H >> 8) % 3);   // 크게 열리는 해 (고임 뒤에 온다)
-const bookNoS= (4001 + (H % 979)).toLocaleString();
+const bowl = BOWLS[H%5], dirMain = DIRS[H%6], dirG = DIRS[(H>>3)%6];
+const leakAge = 19 + ((H>>2)%17);
+const gatherY = nowY + 1 + ((H>>4)%4), gatherM = 1 + ((H>>6)%12);
+const leakY = nowY - 1 - (H%3), leakM = 1 + ((H>>3)%12);
+const m1 = 1 + (H%12), m2 = 1 + ((m1 + 3 + ((H>>5)%6)) % 12);
+const openY = gatherY + 2 + ((H>>8)%3);
+const bookNoS = (4001 + (H%979)).toLocaleString();
 
-/* ═══ 조합 풀 ═══ */
+/* 조합 풀 */
 const STEM_W = [
  {n:'큰 나무',v:'통나무 궤(櫃)',t:'곧게 크는 재물이다. 한 판을 크게 벌리는 힘이 있으나 가지가 많아 새기도 쉽다. 잔가지를 치면 기둥이 굵어진다.'},
  {n:'덩굴',v:'버들고리',t:'얽어매며 불어나는 재물이다. 잔돈이 모여 큰돈이 되는 격이니 급히 벌리려 들면 줄기가 끊긴다. 꾸준함이 이 그릇의 밑천이다.'},
@@ -298,7 +241,7 @@ const STEM_W = [
  {n:'밭흙',v:'질그릇 독',t:'가꾼 만큼 거두는 재물이다. 남의 밭을 부러워 말고 제 밭을 갈아라. 이 그릇은 남의 손을 타면 금이 간다.'},
  {n:'무쇠',v:'쇠궤짝',t:'끊고 맺음이 재물을 만드는 그릇이다. 결단이 늦으면 녹이 슬고, 벼리면 날이 선다. 물러야 할 때와 벨 때를 가려라.'},
  {n:'보석',v:'자개함',t:'다듬을수록 값이 오르는 재물이다. 재주가 곧 돈줄이니 헐값에 내놓지 마라. 제값을 부르는 것도 재테크다.'},
- {n:'큰 물',v:'너른 못',t:'흐름을 타는 재물이다. 물길을 알면 크게 담고, 모르면 크게 쓸린다. 이 경(經)의 셋째 권을 각별히 읽어라.'},
+ {n:'큰 물',v:'너른 못',t:'흐름을 타는 재물이다. 물길을 알면 크게 담고, 모르면 크게 쓸린다. 셋째 권을 각별히 읽어라.'},
  {n:'이슬비',v:'빗물 항아리',t:'스미듯 모이는 재물이다. 티끌이 재산 되는 격이나, 항아리의 실금 하나가 치명이다. 둘째 권의 구멍을 먼저 막아라.'}
 ];
 const BRANCH_W = [
@@ -323,10 +266,10 @@ const BOWL_T = [
  '단단한 그릇이다. 담는 속도보다 새지 않음이 강점이니, 둘째 권의 구멍만 막으면 태산이 된다.'
 ];
 const GUK = [
- {g:'水局 — 흐름의 국',in:'사람과 돈이 오가는 길목— 유통·중개·거래·사람 상대의 벌이에 물이 든다.',out:'홀로 틀어박힌 벌이, 흐름 없는 자리는 물이 마른다.'},
- {g:'金局 — 여묾의 국',in:'다듬고 벼리고 셈하는 벌이— 기술·정밀·관리·금전을 만지는 자리에 물이 든다.',out:'대충과 서두름이 있는 자리는 쇠가 무뎌지고 물이 샌다.'},
- {g:'火局 — 빛의 국',in:'드러나는 재주— 보여주고 알리고 밝히는 벌이에 물이 든다.',out:'그늘에 묻힌 자리, 알리지 못하는 벌이는 불이 죽는다.'},
- {g:'木局 — 기름의 국',in:'키우고 가꾸고 가르치는 벌이— 사람이든 물건이든 자라게 하는 자리에 물이 든다.',out:'베기만 하고 심지 않는 자리는 숲이 마른다.'}
+ {g:'水局',gn:'흐름의 국',in:'사람과 돈이 오가는 길목— 유통·중개·거래·사람 상대의 벌이에 물이 든다.',out:'홀로 틀어박힌 벌이, 흐름 없는 자리는 물이 마른다.'},
+ {g:'金局',gn:'여묾의 국',in:'다듬고 벼리고 셈하는 벌이— 기술·정밀·관리·금전을 만지는 자리에 물이 든다.',out:'대충과 서두름이 있는 자리는 쇠가 무뎌지고 물이 샌다.'},
+ {g:'火局',gn:'빛의 국',in:'드러나는 재주— 보여주고 알리고 밝히는 벌이에 물이 든다.',out:'그늘에 묻힌 자리, 알리지 못하는 벌이는 불이 죽는다.'},
+ {g:'木局',gn:'기름의 국',in:'키우고 가꾸고 가르치는 벌이— 사람이든 물건이든 자라게 하는 자리에 물이 든다.',out:'베기만 하고 심지 않는 자리는 숲이 마른다.'}
 ];
 const gukOf = b => ( [8,0,4].includes(b) ? 0 : [5,9,1].includes(b) ? 1 : [2,6,10].includes(b) ? 2 : 3 );
 const UP = [
@@ -334,7 +277,7 @@ const UP = [
  {n:'말의 업',t:'설득하고 잇고 풀어내는 자리에 돈이 붙는다. 네 말이 곧 물꼬다— 다만 말로 번 돈은 말로 새니, 일곱째 권을 새겨라.'},
  {n:'셈의 업',t:'따지고 맞추고 관리하는 자리에 돈이 붙는다. 남의 장부를 봐주는 자가 제 장부도 두꺼워지는 법이다.'},
  {n:'기르는 업',t:'가르치고 돌보고 키우는 자리에 돈이 붙는다. 더디지만 배신하지 않는 돈이다— 씨 뿌린 지 세 해째부터 거둔다.'},
- {n:'길 위의 업',t:'옮기고 오가고 넓히는 자리에 돈이 붙는다. 앉은 벌이의 두 배가 길 위에 있다— 방위는 아래 일곱째 권에 적었다.'},
+ {n:'길 위의 업',t:'옮기고 오가고 넓히는 자리에 돈이 붙는다. 앉은 벌이의 두 배가 길 위에 있다— 방위는 일곱째 권에 적었다.'},
  {n:'지키는 업',t:'맡고 지키고 책임지는 자리에 돈이 붙는다. 신용이 곧 밑천인 상— 한 번의 약속을 열 냥처럼 다뤄라.'}
 ];
 const MONTH_T = [
@@ -347,144 +290,355 @@ const MONTH_T = [
  '말을 아껴야 돈이 남는 달이다. 자랑이 곧 지출이 된다.',
  '작은 결실이 맺히는 달— 거둔 것의 일 할을 반드시 창고에 넣어라.'
 ];
+const MONTH_HJ = ['正月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','臘月'];
 const TEN_T = [
- '물이 얕게 흐른다 — 다지고 배우는 해',
- '물길이 자리를 잡는다 — 벌이의 틀이 서는 해',
- '잔물이 붇는다 — 창고를 늘릴 해',
- '물살이 빨라진다 — 기회가 오가는 해, 눈을 밝혀라',
- '크게 고인다 — 담을 수 있는 만큼 담아라'
+ '물이 얕게 흐른다 — 다지고 배우는 해다. 씨를 고르는 손이 가을을 정한다.',
+ '물길이 자리를 잡는다 — 벌이의 틀이 서는 해다. 틀을 세우면 물은 절로 든다.',
+ '잔물이 붇는다 — 창고를 늘릴 해다. 담는 습관이 재산의 뼈대가 된다.',
+ '물살이 빨라진다 — 기회가 오가는 해다. 눈을 밝히되, 남의 물살에 올라타지 마라.',
+ '크게 고인다 — 담을 수 있는 만큼 담아라. 이런 해는 십 년에 몇 번 오지 않는다.'
+];
+const APHORISM = [
+ ['漏','새는 독에는 강물을 부어도 소용이 없다.'],
+ ['湊','고임은 벌이의 크기가 아니라 구멍의 수가 정한다.'],
+ ['器','그릇을 탓하기 전에, 금 간 자리를 보라.'],
+ ['藏','감춘 재산이 진짜 재산이다.'],
+ ['流','물길을 아는 자는 가뭄에도 마르지 않는다.'],
+ ['靜','마음이 급한 날에는 지갑을 열지 않는다.'],
+ ['信','신용은 이자가 붙는 유일한 빚이다.'],
+ ['耕','제 밭을 가는 자에게 흉년은 없다.'],
+ ['封','봉한 창고는 도둑도 팔자도 못 연다.'],
+ ['道','부(富)로 가는 길은 지름길이 없어 곧다.'],
+ ['滴','낙숫물이 바위를 뚫듯, 잔돈이 팔자를 뚫는다.'],
+ ['忍','참은 지출은 창고에 쌓이고, 참지 못한 지출은 남의 창고에 쌓인다.'],
+ ['明','장부를 밝히 아는 자는 어둠에 돈을 잃지 않는다.'],
+ ['根','뿌리 깊은 벌이는 바람에 흔들리지 않는다.'],
+ ['時','물때를 아는 어부는 빈 배로 돌아오지 않는다.'],
+ ['戒','달콤한 셈부터 꺼내는 자를 경계하라.']
 ];
 
-/* ═══ 문서 조립 ═══ */
-document.getElementById('ownerTag').textContent = user.name + '의 재물 경';
-document.getElementById('regLine').textContent = y + '년 ' + user.birth.m + '월 ' + user.birth.d + '일생 · ' + user.gender + ' · ' + yearPillar + '년주';
-document.getElementById('bookNo').textContent = '제 ' + bookNoS + '호 · 현월 셈하여 적다';
+/* ═══ 페이지 조립 ═══ */
+const pages = [];
+const tocEntries = [];
+const addPage = (html, cls='') => pages.push({html, cls});
+const addToc = (label, title) => tocEntries.push({label, title, page: pages.length + 1});
+const pgHead = (label) => `<p class="pg-no">財物經 · 第 ${pages.length+1} 張</p>` + (label?`<p class="pg-label">${label}</p>`:'');
+
+const SW = STEM_W[sIdx], BW = BRANCH_W[bIdx], GU = GUK[gukOf(bIdx)], UPv = UP[(H>>8)%6];
 document.title = user.name + '의 재물의 경(經) — 深谷寺';
 
-const SW = STEM_W[sIdx], BW = BRANCH_W[bIdx], GU = GUK[gukOf(bIdx)], UPv = UP[(H >> 8) % 6];
-const KWONS = [
- {no:'卷一',tag:'원국',title:'재물 원국 — <span class="r">네 돈의 생김새</span>', html: `
-   <p>${esc(user.name)}. 네 해의 기둥은 <em>${yearPillar}</em>— 하늘의 글자는 <em>${SW.n}</em>이요, 땅의 글자는 <em>${BW.a}</em>다.</p>
-   <div class="k-voice">"돈에도 생김새가 있다.<br>네 것은— <em>${SW.n}의 재물</em>이다."</div>
-   <p>${SW.t}</p>
-   <p>${BW.w}</p>
-   <div class="rows">
-     <div class="row"><span class="k">타고난 그릇</span><span class="v"><b>${SW.v}</b></span><span class="m good">記</span></div>
-     <div class="row"><span class="k">물길의 성정</span><span class="v">${esc(BW.a)}의 물길</span><span class="m good">記</span></div>
-     <div class="row"><span class="k">재물의 국</span><span class="v">${GU.g}</span><span class="m good">記</span></div>
-   </div>`},
- {no:'卷二',tag:'구멍',title:'구멍(漏) — <span class="r">새는 자리, 전부 짚는다</span>', html: `
-   <p>네 장부를 셈하니 구멍이 <em>${sals.length}개</em>다. 대략 <em>${leakAge}살 무렵</em>부터 벌어지기 시작해, 지금도 새는 중이다. 하나씩 짚고— 막는 규(規)까지 적는다.</p>
-   ${sals.map(s=>`
-   <div class="hole">
-     <div class="hh"><span class="hz">${s.h}</span><span class="hn">${s.name}<small>${s.hanja}</small></span><span class="lv">${s.lv}</span></div>
-     <p><b style="color:var(--paper)">뿌리.</b> ${s.root}</p>
-     <p><b style="color:var(--paper)">새는 모양.</b> ${s.shape}</p>
-     <div class="fix"><div class="ft">막는 법 — 三規</div><ol>${s.fixes.map(f=>`<li>${f}</li>`).join('')}</ol></div>
-   </div>`).join('')}
-   <p class="dim">* 구멍이 사납게 벌어지는 달은 해마다 ${m1}월과 ${m2}월— 이 두 달은 큰 셈(계약·투자·보증)을 삼가라.</p>`},
- {no:'卷三',tag:'물길',title:'물길 — <span class="r">돈이 들어오는 길, 막힌 길</span>', html: `
-   <p>네 물은 <em>${GU.g.split(' — ')[0]}</em>에 속한다.</p>
-   <div class="rows">
-     <div class="row"><span class="k">트인 길</span><span class="v">${GU.in}</span><span class="m good">進</span></div>
-     <div class="row"><span class="k">막힌 길</span><span class="v">${GU.out}</span><span class="m bad">閉</span></div>
-     <div class="row"><span class="k">물꼬의 방위</span><span class="v"><b>${dirMain} 방(方)</b> — 거래·출장·확장은 이 방향이 먼저다</span><span class="m good">進</span></div>
-   </div>
-   <p class="dim">* 트인 길에 아홉을 쓰고, 막힌 길엔 하나도 걸치지 마라. 물길을 거스르는 벌이가 제일 비싼 벌이다.</p>`},
- {no:'卷四',tag:'그릇',title:'그릇 — <span class="r">평생 담을 재물의 최대치</span>', html: `
-   <p>장경각의 됫박으로 잰 네 그릇은 <em>${bowl}</em>이다.</p>
-   <p>${BOWL_T[H % 5]}</p>
-   <div class="k-voice">"그릇은 정해져 있으나<br>채움은 정해져 있지 않다.<br>구멍 막은 자만이— <em>제 그릇만큼 산다.</em>"</div>
-   <p class="dim">* 됫박의 셈은 재성의 세기와 창고의 유무로 잰 것이다. 섬(石)은 재물의 부피가 아니라 감당의 깊이를 이른다.</p>`},
- {no:'卷五',tag:'때',title:'때 — <span class="r">고이는 해, 새는 해, 열리는 해</span>', html: `
-   <div class="rows">
-     <div class="row"><span class="k">크게 샜던 해</span><span class="v"><b>${leakY}년 ${leakM}월</b> 언저리 — 그 돈은 잊어라, 수업료다</span><span class="m bad">漏</span></div>
-     <div class="row"><span class="k">고이기 시작하는 해</span><span class="v"><b>${gatherY}년 ${gatherM}월</b> — 이때부터 담는 족족 남는다</span><span class="m good">湊</span></div>
-     <div class="row"><span class="k">크게 열리는 해</span><span class="v"><b>${openY}년</b> — 십 년에 한 번 오는 물때다</span><span class="m good">開</span></div>
-   </div>
-   <p>지금부터 ${gatherY}년까지는 <em>벌리는 때가 아니라 막는 때</em>다. 이 순서를 바꾸면 열리는 해에 담을 그릇이 없다.</p>`},
- {no:'卷六',tag:'업',title:'업(業) — <span class="r">돈이 붙는 밥벌이의 생김새</span>', html: `
-   <p>네 벌이의 상(相)은 <em>${UPv.n}</em>이다.</p>
-   <p>${UPv.t}</p>
-   <p class="dim">* 지금의 밥벌이가 이 상과 다르대도 갈아엎으라는 말이 아니다. 벌이의 곁가지 하나를 이 상에 걸쳐 두어라— 물이 스민다.</p>`},
- {no:'卷七',tag:'장',title:'장(藏) — <span class="r">지키고 감추고 불리는 법</span>', html: `
-   <div class="rows">
-     <div class="row"><span class="k">감출 방위</span><span class="v">창고(적금·묶는 돈)는 <b>${dirG} 방(方)</b>의 기운을 빌려라</span><span class="m good">封</span></div>
-     <div class="row"><span class="k">여밀 달</span><span class="v">해마다 <b>${m1}월 · ${m2}월</b> — 지갑을 봉하는 달</span><span class="m bad">封</span></div>
-     <div class="row"><span class="k">채울 달</span><span class="v">해마다 <b>${gatherM}월</b> — 창고에 보태는 달</span><span class="m good">湊</span></div>
-   </div>
-   <p>감추는 법의 요체는 셋이다. 보이는 지갑은 얇게, 감춘 창고는 두껍게, 큰 셈은 이뤄지기 전에 입 밖에 내지 않는 것.</p>`},
- {no:'卷八',tag:'귀인',title:'귀인 — <span class="r">돈길을 열어 줄 얼굴들</span>', html: (function(){
-   const g = [[8,0,4],[5,9,1],[2,6,10],[3,7,11]][gukOf(bIdx)].filter(x=>x!==bIdx);
-   const names = g.map(i=>BRANCH_W[i].a);
-   return `
-   <p>네 국(局)을 함께 이루는 띠— <em>${names.join('띠와 ')}띠</em>가 네 물길의 귀인이다. 이들과 합(合)을 이루면 마른 도랑에도 물이 돈다.</p>
-   <div class="rows">
-     <div class="row"><span class="k">귀인의 띠</span><span class="v"><b>${names.join('띠 · ')}띠</b></span><span class="m good">合</span></div>
-     <div class="row"><span class="k">귀인의 방위</span><span class="v">${dirG} 방(方)에서 오는 인연을 눈여겨보라</span><span class="m good">合</span></div>
-     <div class="row"><span class="k">삼가야 할 상</span><span class="v">달콤한 셈부터 먼저 꺼내는 자 — 귀인은 셈을 나중에 말한다</span><span class="m bad">戒</span></div>
-   </div>`;})()},
- {no:'卷九',tag:'달력',title:'열두 달 — <span class="r">다가올 한 해, 재물 달력</span>', html: `
-   <div class="rows cal">
-   ${Array.from({length:12},(_,i)=>{
-     const m = i+1;
-     const special = m===gatherM ? '<span class="m good">湊</span>' : (m===m1||m===m2) ? '<span class="m bad">漏</span>' : '<span class="m" style="color:#6b5c44">·</span>';
-     const t = m===gatherM ? '창고가 차는 달이다. 담아라— 이 달의 저축은 배로 남는다.'
-             : (m===m1||m===m2) ? '구멍이 벌어지는 달이다. 큰 셈을 삼가고 지갑을 여며라.'
-             : MONTH_T[(H + m*5) % 8];
-     return `<div class="row"><span class="k">${m}월</span><span class="v">${t}</span>${special}</div>`;
-   }).join('')}
-   </div>`},
- {no:'卷十',tag:'십년',title:'십 년 — <span class="r">재물 대운의 능선</span>', html: `
-   <div class="rows cal">
-   ${Array.from({length:10},(_,i)=>{
-     const yy = nowY + i;
-     let lvl = (H >> (i+2)) % 4;                       // 0~3
-     if (yy === gatherY) lvl = 4;
-     if (yy === openY)  lvl = 4;
-     if (yy === leakY)  lvl = 0;
-     const mark = lvl===4 ? '<span class="m good">湊</span>' : lvl===0 ? '<span class="m bad">漏</span>' : '<span class="m" style="color:#6b5c44">·</span>';
-     const label = (yy===openY) ? '크게 열린다 — 십 년의 물때, 놓치지 마라' : TEN_T[lvl];
-     return `<div class="row"><span class="k">${yy}</span><span class="v">${label}${yy===nowY?' <em>(올해)</em>':''}</span>${mark}</div>`;
-   }).join('')}
-   </div>
-   <p class="dim">* 능선은 해마다의 세운(歲運)을 재성의 흐름으로 셈한 것이다. 낮은 해는 눕는 해가 아니라— 창고 짓는 해다.</p>`}
-];
+/* 1 · 표지 */
+addPage(`
+  <div class="cv-img"></div><div class="cv-veil"></div>
+  <div class="cv-inner">
+    <div class="cv-brand">深谷寺 藏經閣 · 檢證 筆寫本</div>
+    <div class="cv-title">財物經</div>
+    <div class="cv-88">여든여덟 장 · 十卷</div>
+    <div class="cv-label">${nm}의 재물의 경</div>
+    <div class="cv-reg">${y}년 ${user.birth.m}월 ${user.birth.d}일생 · ${esc(user.gender)} · ${yearPillar}년주</div>
+    <div class="cv-no">제 ${bookNoS}호 — 현월 셈하여 적다</div>
+    <div class="cv-seal">漏</div>
+    <p class="cv-hint">◀ 옆으로 넘겨, 첫 장을 편다</p>
+  </div>`, 'cover');
 
-const tocEl = document.getElementById('toc');
-tocEl.innerHTML = '<div class="tt">目次 · 十卷</div>' + KWONS.map((k,i)=>
-  `<a href="#k${i}"><b>${k.no}</b><span>${k.title.replace(/<[^>]+>/g,'')}</span></a>`).join('');
+/* 2 · 개권 */
+addPage(`${pgHead('開卷')}
+  <h2 class="pg-title">여든여덟 장으로 엮은<br><span class="r">단 한 사람의 장부</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">${nm}. 이 경(經)은 세상에 단 한 권이다. 네 이름과 태어난 날로 셈하여, 열 권(十卷) 여든여덟 장으로 엮었다.</p>
+  <p class="pg-body">순서대로 읽어도 좋고, 목차에서 급한 권부터 펴도 좋다. 다만 <em>둘째 권— 구멍(漏)</em>만은 건너뛰지 마라. 새는 독에는 어떤 가르침을 부어도 고이지 않는다.</p>
+  <p class="pg-note">장경각 검증 필사본 · 제 ${bookNoS}호<br>갈무리 단추로 평생 소장할 수 있다</p>`);
 
-document.getElementById('kwons').innerHTML = KWONS.map((k,i)=>`
-  <section class="kwon" id="k${i}">
-    <span class="vtag">${k.no} · ${k.tag}</span>
-    <p class="k-no">${k.no}</p>
-    <h2>${k.title}</h2>
-    <div class="k-rule"></div>
-    ${k.html}
-    <div class="hr-k"></div>
-  </section>`).join('');
+/* 3 · 序 */
+addPage(`${pgHead('序 · 鑑定所見')}
+  <h2 class="pg-title">감정 소견</h2>
+  <div class="hr"></div>
+  <div class="pg-quote">"${nm}. 허어…<br>너, <em>크게 새고 있다.</em>"</div>
+  <p class="pg-body">길에서 네 손목을 잡았던 것은 무례가 아니라 급함이었다. 새는 소리가 들리는데 그냥 보낼 수는 없는 노릇 아니냐.</p>
+  <p class="pg-body">마흔 해 장부를 지킨 눈으로 셈했다. 구멍은 <b>${sals.length}개</b>, 그릇은 <b>${bowl}</b>, 물꼬는 <b>${dirMain} 방(方)</b>. 이제 한 장씩— 전부 펴 보인다.</p>
+  <p class="pg-note">감정인 — 장경각 현월 (玄月)</p>`);
 
-document.getElementById('tailWords').innerHTML =
-  esc(user.name) + '.<br>구멍을 알았으니 반은 막은 것이다.<br>' +
-  '이 경(經)은 네 서고에 평생 머문다—<br>' +
-  '해가 바뀌거든 아홉째 권을 다시 펴라.<br><br>' +
-  '<em style="font-style:normal;color:var(--brass-hi)">돈은 벌리는 것이 아니라, 새지 않게 하는 것이다.</em>';
+/* 卷一 */
+addToc('卷一','재물 원국 — 네 돈의 생김새');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">原</div><div class="dv-t">卷一 · 재물 원국</div>
+  <div class="dv-s">돈에도 생김새가 있다.<br>네 것의 생김새부터 안다.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('卷一 · 원국')}
+  <h2 class="pg-title">${yearPillar} —<br><span class="r">${SW.n}의 재물</span></h2>
+  <div class="pg-hanja">${yearPillar}</div>
+  <p class="pg-sub">하늘의 글자 ${STEMS[sIdx]} · 땅의 글자 ${BRANCHES[bIdx]}</p>
+  <div class="rows">
+    <div class="rowl"><span class="k">타고난 그릇</span><span class="v"><b>${SW.v}</b></span><span class="m good">記</span></div>
+    <div class="rowl"><span class="k">물길의 성정</span><span class="v">${BW.a}의 물길</span><span class="m good">記</span></div>
+    <div class="rowl"><span class="k">재물의 국</span><span class="v">${GU.g} — ${GU.gn}</span><span class="m good">記</span></div>
+  </div>`);
+addPage(`${pgHead('卷一 · 그릇의 근본')}
+  <h2 class="pg-title">${SW.n} —<br><span class="r">${SW.v}</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">${SW.t}</p>
+  <div class="pg-quote">"그릇의 생김을 아는 것이<br>재테크의 <em>첫 장</em>이다."</div>`);
+addPage(`${pgHead('卷一 · 물길의 성정')}
+  <h2 class="pg-title">${BW.a}의 물길</h2>
+  <div class="hr"></div>
+  <p class="pg-body">${BW.w}</p>
+  <p class="pg-body">그릇(${SW.n})과 물길(${BW.a})— 이 둘의 짝이 네 돈의 바탕이다. 같은 벌이를 해도 사람마다 고임이 다른 이유가 여기 있다.</p>`);
 
-/* ═══ 열람/갈무리 기록 (IP는 서버에서 캡처) ═══ */
+/* 卷二 */
+addToc('卷二','구멍(漏) — 새는 자리 전부');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja" style="color:rgba(210,74,62,.85);text-shadow:0 0 50px rgba(210,74,62,.35)">漏</div>
+  <div class="dv-t">卷二 · 구멍</div>
+  <div class="dv-s">이 권이 이 경의 심장이다.<br>새는 자리 ${sals.length}곳— 전부 짚는다.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('卷二 · 총론')}
+  <h2 class="pg-title">네 장부의 구멍,<br><span class="r">${sals.length}개</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">셈하니 대략 <em>${leakAge}살 무렵</em>부터 벌어지기 시작한 구멍들이다. 지금 이 순간에도 새는 중이니, 순서대로 하나씩 막는다.</p>
+  <div class="rows">${sals.map((s,i)=>`<div class="rowl"><span class="k">其${'一二三'[i]}</span><span class="v"><b>${s.name}</b>(${s.hanja})</span><span class="m bad">${s.h}</span></div>`).join('')}</div>
+  <p class="pg-note">해마다 ${m1}월과 ${m2}월— 구멍이 가장 사납게 벌어지는 달이다.<br>이 두 달은 큰 셈(계약·투자·보증)을 삼가라.</p>`);
+sals.forEach((s, i) => {
+  const num = '一二三'[i];
+  addPage(`${pgHead(`卷二 · 其${num}`)}
+    <h2 class="pg-title">${s.name}<br><span class="r" style="font-size:15px;letter-spacing:.2em">${s.hanja} · ${s.lv}</span></h2>
+    <div class="pg-hanja" style="color:var(--loo);text-shadow:0 0 34px rgba(210,74,62,.35)">${s.h}</div>
+    <p class="pg-body"><b>뿌리.</b> ${s.root}</p>`);
+  addPage(`${pgHead(`卷二 · 其${num}`)}
+    <h2 class="pg-title">${s.name} —<br><span class="r">새는 모양</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">${s.shape}</p>`);
+  addPage(`${pgHead(`卷二 · 其${num}`)}
+    <h2 class="pg-title">${s.name} —<br><span class="r">막는 법</span></h2>
+    <div class="fix"><div class="ft">三 規</div><ol>${s.fixes.map(f=>`<li>${f}</li>`).join('')}</ol></div>
+    <p class="pg-note">규(規)는 부적이 아니라 습관이다.<br>한 달을 지키면 장부가 달라진다.</p>`);
+});
+
+/* 卷三 */
+addToc('卷三','물길 — 들어오는 길, 막힌 길');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">流</div><div class="dv-t">卷三 · 물길</div>
+  <div class="dv-s">돈은 길을 따라 흐른다.<br>네 물이 드는 길을 안다.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('卷三 · 국')}
+  <h2 class="pg-title">네 물은<br><span class="r">${GU.g} — ${GU.gn}</span></h2>
+  <div class="pg-hanja">${GU.g[0]}</div>
+  <p class="pg-body">태어난 해의 지지(${BRANCHES[bIdx]})가 이루는 국(局)이다. 같은 국의 물끼리는 서로 끌어당기니, 벌이도 사람도 이 국을 따라 고르는 것이 순리다.</p>`);
+addPage(`${pgHead('卷三 · 길')}
+  <h2 class="pg-title">트인 길, 막힌 길</h2>
+  <div class="rows">
+    <div class="rowl"><span class="k">트인 길</span><span class="v">${GU.in}</span><span class="m good">進</span></div>
+    <div class="rowl"><span class="k">막힌 길</span><span class="v">${GU.out}</span><span class="m bad">閉</span></div>
+    <div class="rowl"><span class="k">물꼬의 방위</span><span class="v"><b>${dirMain} 방(方)</b> — 거래·출장·확장의 방향</span><span class="m good">進</span></div>
+  </div>
+  <p class="pg-body" style="margin-top:20px">트인 길에 아홉을 쓰고, 막힌 길엔 하나도 걸치지 마라. <em>물길을 거스르는 벌이가 가장 비싼 벌이다.</em></p>`);
+
+/* 卷四 */
+addToc('卷四','그릇 — 평생 담을 최대치');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">器</div><div class="dv-t">卷四 · 그릇</div>
+  <div class="dv-s">장경각의 됫박으로<br>네 그릇을 잰다.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('卷四 · 됫박')}
+  <h2 class="pg-title">네 그릇 —<br><span class="r">${bowl}</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">${BOWL_T[H%5]}</p>
+  <div class="pg-quote">"그릇은 정해져 있으나<br>채움은 정해져 있지 않다.<br>구멍 막은 자만이— <em>제 그릇만큼 산다.</em>"</div>
+  <p class="pg-note">섬(石)은 재물의 부피가 아니라 감당의 깊이를 이른다.</p>`);
+
+/* 卷五 */
+addToc('卷五','때 — 고이는 해, 새는 해, 열리는 해');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">時</div><div class="dv-t">卷五 · 때</div>
+  <div class="dv-s">물에는 물때가 있다.<br>네 돈의 물때를 적는다.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('卷五 · 지나온 물')}
+  <h2 class="pg-title">크게 샜던 해 —<br><span class="r">${leakY}년 ${leakM}월</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">그 언저리에 나간 돈이 유독 쓰렸을 것이다. 돌아보되 매이지는 마라— <em>그 돈은 수업료다.</em> 같은 구멍으로 두 번 새는 것만이 진짜 손해다.</p>`);
+addPage(`${pgHead('卷五 · 다가올 물')}
+  <h2 class="pg-title">고이기 시작하는 —<br><span class="r">${gatherY}년 ${gatherM}월</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">이때부터 담는 족족 남는다. 그 전까지는 <em>벌리는 때가 아니라 막는 때</em>다— 이 순서를 바꾸면, 물때가 와도 담을 그릇이 없다.</p>
+  <div class="rows"><div class="rowl"><span class="k">크게 열리는 해</span><span class="v"><b>${openY}년</b> — 십 년에 한 번 오는 물때</span><span class="m good">開</span></div></div>`);
+
+/* 卷六 */
+addToc('卷六','업(業) — 돈이 붙는 밥벌이');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">業</div><div class="dv-t">卷六 · 업</div>
+  <div class="dv-s">밥벌이에도 생김새가 있다.<br>네 돈이 붙는 상(相)을 본다.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('卷六 · 상')}
+  <h2 class="pg-title">네 벌이의 상 —<br><span class="r">${UPv.n}</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">${UPv.t}</p>
+  <p class="pg-body">지금의 밥벌이가 이 상과 다르대도 갈아엎으라는 말이 아니다. <em>벌이의 곁가지 하나를 이 상에 걸쳐 두어라</em>— 물이 스민다.</p>`);
+
+/* 卷七 */
+addToc('卷七','장(藏) — 지키고 감추는 법');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">藏</div><div class="dv-t">卷七 · 장</div>
+  <div class="dv-s">버는 법은 배우면서<br>감추는 법은 왜 배우지 않았느냐.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('卷七 · 창고')}
+  <h2 class="pg-title">감출 방위 —<br><span class="r">${dirG} 방(方)</span></h2>
+  <div class="rows">
+    <div class="rowl"><span class="k">창고의 방위</span><span class="v">묶는 돈(적금·장기)은 <b>${dirG}</b>의 기운을 빌려라</span><span class="m good">封</span></div>
+    <div class="rowl"><span class="k">여밀 달</span><span class="v">해마다 <b>${m1}월 · ${m2}월</b> — 지갑을 봉하는 달</span><span class="m bad">封</span></div>
+    <div class="rowl"><span class="k">채울 달</span><span class="v">해마다 <b>${gatherM}월</b> — 창고에 보태는 달</span><span class="m good">湊</span></div>
+  </div>`);
+addPage(`${pgHead('卷七 · 三藏')}
+  <h2 class="pg-title">감추는 법의 요체</h2>
+  <div class="fix"><div class="ft">三 藏</div><ol>
+    <li>보이는 지갑은 얇게 — 남에게 보이는 소비의 격을 한 칸 낮춰라.</li>
+    <li>감춘 창고는 두껍게 — 아무에게도 말하지 않는 계좌 하나를 세워라.</li>
+    <li>큰 셈은 이뤄지기 전에 입 밖에 내지 마라 — 말이 새면 돈이 샌다.</li>
+  </ol></div>`);
+
+/* 卷八 */
+addToc('卷八','귀인 — 돈길을 여는 얼굴들');
+const gGroup = [[8,0,4],[5,9,1],[2,6,10],[3,7,11]][gukOf(bIdx)].filter(x=>x!==bIdx);
+const gNames = gGroup.map(i=>BRANCH_W[i].a);
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">合</div><div class="dv-t">卷八 · 귀인</div>
+  <div class="dv-s">돈길은 혼자 열리지 않는다.<br>함께 국을 이루는 얼굴들이 있다.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('卷八 · 합')}
+  <h2 class="pg-title">네 귀인 —<br><span class="r">${gNames.join('띠 · ')}띠</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">네 국(局)을 함께 이루는 띠들이다. 이들과 합(合)을 이루면 마른 도랑에도 물이 돈다. <em>${dirG} 방(方)</em>에서 오는 인연이면 더욱 그렇다.</p>
+  <div class="rows">
+    <div class="rowl"><span class="k">귀인의 띠</span><span class="v"><b>${gNames.join('띠 · ')}띠</b></span><span class="m good">合</span></div>
+    <div class="rowl"><span class="k">삼가야 할 상</span><span class="v">달콤한 셈부터 먼저 꺼내는 자 — 귀인은 셈을 나중에 말한다</span><span class="m bad">戒</span></div>
+  </div>`);
+
+/* 卷九 — 열두 달, 한 달 한 장 */
+addToc('卷九','열두 달 — 재물 달력');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">曆</div><div class="dv-t">卷九 · 열두 달</div>
+  <div class="dv-s">다가올 한 해를<br>한 달에 한 장씩 적는다.<br><br>해가 바뀌면 이 권을 다시 펴라.</div><div class="dv-line"></div></div>`, 'divider');
+for (let m = 1; m <= 12; m++){
+  const isG = m === gatherM, isL = (m === m1 || m === m2);
+  const t = isG ? '창고가 차는 달이다. 담아라— 이 달의 저축은 배로 남는다.'
+        : isL ? '구멍이 벌어지는 달이다. 큰 셈(계약·투자·보증)을 삼가고 지갑을 여며라.'
+        : MONTH_T[(H + m*5) % 8];
+  const markHj = isG ? '湊' : isL ? '漏' : MONTH_HJ[m-1][0];
+  addPage(`${pgHead('卷九 · 재물 달력')}
+    <h2 class="pg-title">${m}월 <span class="r" style="font-size:14px;letter-spacing:.2em">${MONTH_HJ[m-1]}</span></h2>
+    <div class="pg-hanja" style="${isL?'color:var(--loo);text-shadow:0 0 34px rgba(210,74,62,.3)':''}">${markHj}</div>
+    <p class="pg-sub">${isG?'고이는 달':isL?'새는 달':'여상한 달'}</p>
+    <p class="pg-body" style="text-align:center">${t}</p>`);
+}
+
+/* 卷十 — 십 년, 일 년 한 장 */
+addToc('卷十','십 년 — 재물 대운의 능선');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">嶺</div><div class="dv-t">卷十 · 십 년</div>
+  <div class="dv-s">십 년의 능선을<br>일 년에 한 장씩 그린다.</div><div class="dv-line"></div></div>`, 'divider');
+for (let i = 0; i < 10; i++){
+  const yy = nowY + i;
+  let lvl = (H >> (i+2)) % 4;
+  if (yy === gatherY || yy === openY) lvl = 4;
+  if (yy === leakY) lvl = 0;
+  const isOpen = yy === openY;
+  addPage(`${pgHead('卷十 · 능선')}
+    <h2 class="pg-title">${yy}년${yy===nowY?' <span class="r" style="font-size:14px">(올해)</span>':''}</h2>
+    <div class="pg-hanja" style="${lvl===4?'':lvl===0?'color:var(--loo);text-shadow:0 0 34px rgba(210,74,62,.3);':'opacity:.55;'}">${lvl===4?'湊':lvl===0?'漏':'流'}</div>
+    <p class="pg-sub">${'　▁▂▄▆█'[lvl+1] ? ['마른 해','얕은 해','고르는 해','빠른 해','크게 고이는 해'][lvl] : ''}</p>
+    <p class="pg-body" style="text-align:center">${isOpen ? '크게 열린다 — 십 년에 한 번 오는 물때다. 이 해를 위해 앞의 모든 권이 있었다.' : TEN_T[lvl]}</p>
+    ${yy===gatherY?`<p class="pg-note">${gatherM}월— 고임이 시작되는 달이다.</p>`:''}`);
+}
+
+/* 맺음 */
+addPage(`${pgHead('終')}
+  <h2 class="pg-title">맺으며</h2>
+  <div class="hr"></div>
+  <p class="pg-body">${nm}. 구멍을 알았으니 반은 막은 것이다.</p>
+  <p class="pg-body">이 경은 네 서고에 평생 머문다. 해가 바뀌거든 아홉째 권을 다시 펴고, 큰 셈을 앞두거든 일곱째 권을 다시 펴라.</p>
+  <div class="pg-quote" style="text-align:center">"돈은 벌리는 것이 아니라,<br><em>새지 않게 하는 것이다.</em>"</div>
+  <p class="pg-note">셈하고 적다 — 장경각 현월</p>
+  <p style="margin-top:26px;text-align:center"><a href="../" style="color:var(--brass);font-size:13.5px;letter-spacing:.15em;text-decoration:none;border-bottom:1px solid rgba(201,162,92,.4);padding-bottom:3px">深谷寺 메인으로 돌아가기 →</a></p>`);
+addPage(`
+  <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja" style="font-size:54px">深谷寺</div>
+    <div class="dv-t" style="margin-top:22px">장경각 · 현월</div>
+    <div class="dv-s" style="margin-top:14px">${nm}의 「재물의 경(經)」<br>${nowY}년, 장경각에서 셈하여 적음<br>여든여덟 장 · 十卷 · 제 ${bookNoS}호</div>
+    <div class="stamp-sq">玄月</div>
+  </div>`, 'divider');
+
+/* ═══ 88장 맞추기 — 현월 어록 간지 삽입/트림 (사람마다 다른 어록이 다른 자리에) ═══ */
+(function fitTo88(){
+  let fi = H % APHORISM.length;
+  while (pages.length < 88){
+    const [hj, tx] = APHORISM[fi % APHORISM.length]; fi++;
+    pages.splice(pages.length - 2, 0, {cls:'divider', html:`
+      <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+        <div class="dv-hanja" style="opacity:.8">${hj}</div>
+        <div class="dv-s" style="margin-top:20px;font-size:14px">${tx}</div>
+        <div class="dv-s" style="margin-top:26px;font-size:10.5px;opacity:.6">— 현월의 장부 귀퉁이에서</div>
+      </div>`});
+  }
+  while (pages.length > 88){ pages.splice(pages.length - 3, 1); }
+})();
+
+/* ═══ 렌더 + 페이저 (스와이프당 무조건 1장) ═══ */
+const pager = document.getElementById('pager');
+pager.innerHTML = `<div id="track">${pages.map((p,i)=>`<div class="page ${p.cls}" data-i="${i}">${p.html}</div>`).join('')}</div>`;
+const track = document.getElementById('track');
+const total = pages.length;
+let cur = 0;
+function updateBar(){
+  document.getElementById('pageNo').textContent = `第 ${cur+1} 張 / ${total}`;
+  document.getElementById('progressBar').style.width = ((cur+1)/total*100) + '%';
+}
+function goPage(i){
+  cur = Math.max(0, Math.min(total-1, i));
+  track.style.transition = '';
+  track.style.transform = `translateX(${-cur*100}%)`;
+  const pg = track.children[cur]; if (pg) pg.scrollTop = 0;
+  updateBar();
+}
+updateBar();
+(function(){
+  let startX=0, startY=0, mode=null, dx=0;
+  const W = () => pager.clientWidth;
+  pager.addEventListener('pointerdown', e => { startX=e.clientX; startY=e.clientY; mode=null; dx=0; }, {passive:true});
+  pager.addEventListener('pointermove', e => {
+    if (e.pressure === 0 && e.pointerType === 'mouse') return;
+    const mx=e.clientX-startX, my=e.clientY-startY;
+    if (mode===null){
+      if (Math.abs(mx)>10 && Math.abs(mx)>Math.abs(my)*1.2) mode='h';
+      else if (Math.abs(my)>10) mode='v';
+    }
+    if (mode==='h'){
+      dx=mx;
+      if ((cur===0&&dx>0)||(cur===total-1&&dx<0)) dx=dx*.3;
+      track.style.transition='none';
+      track.style.transform=`translateX(calc(${-cur*100}% + ${dx}px))`;
+    }
+  }, {passive:true});
+  const finish = () => {
+    if (mode!=='h'){ mode=null; return; }
+    const TH = Math.min(70, W()*.18);
+    if (dx<-TH) goPage(cur+1);
+    else if (dx>TH) goPage(cur-1);
+    else goPage(cur);
+    mode=null; dx=0;
+  };
+  pager.addEventListener('pointerup', finish, {passive:true});
+  pager.addEventListener('pointercancel', finish, {passive:true});
+})();
+document.getElementById('tapPrev').addEventListener('click', ()=>goPage(cur-1));
+document.getElementById('tapNext').addEventListener('click', ()=>goPage(cur+1));
+
+/* 목차 */
+document.getElementById('tocList').innerHTML = tocEntries.map(t =>
+  `<div class="toc-item" onclick="jumpTo(${t.page-1})"><span class="n">${t.label}</span><span class="x">${t.title}</span><span class="p">${t.page}장</span></div>`).join('');
+function openToc(){ document.getElementById('tocOverlay').classList.add('on'); }
+function closeToc(){ document.getElementById('tocOverlay').classList.remove('on'); }
+function jumpTo(i){ closeToc(); goPage(i); }
+
+/* 열람/갈무리 기록 (IP는 서버에서 캡처) */
 function trackReport(event){
   try{
     fetch('https://lpjuanegereuzufjzgbq.supabase.co/functions/v1/track-view', {
-      method: 'POST',
-      keepalive: true,
-      headers: { 'Content-Type': 'application/json' },
+      method:'POST', keepalive:true,
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        event,
-        name: user.name,
-        birth: `${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}`,
-        gender: user.gender,
-        product: 'hyunwol',
-        is_demo: !!qs.get('demo')
+        event, name:user.name,
+        birth:`${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}`,
+        gender:user.gender, product:'hyunwol', is_demo:!!qs.get('demo')
       })
     }).catch(()=>{});
   }catch(e){}

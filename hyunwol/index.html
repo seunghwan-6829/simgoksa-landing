@@ -1357,8 +1357,8 @@ footer b{color:#7a6f66}
       <div class="veil2"></div>
       <div class="inner">
         <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">값을 치르면 받는 것</p>
-        <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">장경각의 기록,<br><span class="r">재물의 경(經)</span></h2>
-        <p class="p-dim rv" id="bookOwner" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">네 이름이 적힌, 단 한 권의 장부.<br>평생 소장하는 상세 분석서.</p>
+        <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">여든여덟 장,<br><span class="r">재물의 경(經)</span></h2>
+        <p class="p-dim rv" id="bookOwner" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">열 권(十卷) 여든여덟 장으로 엮은,<br>네 이름의 단 한 권. 평생 소장한다.</p>
         <div class="toc rv">
           <div class="t"><span class="n">壹</span><span class="x">재물 원국 — 네 돈의 그릇부터 잰다</span></div>
           <div class="t"><span class="n">貳</span><span class="x">구멍(漏) — 새는 자리, 전부 짚는다</span></div>
@@ -1419,7 +1419,7 @@ footer b{color:#7a6f66}
           </div>
           <ul>
             <li>현월이 네 재물 판을 직접 셈하고, 직접 적는다</li>
-            <li>「재물의 경(經)」 상세 분석서 (평생 소장)</li>
+            <li>여든여덟 장 「재물의 경(經)」 (평생 소장)</li>
             <li>구멍의 뿌리 — 시기·크기·막는 법까지</li>
             <li>그릇·물길·때 + 업·귀인·십년 대운</li>
           </ul>
@@ -1889,7 +1889,7 @@ function fillSales(){
     document.getElementById('graphOwner').textContent = user.name + ' — 財物運 능선도';
     document.getElementById('stickyText').textContent = nm + ', 네 재물의 셈을 받아라';
     document.getElementById('ctaMain').textContent = nm + ', 네 재물의 셈을 받아라';
-    document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>네 이름이 적힌, 단 한 권의 장부.<br>평생 소장하는 상세 분석서.';
+    document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>열 권(十卷) 여든여덟 장으로 엮은,<br>네 이름의 단 한 권. 평생 소장한다.';
   }
   document.getElementById('coverNo').textContent = '장경각 검증 필사본 · 제 ' + bookNo + '호';
   const ln = document.getElementById('ledgerNo'); if (ln) ln.textContent = '장경각 검증 필사본 · 제 ' + bookNo + '호';
