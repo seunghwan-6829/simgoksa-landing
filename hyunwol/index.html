@@ -567,6 +567,8 @@ body{
   font-family:'Nanum Myeongjo',serif;font-size:44px;font-weight:800;color:var(--blood-bright);
 }
 .stepline{width:1px;height:46px;background:linear-gradient(180deg,var(--blood),transparent);margin:14px auto}
+/* 장부 조판(좌측 정렬) 안에서는 구분선도 숫자(貳·參) 밑에 맞춘다 */
+#sales .ledger-sec .stepline{margin:14px 0 14px 20px}
 .card{
   margin-top:30px;background:rgba(20,14,12,.75);border:1px solid rgba(150,96,26,.25);
   border-radius:4px;padding:26px 22px;text-align:left;
@@ -883,8 +885,10 @@ footer b{color:#7a6f66}
 }
 .v-sign b{color:var(--paper);font-weight:700}
 .v-stamp{
-  width:30px;height:30px;display:flex;align-items:center;justify-content:center;
-  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:13px;
+  width:26px;height:40px;display:flex;align-items:center;justify-content:center;
+  writing-mode:vertical-rl;text-orientation:upright;
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:13px;line-height:1;letter-spacing:3px;
+  padding-top:3px;
   color:#d24a3e;border:2px solid rgba(210,74,62,.75);border-radius:3px;transform:rotate(6deg);
 }
 /* 문서에 붙인 감정 기록 영상 (시네마틱 풀블리드 대신 서류 첨부 사진) */
