@@ -1325,7 +1325,7 @@ bedAmb.loop = true; bedAmb.volume = 0; bedAmb.preload = 'auto';
 function startBed(){
   bedAmb.play().catch(()=>{});
   let v = 0;
-  const iv = setInterval(()=>{ v = Math.min(.22, v + .02); bedAmb.volume = v; if (v >= .22) clearInterval(iv); }, 140);
+  const iv = setInterval(()=>{ v = Math.min(.3, v + .02); bedAmb.volume = v; if (v >= .3) clearInterval(iv); }, 140);
 }
 
 /* 혀 차는 소리 (쯧쯧) — 선고 순간용 */
@@ -1509,13 +1509,18 @@ function gotoScene(id){
 }
 
 /* 앰비언스 바인딩 (파일: assets/sfx_*.mp3) */
-attachAmbience(document.querySelector('#hero video'), '../assets/sfx_treesign.mp3', .8);
-attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_forest.mp3', .9);
-attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_shinmok.mp3', .4); // 바람 레이어 보강
-attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_door.mp3', .78);
-const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_candles.mp3', .7);
-attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_maskwear.mp3', .7);
-attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_shinmok.mp3', .55);
+/* 씬마다 2겹 — 주음 크게 + 현장음 레이어 (조용한 구간 없이 공간이 계속 운다) */
+attachAmbience(document.querySelector('#hero video'), '../assets/sfx_treesign.mp3', 1);
+attachAmbience(document.querySelector('#hero video'), '../assets/sfx_forest.mp3', .4);      // 숲바람 레이어
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_forest.mp3', 1);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_shinmok.mp3', .5);   // 바람 레이어
+attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_door.mp3', .95);
+attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_candles.mp3', .3);   // 문틈 촛불방 소리
+const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_candles.mp3', .85);
+attachAmbience(document.getElementById('askBg'), '../assets/sfx_treesign.mp3', .25);        // 바깥 바람 레이어
+attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_maskwear.mp3', .9);
+attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_candles.mp3', .3);   // 촛불 레이어
+attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_shinmok.mp3', .6);
 
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.choice');

@@ -1568,7 +1568,7 @@ bedAmb.loop = true; bedAmb.volume = 0; bedAmb.preload = 'auto';
 function startBed(){
   bedAmb.play().catch(()=>{});
   let v = 0;
-  const iv = setInterval(()=>{ v = Math.min(.2, v + .02); bedAmb.volume = v; if (v >= .2) clearInterval(iv); }, 140);
+  const iv = setInterval(()=>{ v = Math.min(.28, v + .02); bedAmb.volume = v; if (v >= .28) clearInterval(iv); }, 140);
 }
 
 /* 목탁 소리 (톡, 톡) — 선고 순간용 */
@@ -1655,7 +1655,7 @@ function loadProgress(){
 const gateAmbBells = new Audio('../assets/sfx_hw_road.mp3');   // 흙길 발소리 + 저녁 벌레 + 바람
 gateAmbBells.loop = true; gateAmbBells.volume = 1; gateAmbBells.preload = 'auto';
 const gateAmbSteps = new Audio('../assets/sfx_hw_bell.mp3');   // 멀리서 우는 풍경(風磬)
-gateAmbSteps.loop = true; gateAmbSteps.volume = .45; gateAmbSteps.preload = 'auto';
+gateAmbSteps.loop = true; gateAmbSteps.volume = .6; gateAmbSteps.preload = 'auto';
 let gateAmbOn = false;
 let soundStarted = false;
 function ensureSound(){
@@ -1752,12 +1752,18 @@ function gotoScene(id){
 }
 
 /* 앰비언스 바인딩 (파일: assets/sfx_*.mp3) */
-attachAmbience(document.querySelector('#hero video'), '../assets/sfx_hw_grab.mp3', .9);
-attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_hw_glare.mp3', .85);
-attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_hw_pull.mp3', .85);
-const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_hw_desk.mp3', .7);
-attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_counting.mp3', .78);
-attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_hw_gate.mp3', .55);
+/* 씬마다 2겹 — 주음 크게 + 현장음 레이어 (조용한 구간 없이 공간이 계속 운다) */
+attachAmbience(document.querySelector('#hero video'), '../assets/sfx_hw_grab.mp3', 1);
+attachAmbience(document.querySelector('#hero video'), '../assets/sfx_hw_road.mp3', .5);     // 길 현장음 레이어
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_hw_glare.mp3', .95);
+attachAmbience(document.querySelector('#scene1 video'), '../assets/sfx_hw_road.mp3', .45);  // 길 현장음 지속
+attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_hw_pull.mp3', .95);
+attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_hw_bell.mp3', .35);  // 가까워지는 풍경 소리
+const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_hw_desk.mp3', .85);
+attachAmbience(document.getElementById('askBg'), '../assets/sfx_hw_gate.mp3', .3);          // 바깥 밤공기 레이어
+attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_counting.mp3', .9);
+attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_bell.mp3', .22);  // 먼 풍경 레이어
+attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_hw_gate.mp3', .6);
 
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.choice');
