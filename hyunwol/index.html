@@ -646,7 +646,7 @@ body{
 .plan .was s{color:#8a5e18}
 .plan ul{margin-top:14px;display:flex;flex-direction:column;gap:8px}
 .plan li{list-style:none;font-size:13px;line-height:1.7;color:#3a322d;display:flex;gap:8px}
-.plan li::before{content:"✅";font-size:11px}
+.plan li::before{content:"入";font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:12px;color:#c9a25c}
 .plan .tag{font-size:11px;letter-spacing:.15em}
 .soldout{
   position:relative;
@@ -821,43 +821,40 @@ footer b{color:#7a6f66}
 }
 .cover{
   position:relative;width:min(78vw,300px);aspect-ratio:3/4.4;
-  background:
-    radial-gradient(140% 110% at 30% 20%, rgba(208,140,58,.10), transparent 55%),
-    linear-gradient(160deg,#241708 0%,#170e05 45%,#0d0803 100%);
-  border:1px solid rgba(201,162,92,.4);border-radius:3px 8px 8px 3px;
+  background:url('../assets/hw_cover.jpg') center/cover no-repeat;
+  border-radius:3px 8px 8px 3px;
   box-shadow:
-    -6px 0 0 -2px #0a0602, -11px 0 0 -4px rgba(201,162,92,.22),   /* 책등 */
-    0 24px 60px rgba(0,0,0,.75), inset 0 0 50px rgba(0,0,0,.55);
+    -6px 0 0 -2px #0a0602, -11px 0 0 -4px rgba(60,42,18,.55),   /* 책등 */
+    0 24px 60px rgba(0,0,0,.78), inset 0 0 46px rgba(0,0,0,.35);
   transform:rotate(-1.2deg);
 }
-.cover-stitch{
-  position:absolute;left:16px;top:24px;bottom:24px;width:2px;
-  background-image:radial-gradient(circle, rgba(201,162,92,.75) 1.6px, transparent 2px);
-  background-size:2px 34px;background-repeat:repeat-y;
-}
+.cover-stitch{display:none} /* 실제 오침 제본이 텍스처에 포함됨 */
 .cover-title{
-  position:absolute;top:34px;right:32px;
+  position:absolute;top:36px;right:28px;
   writing-mode:vertical-rl;
-  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:52px;letter-spacing:.22em;
-  color:var(--paper);text-shadow:0 0 26px rgba(224,164,60,.3);
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:50px;letter-spacing:.22em;
+  color:#efe4cd;
+  text-shadow:0 1px 2px rgba(0,0,0,.9), 0 3px 12px rgba(0,0,0,.8), 0 0 30px rgba(224,164,60,.28);
 }
 .cover-label{
-  position:absolute;top:40px;left:34px;
+  position:absolute;top:34px;left:52px;
   writing-mode:vertical-rl;
-  background:linear-gradient(175deg,#e8ddc7,#d6c6a6);
-  color:#241708;padding:14px 7px;border-radius:2px;
-  font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:14px;letter-spacing:.16em;
-  box-shadow:2px 3px 10px rgba(0,0,0,.5);
-  max-height:62%;
+  background:linear-gradient(175deg,#e4d7bc,#cdbb95);
+  color:#241708;padding:13px 7px;border-radius:2px 2px 3px 3px;
+  font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:13.5px;letter-spacing:.14em;
+  box-shadow:2px 3px 10px rgba(0,0,0,.55), inset 0 0 8px rgba(120,90,40,.25);
+  max-height:56%;
+  transform:rotate(.8deg);
 }
 .cover-reg{
-  position:absolute;left:34px;bottom:70px;
-  writing-mode:vertical-rl;
-  font-size:10.5px;letter-spacing:.22em;color:#8a7a60;
+  position:absolute;bottom:46px;left:0;right:0;text-align:center;
+  font-size:10.5px;letter-spacing:.2em;color:#b9a984;
+  text-shadow:0 1px 3px rgba(0,0,0,.9);
 }
 .cover-no{
-  position:absolute;bottom:22px;left:0;right:0;text-align:center;
-  font-size:10px;letter-spacing:.24em;color:#6b5c44;
+  position:absolute;bottom:24px;left:0;right:0;text-align:center;
+  font-size:9.5px;letter-spacing:.22em;color:#8a7a60;
+  text-shadow:0 1px 3px rgba(0,0,0,.9);
 }
 .cover-seal{
   position:absolute;bottom:52px;right:30px;
@@ -1223,8 +1220,8 @@ footer b{color:#7a6f66}
         <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">심곡사 뒤편, 장경각</p>
         <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">마흔 해째 장부를<br>지키는 스님, <span class="r">현월</span></h2>
         <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">
-          수천 권의 만세력과<br><em>재물 장부의 기록</em>이 잠든 전각.<br>그 문을 40년째 지켜 온 승려.<br><br>
-          스무 해,<br><em>4,000명</em>의 재물 사주를 셈했다.
+          수천 권의 만세력과<br><em>재물 장부의 기록</em>이 잠든 전각.<br>그 문을 마흔 해째 지켜 온 승려.<br><br>
+          마흔 해,<br><em>4,000명</em>의 재물 사주를 셈했다.
         </p>
         <p class="p-dim rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">
           신점(神占)이 아니다.<br>정통 명리학 · 만세력 기반의 사주 풀이다.
@@ -1283,7 +1280,7 @@ footer b{color:#7a6f66}
           <div class="li-body"><p>재성의 흐름이 대운과 맞물려 그릇이 가득 차는 구간이 두 번 존재하며 그 정점은 당신의 나이로 셈했을 때 대략…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其二</span><span class="li-title">내 돈을 걷어가는 얼굴 vs<br>돈길을 열어 줄 귀인 구별법</span></div>
+          <div class="li-head"><span class="li-no">其二</span><span class="li-title">내 돈을 걷어가는 얼굴과<br>돈길을 열어 줄 귀인 — 가리는 법</span></div>
           <div class="li-body"><p>당신의 원국은 특정 오행의 사람에게 재물이 새는 구조라서 지금까지 돈이 얽혔던 사람 중에서도…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
@@ -1438,7 +1435,7 @@ footer b{color:#7a6f66}
 
       <p class="toc-note rv" style="margin-top:20px">한 번 셈한 장부는, 평생 네 것이다.</p>
 
-      <p class="toc-note rv" style="margin-top:30px">결제가 끝나는 그 순간,<br>네 「재물의 경(經)」이 서고에 꽂힌다.</p>
+      <p class="toc-note rv" style="margin-top:30px">현월의 셈이 끝나는 대로,<br>네 「재물의 경(經)」이 서고에 꽂힌다.</p>
 
       <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 돈 새는 구멍(漏) 확인하기</a>
     </section>
@@ -1496,7 +1493,7 @@ footer b{color:#7a6f66}
     <button class="m-close" onclick="closeBuy()">✕</button>
     <p class="m-tag">深谷寺</p>
     <h3 id="buyTitle">셈을 받는다</h3>
-    <p class="m-sub" id="buySub">결제가 끝나는 그 순간,<br>네 서고에 「재물의 경(經)」이 꽂힌다.</p>
+    <p class="m-sub" id="buySub">현월의 셈이 끝나는 대로,<br>네 서고에 「재물의 경(經)」이 꽂힌다.</p>
     <div class="buy-card">
       <div class="b-head">현월의 재물 셈법 · 재물의 경(經)</div>
       <div class="b-body">
@@ -2135,8 +2132,9 @@ document.getElementById('authPw').addEventListener('keydown', e => { if (e.key =
 document.getElementById('authPw2').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 
 /* ───────── 구매 모달 ───────── */
-/* 그로블 결제 URL — 현월 상품 등록 후 여기에 채운다 (비어 있으면 開門 대기 안내) */
-const PAY_URL = '';
+/* 그로블 결제 URL — 상품(5xeDtU)이 '판매하기'로 공개되는 순간 아래 주석을 해제하면 개문된다.
+   결과물(재물의 경) 완성 전에는 비워 둔다 (비어 있으면 開門 대기 안내) */
+const PAY_URL = ''; // 개문 시: 'https://www.groble.im/payment/5xeDtU'
 function openBuy(){
   document.getElementById('buyFor').textContent = user.name ? (user.name + ' — 재물의 경(經)') : '재물의 경(經)';
   document.getElementById('buyModal').classList.add('on');

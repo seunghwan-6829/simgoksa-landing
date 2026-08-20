@@ -43,6 +43,7 @@ Deno.serve(async (req) => {
   // 그로블 상품 ID → 캐릭터 매핑. 새 캐릭터(현월·홍단 등) 출시 시 여기에 한 줄씩 추가한다.
   const CONTENT_PRODUCT: Record<string, string> = {
     "kAAJFx": "myodam",
+    "5xeDtU": "hyunwol",
   };
   const contentId = pick("data.object.content.id", "contentId", "content_id", "data.contentId", "content.id");
 
