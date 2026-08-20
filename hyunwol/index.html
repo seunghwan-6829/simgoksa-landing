@@ -2137,9 +2137,8 @@ document.getElementById('authPw').addEventListener('keydown', e => { if (e.key =
 document.getElementById('authPw2').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 
 /* ───────── 구매 모달 ───────── */
-/* 그로블 결제 URL — 상품(5xeDtU)이 '판매하기'로 공개되는 순간 아래 주석을 해제하면 개문된다.
-   결과물(재물의 경) 완성 전에는 비워 둔다 (비어 있으면 開門 대기 안내) */
-const PAY_URL = ''; // 개문 시: 'https://www.groble.im/payment/5xeDtU'
+/* 그로블 결제 URL — 2026-08-20 개문 */
+const PAY_URL = 'https://www.groble.im/payment/5xeDtU';
 function openBuy(){
   document.getElementById('buyFor').textContent = user.name ? (user.name + ' — 재물의 경(經)') : '재물의 경(經)';
   document.getElementById('buyModal').classList.add('on');
