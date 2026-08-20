@@ -83,15 +83,15 @@ body{
 }
 #gate .gate-bg{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  filter:brightness(.62) saturate(.85);
+  filter:brightness(.82) saturate(.92);
   transform:scale(1.06);
   animation:gatezoom 22s ease-in-out infinite alternate;
 }
 @keyframes gatezoom{from{transform:scale(1.06)}to{transform:scale(1.14)}}
 #gate .gate-veil{
   position:absolute;inset:0;
-  background:radial-gradient(90% 70% at 50% 46%,transparent 30%,rgba(0,0,0,.82) 100%),
-             linear-gradient(180deg,rgba(0,0,0,.5),transparent 30%,transparent 62%,rgba(0,0,0,.92));
+  background:radial-gradient(95% 75% at 50% 46%,transparent 42%,rgba(0,0,0,.6) 100%),
+             linear-gradient(180deg,rgba(0,0,0,.38),transparent 26%,transparent 66%,rgba(0,0,0,.85));
 }
 #gate .gate-inner{
   position:relative;z-index:2;max-width:480px;width:100%;height:100dvh;
@@ -768,6 +768,52 @@ footer b{color:#7a6f66}
   padding:9px 16px;
 }
 .back-home:hover{color:var(--paper);border-color:rgba(224,164,60,.5)}
+/* ═══ 현월 결과지 전용 조판 — 장부(帳簿) 양식: 좌측 정렬·세로 페이지 라벨·항목형 진단 (묘담 템플릿과 분리) ═══ */
+#sales .ledger-sec{text-align:left;position:relative;padding-right:56px}
+#sales .ledger-sec .toc-note{text-align:left}
+#sales .ledger-sec .cta-big{text-align:center}
+#sales .ledger-sec .price-strike{text-align:left}
+.vtag{
+  position:absolute;top:74px;right:18px;
+  writing-mode:vertical-rl;
+  font-family:'Nanum Myeongjo',serif;font-size:12px;letter-spacing:.4em;
+  color:rgba(201,162,92,.55);
+  border-left:1px solid rgba(201,162,92,.28);padding-left:9px;
+  user-select:none;
+}
+/* 진단: 카드 → 장부 항목 */
+#sales .sal-card{
+  background:transparent;border:none;border-radius:0;overflow:visible;
+  border-left:3px double rgba(201,162,92,.55);
+  border-bottom:1px dashed rgba(232,224,216,.14);
+  padding:4px 0 20px 16px;margin-top:30px;
+}
+#sales .sal-card .sal-head{padding:12px 0;border-bottom:none}
+#sales .sal-card .sal-lv{
+  background:transparent;border:1.5px solid rgba(210,74,62,.7);color:#d8968c;
+  border-radius:3px;transform:rotate(-3deg);
+}
+#sales .sal-card .sal-body{padding:0}
+#sales .sal-card .sal-lock{
+  border:1px dashed rgba(201,162,92,.4);background:rgba(20,14,8,.5);
+  padding:10px 12px 6px;overflow:visible;
+}
+#sales .sal-card .sal-lock p{filter:blur(2.8px);opacity:.92}
+#sales .sal-card .sal-lock .lock-tag{
+  position:static;background:none;justify-content:flex-end;
+  padding:8px 0 2px;font-size:11.5px;color:#c9a25c;
+}
+/* 체크리스트 → 장부 번호 항목 */
+#sales .ledger-sec .chk{text-align:left}
+#sales .ledger-sec .chk li{justify-content:flex-start}
+#sales .ledger-sec .chk li::before{content:"一";color:#c9a25c;font-family:'Nanum Myeongjo',serif;font-size:14px}
+#sales .ledger-sec .chk li:nth-child(2)::before{content:"二"}
+#sales .ledger-sec .chk li:nth-child(3)::before{content:"三"}
+#sales .ledger-sec .chk li:nth-child(4)::before{content:"四"}
+#sales .ledger-sec .chk li:nth-child(5)::before{content:"五"}
+/* 가림 처리 — 글자·색이 '있다'는 건 보이되 읽히지는 않게 */
+.veiled{filter:blur(2.8px);opacity:.92;user-select:none;pointer-events:none}
+.veiled-num{filter:blur(10px);opacity:.9;user-select:none;pointer-events:none}
 @media (min-width:768px){
   body::before{
     content:"";position:fixed;inset:-40px;z-index:-2;
@@ -989,7 +1035,7 @@ footer b{color:#7a6f66}
     </section>
 
     <!-- 재물 장부 (現月記) — 묘담의 만세력 차트와 다른, 먹칠·인장의 장부 언어 -->
-    <section class="sec" style="padding-top:0">
+    <section class="sec ledger-sec" style="padding-top:0"><span class="vtag">第一頁 · 원국</span>
       <div class="ledger-frame rv">
         <div class="ledger-head">
           <span class="lh-title" id="chartOwner">現月記 — 재물 장부</span>
@@ -1003,26 +1049,26 @@ footer b{color:#7a6f66}
           </div>
           <div class="lrow">
             <span class="lk">그릇의 크기</span>
-            <span class="lv"><span class="inkblot">■■■■</span> 섬(石) <span class="inkblot">■</span>말</span>
+            <span class="lv"><span class="veiled" id="vBowl">여덟 섬 한 말</span></span>
             <span class="lmark seal">封</span>
           </div>
           <div class="lrow leak">
             <span class="lk">새는 자리</span>
-            <span class="lv"><span class="inkblot">■■</span>방(方) · <span class="inkblot">■■</span>살 무렵부터</span>
+            <span class="lv"><span class="veiled" id="vDir">서남 방(方)</span> · <span class="veiled" id="vAge">스물여섯살 무렵부터</span></span>
             <span class="lmark loo">漏</span>
           </div>
           <div class="lrow">
             <span class="lk">고이는 해</span>
-            <span class="lv">20<span class="inkblot">■■</span>년 <span class="inkblot">■</span>월</span>
+            <span class="lv"><span class="veiled" id="vYear">2027년 4월</span></span>
             <span class="lmark seal">封</span>
           </div>
         </div>
-        <p class="chart-note">먹으로 덮은 자리 — <b>값을 치르면 걷어 준다</b><br>붉은 漏 — 지금 이 순간에도 새는 자리다</p>
+        <p class="chart-note">흐려 둔 자리 — <b>값을 치르면 또렷해진다</b><br>붉은 漏 — 지금 이 순간에도 새는 자리다</p>
       </div>
     </section>
 
     <!-- 잃은 돈 셈 — 주판 연출 -->
-    <section class="sec" style="padding-top:44px">
+    <section class="sec ledger-sec" style="padding-top:44px"><span class="vtag">第二頁 · 셈</span>
       <p class="h-red rv">스님이 주판을 놓는다</p>
       <h2 class="h-big rv">여태 새어 나간 돈,<br><span class="r">셈해 보았다</span></h2>
       <div class="lost-frame rv">
@@ -1034,7 +1080,7 @@ footer b{color:#7a6f66}
     </section>
 
     <!-- 흉살 진단 -->
-    <section class="sec" style="padding-top:30px">
+    <section class="sec ledger-sec" style="padding-top:30px"><span class="vtag">第三頁 · 구멍</span>
       <p class="h-red rv">네 재물 장부에서 나온</p>
       <h2 class="h-big rv"><span class="r" id="salCount">2개의 구멍</span></h2>
       <div id="salCards"></div>
@@ -1042,7 +1088,7 @@ footer b{color:#7a6f66}
     </section>
 
     <!-- 후크 -->
-    <section class="sec">
+    <section class="sec ledger-sec"><span class="vtag">第四頁 · 물음</span>
       <p class="h-red rv">"왜 이렇게</p>
       <h2 class="h-big rv">벌어도 <span class="r">안 모이지?"</span></h2>
       <div class="h-hanja rv">漏財</div>
@@ -1088,7 +1134,7 @@ footer b{color:#7a6f66}
     </section>
 
     <!-- 재물운 그래프 -->
-    <section class="sec">
+    <section class="sec ledger-sec"><span class="vtag">第五頁 · 능선</span>
       <p class="h-red rv">셈 미리보기 · 壹</p>
       <h2 class="h-big rv">"돈이 한 번 크게<br><span class="r">고이는 판이던데."</span></h2>
       <div class="graph-frame rv">
@@ -1120,15 +1166,15 @@ footer b{color:#7a6f66}
           <text x="174" y="114" font-size="10" fill="#d24a3e" font-family="serif" text-anchor="middle">漏</text>
         </svg>
         <div class="graph-tags">
-          <span class="gtag bad"><b>줄줄 새는 해</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
-          <span class="gtag good"><b>크게 고이는 해</b><span class="blurline">20■■년 ■월 — ■■■</span></span>
+          <span class="gtag bad"><b>줄줄 새는 해</b><span class="veiled" id="vBad">2024년 8월 — 크게 샜다</span></span>
+          <span class="gtag good"><b>크게 고이는 해</b><span class="veiled" id="vGood">2027년 5월 — 크게 든다</span></span>
         </div>
       </div>
       <p class="toc-note rv">재물이 크게 고이는 해와, 줄줄 새는 해.<br>정확한 연도는— 풀이에서 보여주마.</p>
     </section>
 
     <!-- 잠긴 티저 목록 -->
-    <section class="sec" style="background:var(--bg2)">
+    <section class="sec ledger-sec" style="background:var(--bg2)"><span class="vtag">第六頁 · 봉인</span>
       <p class="h-red rv">셈 미리보기 · 貳</p>
       <h2 class="h-big rv">"이미 다<br><span class="r">셈해 뒀다."</span></h2>
       <p class="p-dim rv">네 장부를 보고 전부 셈해 뒀다.<br>열람만 잠겨 있을 뿐.</p>
@@ -1157,7 +1203,7 @@ footer b{color:#7a6f66}
     </section>
 
     <!-- 3단 심층 살풀이 -->
-    <section class="sec">
+    <section class="sec ledger-sec"><span class="vtag">第七頁 · 셈법</span>
       <p class="h-red rv">현월의</p>
       <h2 class="h-big rv">3단 재물 <span class="r">셈법</span></h2>
 
@@ -1229,7 +1275,7 @@ footer b{color:#7a6f66}
     </section>
 
     <!-- 후기 -->
-    <section class="sec">
+    <section class="sec ledger-sec"><span class="vtag">第八頁 · 증언</span>
       <p class="h-red rv">구멍을 막은 뒤</p>
       <h2 class="h-big rv">그들에게 일어난 일</h2>
       <div class="review rv">
@@ -1251,7 +1297,7 @@ footer b{color:#7a6f66}
     </section>
 
     <!-- 가격 -->
-    <section class="sec" style="background:var(--bg2)">
+    <section class="sec ledger-sec" style="background:var(--bg2)"><span class="vtag">終頁 · 값</span>
       <p class="h-red rv">답답할 때마다</p>
       <h2 class="h-big rv">재테크 강의 듣고,<br>부적 쓰고, 굿까지…</h2>
       <p class="price-strike rv">
@@ -1775,13 +1821,23 @@ function fillSales(){
       <div class="sal-body">
         <p>${s.desc}</p>
         <div class="sal-lock">
-          <p>${s.lock} ■■■■■■■■■■■■■■■■■■■■■■■■■■■■</p>
+          <p>${s.lock} 이러하다. 재성(財星)이 앉은 자리와 대운의 물길을 겹쳐 보면— 막는 길이 분명하게 나온다.</p>
           <div class="lock-tag">封 — 값을 치르면 열린다</div>
         </div>
       </div>
     </div>`).join('');
-  // 타임라인 (연도·살 개인화 + 핵심 블러)
+  // 가림값(블러) 채우기 — 읽히진 않지만 '적혀 있다'는 건 보이게. 사람마다 고정, 실제 정보 아님(스포 불가)
   const nowY = new Date().getFullYear();
+  const V = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+  const bowls = ['여섯 섬 두 말','여덟 섬 한 말','아홉 섬 반','열두 섬 두 말','일곱 섬 세 말'];
+  const dirs = ['동북','서남','정남','서북','정동','북서'];
+  V('vBowl', bowls[h % 5]);
+  V('vDir', dirs[h % 6] + ' 방(方)');
+  V('vAge', (19 + ((h >> 2) % 17)) + '살 무렵부터');
+  V('vYear', (nowY + 1 + ((h >> 4) % 4)) + '년 ' + (1 + ((h >> 6) % 12)) + '월');
+  V('vBad', (nowY - 1 - (h % 3)) + '년 ' + (1 + ((h >> 3) % 12)) + '월 — 크게 샜다');
+  V('vGood', (nowY + 1 + ((h >> 4) % 4)) + '년 ' + (1 + ((h >> 6) % 12)) + '월 — 크게 든다');
+  // 타임라인 (연도·구멍 개인화 + 핵심 블러)
   const pastY = nowY - 2 - (h % 3);
   const futureY = nowY + 2 + ((h >> 4) % 3);
   const effects = ['목돈이 깨지는 <b>지출 사고</b>','곁 사람에게 <b>새어 나간 돈</b>','투자에서 <b>물리는 자리</b>','벌이가 <b>끊기는 고비</b>','창고가 <b>비어 버리는 시기</b>'];
@@ -1792,9 +1848,10 @@ function fillSales(){
     {yr: nowY, s: picks[1] || picks[0], tx: eff(1), tag:'<b>지금, 한창 움직이는 중</b>'},
     {yr: futureY, s: picks[2] || picks[0], tx: eff(2), tag:'다가오는 고비'}
   ];
+  const m1 = 1 + (h % 12), m2 = 1 + ((m1 + 3 + ((h >> 5) % 6)) % 12);
   document.getElementById('salTimeline').innerHTML = t.map(r => `
     <div class="row"><span class="yr">${r.yr}</span><span class="tx">${r.s.name}(${r.s.hanja}) — ${r.tag}<br>
-    <span style="filter:blur(4.5px);user-select:none">${r.tx}, ■월과 ■월에 정점</span> <b style="color:#c9a25c;font-weight:800">封</b></span></div>`).join('');
+    <span class="veiled">${r.tx}, ${m1}월과 ${m2}월에 정점</span> <b style="color:#c9a25c;font-weight:800">封</b></span></div>`).join('');
   // 심층 카드 = 첫 번째 살 연동
   const d = picks[0];
   document.getElementById('salDeepCard').innerHTML = `
@@ -1826,9 +1883,9 @@ function setupLostCounter(h){
         numEl.textContent = v.toLocaleString();
         if (p < 1) requestAnimationFrame(tick);
         else {
-          // 앞자리를 먹칠로 가린다 (예: 3,417 → ■,417)
+          // 앞자리만 강한 블러로 가린다 (예: 3,417 → ●,417 느낌 — 글자인 건 보이되 읽히지 않게)
           const s = target.toLocaleString();
-          numEl.innerHTML = '<span class="inkblot" style="font-size:.92em">■</span>' + s.slice(1);
+          numEl.innerHTML = '<span class="veiled-num">' + s.slice(0, 1) + '</span>' + s.slice(1);
           setTimeout(()=>{ stamp.classList.add('on'); playTsk(); if (navigator.vibrate) navigator.vibrate([40,60,40]); }, 350);
         }
       })(t0);
