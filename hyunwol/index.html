@@ -1552,31 +1552,23 @@ function track(event, extra){
   }catch(e){}
 }
 
-/* ───────── ambient sound (WebAudio drone) ───────── */
+/* ───────── ambient sound ─────────
+   합성 드론(웅웅) 제거 — WebAudio는 목탁/효과음 재생용으로만 유지하고,
+   배경은 실제 녹음된 장경각 룸톤(촛불·나무 삐걱임)을 낮게 깐다 (리얼리티) */
 let actx = null, master = null;
 function startSound(){
   try{
     actx = new (window.AudioContext||window.webkitAudioContext)();
-    master = actx.createGain(); master.gain.value = 0; master.connect(actx.destination);
-    const o1 = actx.createOscillator(); o1.type='sine'; o1.frequency.value = 54;
-    const o2 = actx.createOscillator(); o2.type='sine'; o2.frequency.value = 54.7;
-    const og = actx.createGain(); og.gain.value = .12;
-    o1.connect(og); o2.connect(og); og.connect(master);
-    const len = actx.sampleRate * 4;
-    const buf = actx.createBuffer(1, len, actx.sampleRate);
-    const d = buf.getChannelData(0);
-    for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
-    const noise = actx.createBufferSource(); noise.buffer = buf; noise.loop = true;
-    const nf = actx.createBiquadFilter(); nf.type='lowpass'; nf.frequency.value = 320; nf.Q.value = .6;
-    const ng = actx.createGain(); ng.gain.value = .05;
-    noise.connect(nf); nf.connect(ng); ng.connect(master);
-    const lfo = actx.createOscillator(); lfo.frequency.value = .07;
-    const lg = actx.createGain(); lg.gain.value = .035;
-    lfo.connect(lg); lg.connect(ng.gain);
-    o1.start(); o2.start(); noise.start(); lfo.start();
-    // 즉시 인입 — 빠르게 차오르는 드론+바람
-    master.gain.linearRampToValueAtTime(.6, actx.currentTime + 1.1);
+    master = actx.createGain(); master.gain.value = .75; master.connect(actx.destination);
   }catch(e){}
+}
+/* 상시 배경 룸톤 — 길을 지나는 순간부터 결과 페이지까지 잔잔히 흐른다 */
+const bedAmb = new Audio('../assets/sfx_hw_desk.mp3');
+bedAmb.loop = true; bedAmb.volume = 0; bedAmb.preload = 'auto';
+function startBed(){
+  bedAmb.play().catch(()=>{});
+  let v = 0;
+  const iv = setInterval(()=>{ v = Math.min(.2, v + .02); bedAmb.volume = v; if (v >= .2) clearInterval(iv); }, 140);
 }
 
 /* 목탁 소리 (톡, 톡) — 선고 순간용 */
@@ -1704,6 +1696,7 @@ document.getElementById('enterBtn').addEventListener('click', (e) => {
   gate.classList.add('off');
   ensureSound();
   fadeOutGateAmb();
+  startBed(); // 장경각 룸톤이 이어받는다
   setTimeout(bellChime, 600);
   const v = document.querySelector('#hero video'); if (v) v.play().catch(()=>{});
   document.querySelector('#hero .title-wrap').classList.add('go');
