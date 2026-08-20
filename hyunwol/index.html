@@ -947,7 +947,7 @@ footer b{color:#7a6f66}
       <div class="gate-hanja">深谷寺</div>
       <div class="gate-sub">심곡사 아랫길 — 해 질 무렵</div>
     </div>
-    <p class="gate-warn">길 끝에서, 누군가<br><b>당신이 오기를 기다리고 있습니다</b></p>
+    <p class="gate-warn">길 끝의 노승이<br><b>지나는 걸음을 세고 있습니다</b></p>
     <button class="gate-btn" id="enterBtn">길을 지나간다</button>
     <p class="gate-note">· 소리와 함께 걸으시길 바랍니다 ·</p>
   </div>
@@ -1056,7 +1056,7 @@ footer b{color:#7a6f66}
       </div>
       <!-- step 3 : 성별 -->
       <div class="ask-step" id="ask3" style="display:none">
-        <p class="line voice">"마지막이다."</p>
+        <p class="line voice">"끝 자리다. 마저 적거라."</p>
         <div class="ask-wrap on">
           <div class="ask-row">
             <button class="ask-opt" onclick="askGender('여',this)">女 · 여자</button>
@@ -1086,15 +1086,15 @@ footer b{color:#7a6f66}
     <div class="veil"></div>
     <span class="scene-tag">參</span>
     <div class="dialog" data-scene="3">
-      <p class="line voice" id="sorryLine">"그랬던 게로구나…"</p>
+      <p class="line voice" id="sorryLine">"셈이 나왔다…"</p>
       <p class="line voice">"<em>모자란 게 아니라, 새고 있던 것이야.</em>"</p>
       <p class="line" style="margin-top:8px">스님이 엽전 한 닢을,<br>소리 나게— 내려놓는다.</p>
       <p class="line voice" data-quake>"네 재물 장부에 <em>구멍(漏)</em>이 뚫려 있다."</p>
       <p class="line">낮은 목소리가<br>서가 전체에 가라앉는다.</p>
-      <p class="line voice">"벌이가 문제가 아니야.<br><em>새는 자리를 모르고 살았던 것뿐이지.</em>"</p>
-      <p class="line voice" id="showLine">"보여주랴 —<br>네 돈이 빠져나가는 <em>진짜 구멍.</em>"</p>
+      <p class="line voice">"벌이는 죄가 없다.<br>장부에 구멍이 난 줄—<br><em>몰랐을 뿐이지.</em>"</p>
+      <p class="line voice" id="showLine">"장부째 보여주마.<br>네 돈이 빠져나간— <em>자리 전부.</em>"</p>
       <div class="choices">
-        <button class="choice" data-next="sales">"…보여주십시오."</button>
+        <button class="choice" data-next="sales">"…어디입니까, 그 구멍이."</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -1121,7 +1121,7 @@ footer b{color:#7a6f66}
       <p class="h-red rv">감정 소견</p>
       <div class="verdict rv">
         <p class="v-head" id="vHead">허어…<br><span class="r">너, 크게 새고 있다.</span></p>
-        <p class="v-body">"장경각을 지키는 승려로서 말한다.<br>지금부터— <em>네 재물의 원국(原局)</em>이다."</p>
+        <p class="v-body">"마흔 해 장부를 지킨 눈은 못 속인다.<br>지금부터 한 장씩— <em>네 재물의 판</em>을 편다."</p>
         <div class="v-sign">감정인 — 장경각 <b>현월</b><span class="v-stamp">玄月</span></div>
       </div>
       <div class="vid-attach rv">
@@ -1196,7 +1196,7 @@ footer b{color:#7a6f66}
         <li class="rv" style="transition-delay:.65s">투자만 하면, 꼭 꼭지에서 물리고</li>
         <li class="rv" style="transition-delay:.85s">열심히 버는데— 잔고는 멈춰 있고</li>
       </ul>
-      <p class="p-dim rv">"돈복이 없다"고 넘겨 왔겠지.<br>아니야.<br><b style="color:var(--ink)">새는 자리를 모르고 있었을 뿐이다.</b></p>
+      <p class="p-dim rv">"돈복이 없다"는 말은<br>장부를 안 본 자의 말이다.<br><b style="color:var(--ink)">장부는 늘— 새는 자리를 알고 있다.</b></p>
     </section>
 
     <!-- 살이란 -->
@@ -1208,7 +1208,7 @@ footer b{color:#7a6f66}
         <p class="p-body rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">구멍(漏)은—</p>
         <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">모르고 두면<br>평생 너를 마르게 하는 <em>가난</em>이지만,</p>
         <p class="p-body rv" style="margin-top:44px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">막아 내면<br>그 자리부터 고이기 시작하는 <em>복(福)</em>이다.</p>
-        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">네가 외면해 온,<br>장부 속 뒷 페이지.<br><br>정면으로 마주하고— 막아라.</p>
+        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">장부의 뒷장은<br>들추는 자의 것이다.<br><br>들추고— 막고— 담아라.</p>
       </div>
     </section>
 
@@ -1352,7 +1352,7 @@ footer b{color:#7a6f66}
       <video class="bg" src="../assets/hw_seal.mp4" muted loop playsinline preload="none" poster="../assets/hw_seal.jpg"></video>
       <div class="veil2"></div>
       <div class="inner">
-        <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">네가 받을 것</p>
+        <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">값을 치르면 받는 것</p>
         <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">장경각의 기록,<br><span class="r">재물의 경(經)</span></h2>
         <p class="p-dim rv" id="bookOwner" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">네 이름이 적힌, 단 한 권의 장부.<br>평생 소장하는 상세 분석서.</p>
         <div class="toc rv">
@@ -1373,7 +1373,7 @@ footer b{color:#7a6f66}
     <!-- 후기 -->
     <section class="sec ledger-sec"><span class="vtag">第八頁 · 증언</span>
       <p class="h-red rv">구멍을 막은 뒤</p>
-      <h2 class="h-big rv">그들에게 일어난 일</h2>
+      <h2 class="h-big rv">장부를 고쳐 적은 이들</h2>
       <div class="review rv">
         <div class="who">이○훈 · 41세 · 자영업</div>
         <div class="quote">"가게 10년에, 남은 게 없었는데…"</div>
@@ -1394,17 +1394,17 @@ footer b{color:#7a6f66}
 
     <!-- 가격 -->
     <section class="sec ledger-sec" style="background:var(--bg2)"><span class="vtag">終頁 · 값</span>
-      <p class="h-red rv">답답할 때마다</p>
-      <h2 class="h-big rv">재테크 강의 듣고,<br>부적 쓰고, 굿까지…</h2>
+      <p class="h-red rv">그 돈이면</p>
+      <h2 class="h-big rv">강의 듣고, 부적 쓰고—<br>또 새는 셈이다</h2>
       <p class="price-strike rv">
         강의 <s>–39만원</s> · 부적 <s>–55만원</s> · 굿 <s>–120만원</s><br>
-        <b style="color:var(--ink)">수백만 원, 쓸 필요 없다.</b>
+        <b style="color:var(--ink)">막는 데는— 셈 한 번이면 된다.</b>
       </p>
-      <p class="p-body rv">집에서 받는 <em>맞춤형 재물 풀이</em></p>
-      <p class="p-body rv" style="margin-top:50px"><span style="font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-size:22px">기간 한정, 특별 혜택가</span></p>
+      <p class="p-body rv">장경각에서 받는 <em>재물 셈법</em></p>
+      <p class="p-body rv" style="margin-top:50px"><span style="font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-size:22px">開門 기념 — 셈값</span></p>
 
       <div class="plan hot rv">
-        <div class="head"><span>먼저 문을 두드린 값 · 현월의 재물 셈법</span><span class="tag">한정</span></div>
+        <div class="head"><span>장부를 먼저 편 값 · 현월의 재물 셈법</span><span class="tag">한정</span></div>
         <div class="body">
           <div class="row1">
             <div>
@@ -1435,7 +1435,7 @@ footer b{color:#7a6f66}
 
       <p class="toc-note rv" style="margin-top:20px">한 번 셈한 장부는, 평생 네 것이다.</p>
 
-      <p class="toc-note rv" style="margin-top:30px">현월의 셈이 끝나는 대로,<br>네 「재물의 경(經)」이 서고에 꽂힌다.</p>
+      <p class="toc-note rv" style="margin-top:30px">값을 치르는 그 순간,<br>네 「재물의 경(經)」이 서고에 꽂힌다.</p>
 
       <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 돈 새는 구멍(漏) 확인하기</a>
     </section>
@@ -1445,7 +1445,7 @@ footer b{color:#7a6f66}
       <div class="hr-knife rv"></div>
       <p class="h-red rv" style="margin-top:50px">혼자 알기엔</p>
       <h2 class="h-big rv">아까운 셈이라면</h2>
-      <p class="p-dim rv" style="margin-top:18px">네 곁에도, 벌어도 벌어도<br>모이지 않는다는 얼굴이 하나쯤 있을 것이다.<br>그 사람에게— 이 각(閣)을 열어줘라.</p>
+      <p class="p-dim rv" style="margin-top:18px">네 곁에도, 벌어도 벌어도<br>모이지 않는다는 얼굴이 하나쯤 있을 것이다.<br>그 손목도— 현월이 잡아 줄 것이다.</p>
       <button class="rv" id="shareBtn" onclick="shareSite()" style="
         display:inline-flex;align-items:center;gap:12px;margin-top:30px;
         appearance:none;cursor:pointer;font-family:'Nanum Myeongjo','Noto Serif KR',serif;
@@ -1455,9 +1455,9 @@ footer b{color:#7a6f66}
         padding:17px 34px;
         box-shadow:0 0 26px rgba(150,96,26,.18), inset 0 0 16px rgba(208,140,58,.06);">
         <span style="width:8px;height:8px;border-radius:50%;background:#FEE500;box-shadow:0 0 10px rgba(254,229,0,.6)"></span>
-        카카오톡으로 문을 전한다
+        카카오톡으로 셈을 전한다
       </button>
-      <p class="toc-note rv" id="shareDone" style="display:none;margin-top:14px">문이 전해졌다.</p>
+      <p class="toc-note rv" id="shareDone" style="display:none;margin-top:14px">셈이 전해졌다.</p>
     </section>
 
     <footer style="user-select:none;-webkit-user-select:none;pointer-events:none">
@@ -1493,7 +1493,7 @@ footer b{color:#7a6f66}
     <button class="m-close" onclick="closeBuy()">✕</button>
     <p class="m-tag">深谷寺</p>
     <h3 id="buyTitle">셈을 받는다</h3>
-    <p class="m-sub" id="buySub">현월의 셈이 끝나는 대로,<br>네 서고에 「재물의 경(經)」이 꽂힌다.</p>
+    <p class="m-sub" id="buySub">값을 치르는 그 순간,<br>네 서고에 「재물의 경(經)」이 꽂힌다.</p>
     <div class="buy-card">
       <div class="b-head">현월의 재물 셈법 · 재물의 경(經)</div>
       <div class="b-body">
@@ -1844,7 +1844,7 @@ function askGender(g, el){
   if (navigator.vibrate) navigator.vibrate(20);
   const age = new Date().getFullYear() - user.birth.y + 1;
   document.getElementById('reactLine1').innerHTML =
-    '"…' + esc(user.name) + '.<br>' + age + '해를 살아왔구나."';
+    '"…' + esc(user.name) + '.<br>' + age + '해치 장부가— 여기 있구나."';
   setTimeout(()=>showAskStep('ask4'), 500);
 }
 function esc(s){ const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -1852,7 +1852,7 @@ function esc(s){ const d = document.createElement('div'); d.textContent = s; ret
 /* ───────── scene3 개인화 ───────── */
 function prepScene3(){
   if (user.name) {
-    document.getElementById('sorryLine').innerHTML = '"그랬던 게로구나… ' + esc(user.name) + '."';
+    document.getElementById('sorryLine').innerHTML = '"셈이 나왔다… ' + esc(user.name) + '."';
   }
 }
 
@@ -1970,17 +1970,18 @@ function setupLostCounter(h){
     es.forEach(e => {
       if (!e.isIntersecting || lostDone) return;
       lostDone = true; io.disconnect();
+      // 앞자리는 첫 프레임부터 끝까지 가린 채, 뒷자리만 주판 굴리듯 돈다 — 전체 값은 단 한 순간도 노출되지 않는다
+      const lead = Math.floor(target / 1000);
+      const rest = target % 1000;
       const t0 = performance.now(), DUR = 1900;
       (function tick(now){
         const p = Math.min(1, (now - t0) / DUR);
         const eased = 1 - Math.pow(1 - p, 3);
-        const v = Math.round(target * eased);
-        numEl.textContent = v.toLocaleString();
+        const v = Math.round(rest * eased);
+        const cyc = (Math.floor(now / 90) % 9) + 1; // 가려진 앞자리도 돌아가는 척 (블러라 안 읽힘)
+        numEl.innerHTML = '<span class="veiled-num">' + (p < 1 ? cyc : lead) + '</span>,' + String(v).padStart(3, '0');
         if (p < 1) requestAnimationFrame(tick);
         else {
-          // 앞자리만 강한 블러로 가린다 (예: 3,417 → ●,417 느낌 — 글자인 건 보이되 읽히지 않게)
-          const s = target.toLocaleString();
-          numEl.innerHTML = '<span class="veiled-num">' + s.slice(0, 1) + '</span>' + s.slice(1);
           setTimeout(()=>{ stamp.classList.add('on'); playTsk(); if (navigator.vibrate) navigator.vibrate([40,60,40]); }, 350);
         }
       })(t0);
@@ -2170,7 +2171,7 @@ async function shareSite(){
   try{
     if (navigator.share){
       await navigator.share(data);
-      done.textContent = '문이 전해졌다.';
+      done.textContent = '셈이 전해졌다.';
       done.style.display = 'block';
     } else {
       await navigator.clipboard.writeText(data.url);

@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
     // 매핑에 없는 ID는 묘담으로 폴백 (contentId 추출 실패 시에도 기존 구매 흐름이 끊기지 않도록)
     product: productKey,
     site_email: siteEmail,
-    status: productKey === "myodam" && finalSaju ? "delivered" : "paid",
+    status: ["myodam", "hyunwol"].includes(productKey) && finalSaju ? "delivered" : "paid",
     payload: body,
   };
 
