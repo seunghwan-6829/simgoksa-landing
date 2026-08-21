@@ -36,6 +36,7 @@ a{color:inherit;text-decoration:none}
   font-size:14px;color:#4b5568;padding:11px 12px;border-radius:9px;font-weight:500;
 }
 #side .nav button.sel{background:#eef3ff;color:#2b5fd9;font-weight:700}
+#side .nav button em{font-style:normal} /* em은 반응형 토글용 마크업 — 기울임 제거 */
 #side .foot{position:absolute;bottom:20px;left:14px;right:14px;display:flex;flex-direction:column;gap:4px}
 #side .foot button,#side .foot a{
   display:block;appearance:none;border:none;background:none;cursor:pointer;font-family:inherit;
@@ -111,6 +112,7 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
     <div class="brand">深谷寺 <span>심곡사</span> <span class="tag">ADMIN</span></div>
     <nav class="nav">
       <button class="sel" data-v="dash" onclick="switchView('dash',this)">📊 <em>대시보드</em></button>
+      <button data-v="inputs" onclick="switchView('inputs',this)">📝 <em>입력</em></button>
       <button data-v="orders" onclick="switchView('orders',this)">🧾 <em>주문 관리</em></button>
       <button data-v="members" onclick="switchView('members',this)">👥 <em>회원</em></button>
     </nav>
@@ -143,6 +145,18 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
         <table>
           <thead><tr><th>일자</th><th>입력완료</th><th>결제클릭</th><th>가입</th><th>주문</th><th>매출</th><th>열람</th></tr></thead>
           <tbody id="dailyRows"><tr><td colspan="7" class="loading">불러오는 중…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 입력 (인적사항 입력 완료 리드) -->
+    <section class="view" id="v-inputs">
+      <h1>입력</h1>
+      <p class="sub">스토리에서 인적사항 입력을 완료한 방문자 목록 · 「결제클릭」 표시는 같은 방문에서 결제 버튼까지 누른 경우</p>
+      <div class="panel" style="margin-top:20px">
+        <table>
+          <thead><tr><th>일시</th><th>이름</th><th>생년월일</th><th>성별</th><th>상품</th><th>진단</th><th>진행</th></tr></thead>
+          <tbody id="inputRows"><tr><td colspan="7" class="loading">불러오는 중…</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -236,7 +250,35 @@ function switchView(v, btn){
   btn.classList.add('sel');
 }
 
-function loadAll(){ loadDash(); loadOrders(); loadMembers(); }
+function loadAll(){ loadDash(); loadInputs(); loadOrders(); loadMembers(); }
+
+/* ── 입력 (input_complete 리드) ── */
+async function loadInputs(){
+  const tb = document.getElementById('inputRows');
+  try{
+    const { inputs } = await api('inputs');
+    if (!inputs || !inputs.length){
+      tb.innerHTML = '<tr><td colspan="7" class="loading">아직 입력 완료된 방문자가 없습니다.</td></tr>';
+      return;
+    }
+    // 같은 방문(session)에서 결제클릭까지 갔는지 표시
+    const paySessions = new Set(inputs.filter(l => l.event === 'pay_click').map(l => l.session_id).filter(Boolean));
+    const rows = inputs.filter(l => l.event === 'input_complete');
+    const PROD = { myodam: '묘담', hyunwol: '현월', hongdan: '홍단' };
+    tb.innerHTML = rows.map(l => `
+      <tr>
+        <td class="muted" style="white-space:nowrap">${dt(l.created_at)}</td>
+        <td><b>${esc(l.name || '—')}</b></td>
+        <td>${esc(l.birth || '—')}</td>
+        <td>${esc(l.gender || '—')}</td>
+        <td>${esc(PROD[l.product] || l.product || '—')}</td>
+        <td class="muted">${(l.sals || []).map(esc).join(', ') || '—'}</td>
+        <td>${paySessions.has(l.session_id) ? '<span class="badge paid">결제클릭</span>' : '<span class="muted">입력만</span>'}</td>
+      </tr>`).join('');
+  }catch(e){
+    tb.innerHTML = '<tr><td colspan="7" class="loading">불러오기 실패 — 새로고침을 눌러 다시 시도하세요.</td></tr>';
+  }
+}
 
 /* ── 대시보드 ── */
 async function loadDash(){
