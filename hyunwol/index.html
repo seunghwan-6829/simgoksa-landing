@@ -1525,12 +1525,16 @@ const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
 const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
 const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
 let lastSals = [];
+// 로그인 사용자 id — 리드에 함께 남겨야 웹훅이 ?ref=<session_id> 로 주문에 신원을 붙일 수 있다.
+// (그로블 결제 이메일 ≠ 사이트 가입 이메일 인 경우 이메일 매칭만으로는 서고가 빈다)
+let currentUserId = null;
 function track(event, extra){
   try{
     const row = {
       event,
       ...(extra || {}),
       session_id: sessionId,
+      user_id: currentUserId,
       name: user.name || null,
       birth: user.birth ? `${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}` : null,
       gender: user.gender || null,
@@ -1539,7 +1543,7 @@ function track(event, extra){
       product: 'hyunwol',
       user_agent: navigator.userAgent.slice(0, 250)
     };
-    fetch(SUPA_URL + '/rest/v1/leads', {
+    return fetch(SUPA_URL + '/rest/v1/leads', {
       method: 'POST',
       keepalive: true,
       headers: {
@@ -2065,6 +2069,12 @@ function observeReveals(){
 
 /* ───────── Auth (Supabase) ───────── */
 const sb = window.supabase ? window.supabase.createClient(SUPA_URL, SUPA_KEY) : null;
+if (sb) {
+  sb.auth.getSession().then(({ data }) => {
+    if (data && data.session) currentUserId = data.session.user.id;
+  }).catch(()=>{});
+  sb.auth.onAuthStateChange((_e, session) => { currentUserId = session ? session.user.id : null; });
+}
 let authMode = 'signup'; // 'signup' | 'login'
 let afterAuth = null;
 
@@ -2151,14 +2161,18 @@ async function startPay(){
     btn.disabled = true;
     return;
   }
-  // 결제 의향 기록: 사이트 계정 이메일 + 사주 정보 → 웹훅이 이걸로 구매-계정-사주를 잇는다
+  // 결제 의향 기록 → 그로블 결제창으로 이탈하기 직전, 우리 쪽 정보를 리드에 남긴다.
+  // 웹훅은 ?ref=<session_id> 로 되돌아오는 data.object.sellerReference 로 이 행을 찾아
+  // user_id / 이메일 / 사주를 주문에 붙인다. (결제창은 우리 화면이 아니라 자동으로 안 들어간다)
   try{
     const { data } = await sb.auth.getSession();
-    const email = data && data.session && data.session.user ? data.session.user.email : null;
-    if (email) track('pay_intent', { email });
+    if (data && data.session && data.session.user){
+      currentUserId = data.session.user.id;
+      await track('pay_intent', { email: data.session.user.email });
+    }
   }catch(e){}
-  // 그로블 결제창 (결제 완료 → simgoksa.com/library/ 로 자동 이동)
-  location.href = PAY_URL;
+  // ?ref= 로 세션을 실어 보낸다. 허용 문자 A-Za-z0-9-_.:=~ / 1~128자 (UUID 는 조건 충족)
+  location.href = PAY_URL + '?ref=' + encodeURIComponent(sessionId);
 }
 
 /* ───────── 공유 (모바일: OS 공유시트 → 카카오톡 / PC: 링크 복사) ───────── */

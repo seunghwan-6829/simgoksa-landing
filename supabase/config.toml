@@ -412,3 +412,20 @@ enabled = true
 # declarative_schema_path = "./database"
 # JSON string passed through to pg-delta SQL formatting.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":80,\"commaStyle\":\"trailing\"}"
+
+# ─────────────────────────────────────────────────────────────
+# Edge Functions
+# ─────────────────────────────────────────────────────────────
+
+# 그로블 웹훅 — 그로블은 Supabase 토큰을 보내지 않는다.
+# 대신 함수가 X-Groble-Signature (HMAC-SHA256) 를 직접 검증한다.
+[functions.groble-webhook]
+verify_jwt = false
+
+# 결과지 열람 로그 — 비로그인 열람도 기록해야 하므로 토큰 검증 없음.
+[functions.track-view]
+verify_jwt = false
+
+# 어드민 API — 함수 내부에서 사용자 액세스 토큰을 검증하고 이메일 화이트리스트를 확인한다.
+[functions.admin-api]
+verify_jwt = false
