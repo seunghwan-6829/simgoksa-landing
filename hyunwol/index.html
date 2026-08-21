@@ -12,6 +12,8 @@
 <meta property="og:image" content="https://simgoksa.com/assets/og_hyunwol.jpg">
 <meta name="theme-color" content="#050404">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<!-- Meta Pixel + 전환 추적 — 공개 페이지 공통 (관리자 페이지 제외) -->
+<script src="/assets/track.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -1528,7 +1530,17 @@ let lastSals = [];
 // 로그인 사용자 id — 리드에 함께 남겨야 웹훅이 ?ref=<session_id> 로 주문에 신원을 붙일 수 있다.
 // (그로블 결제 이메일 ≠ 사이트 가입 이메일 인 경우 이메일 매칭만으로는 서고가 빈다)
 let currentUserId = null;
+/* 리드 이벤트 → Meta 표준 이벤트 매핑.
+   퍼널 지점마다 track() 이 이미 호출되므로 전환 추적을 여기 한 곳에 모은다.
+   새 이벤트를 추가할 때 이 표만 늘리면 된다. (Purchase 는 서버 전용 — 웹훅에서 전송) */
+const META_EVENT = {
+  input_complete: 'Lead',                 // 사주 입력 완료 + 진단 노출
+  cta_click:      'ViewContent',          // 상품 열람
+  signup:         'CompleteRegistration', // 가입 완료
+  pay_click:      'InitiateCheckout'      // 결제 버튼
+};
 function track(event, extra){
+  try{ if (window.metaTrack && META_EVENT[event]) window.metaTrack(META_EVENT[event], { product: 'hyunwol' }); }catch(e){}
   try{
     const row = {
       event,
@@ -1541,6 +1553,10 @@ function track(event, extra){
       sals: lastSals.length ? lastSals : null,
       year_pillar: user.birth ? (STEMS[(user.birth.y-4)%10] + BRANCHES[(user.birth.y-4)%12]) : null,
       product: 'hyunwol',
+      // Meta 매칭용 쿠키 — 결제가 외부(groble.im)에서 끝나 웹훅 시점엔 못 읽으므로
+      // 이탈 전에 세션과 함께 저장해둔다. metaIds 는 getter 라 매번 최신 쿠키를 본다.
+      fbp: (window.metaIds && window.metaIds.fbp) || null,
+      fbc: (window.metaIds && window.metaIds.fbc) || null,
       user_agent: navigator.userAgent.slice(0, 250)
     };
     return fetch(SUPA_URL + '/rest/v1/leads', {
