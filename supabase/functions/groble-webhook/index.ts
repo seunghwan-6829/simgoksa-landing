@@ -27,9 +27,13 @@
 //   · 500 : 일시적 DB 오류 — 이때만 재시도를 받는다
 // ════════════════════════════════════════════════════════════════════════════
 
+import { logCapiEvent, sendMetaEvent } from "../_shared/meta.ts";
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  상품 표 — 새 상품은 여기 한 줄 추가로 끝난다.
 //  contentIds 는 그로블 결제링크 코드(= data.object.content.id)와 동일하다.
+//  ⚠️ assets/track.js 의 PRODUCTS 표와 결제링크 코드를 일치시킬 것.
+//     (scripts/check_tracking.py 가 불일치를 잡는다)
 // ─────────────────────────────────────────────────────────────────────────────
 type Product = {
   key: string;
@@ -39,6 +43,7 @@ type Product = {
   amount: number | null;  // 정상가(원). 참고용 — 실제 금액은 pricing.finalAmount 를 쓴다.
   payUrl: string;
   reportPath: string;     // 결과지 경로 (서고에서 여는 곳)
+  landingPath: string;    // 랜딩 경로 — CAPI event_source_url 에 쓴다
 };
 
 const PRODUCTS: Product[] = [
@@ -50,6 +55,7 @@ const PRODUCTS: Product[] = [
     amount: 38900,
     payUrl: "https://www.groble.im/payment/kAAJFx",
     reportPath: "/report/",
+    landingPath: "/myodam/",
   },
   {
     key: "hyunwol",
@@ -59,6 +65,7 @@ const PRODUCTS: Product[] = [
     amount: 38900,
     payUrl: "https://www.groble.im/payment/5xeDtU",
     reportPath: "/gyeong/",
+    landingPath: "/hyunwol/",
   },
 ];
 
@@ -379,6 +386,11 @@ Deno.serve(async (req) => {
   let leadEmail: string | null = null;
   let leadProductKey: string | null = null;
   let sajuFromLead: string | null = null;
+  // Meta 매칭용 — 결제창이 남의 도메인이라 여기서는 방문자 쿠키를 읽을 방법이 없다.
+  // 랜딩이 이탈 직전에 세션과 함께 저장해둔 값을 꺼내 쓴다.
+  let leadFbp: string | null = null;
+  let leadFbc: string | null = null;
+  let leadUserAgent: string | null = null;
 
   const sajuOf = (l: { name?: string | null; birth?: string | null; gender?: string | null }) => {
     if (!l.name || !l.birth) return null;
@@ -389,7 +401,8 @@ Deno.serve(async (req) => {
   if (sellerReference) {
     try {
       const q = `${SUPA_URL}/rest/v1/leads?session_id=eq.${encodeURIComponent(sellerReference)}` +
-        `&order=created_at.desc&limit=30&select=created_at,event,email,user_id,name,birth,gender,product`;
+        `&order=created_at.desc&limit=30` +
+        `&select=created_at,event,email,user_id,name,birth,gender,product,fbp,fbc,user_agent`;
       const r = await fetch(q, { headers: H });
       if (r.ok) {
         const rows: Array<Record<string, string | null>> = await r.json();
@@ -398,6 +411,9 @@ Deno.serve(async (req) => {
           if (!leadEmail && l.email) leadEmail = l.email;
           if (!leadProductKey && l.product) leadProductKey = l.product;
           if (!sajuFromLead) sajuFromLead = sajuOf(l);
+          if (!leadFbp && l.fbp) leadFbp = l.fbp;
+          if (!leadFbc && l.fbc) leadFbc = l.fbc;
+          if (!leadUserAgent && l.user_agent) leadUserAgent = l.user_agent;
         }
       }
     } catch (e) {
@@ -412,7 +428,8 @@ Deno.serve(async (req) => {
       const since = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
       const q = `${SUPA_URL}/rest/v1/leads?event=eq.pay_intent&created_at=gte.${since}` +
         `&email=eq.${encodeURIComponent(buyerEmail)}` +
-        `&order=created_at.desc&limit=5&select=created_at,email,user_id,name,birth,gender,product`;
+        `&order=created_at.desc&limit=5` +
+        `&select=created_at,email,user_id,name,birth,gender,product,fbp,fbc,user_agent`;
       const r = await fetch(q, { headers: H });
       if (r.ok) {
         const rows: Array<Record<string, string | null>> = await r.json();
@@ -421,6 +438,9 @@ Deno.serve(async (req) => {
           leadEmail = leadEmail ?? rows[0].email;
           leadProductKey = leadProductKey ?? rows[0].product;
           sajuFromLead = sajuFromLead ?? sajuOf(rows[0]);
+          leadFbp = leadFbp ?? rows[0].fbp;
+          leadFbc = leadFbc ?? rows[0].fbc;
+          leadUserAgent = leadUserAgent ?? rows[0].user_agent;
         }
       }
     } catch (e) {
@@ -503,6 +523,86 @@ Deno.serve(async (req) => {
     console.error("purchase upsert threw", String(e));
     await markEvent("failed", String(e));
     return json({ ok: false, error: "db_error" }, 500);
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Meta 전환 API — Purchase 전송
+  //
+  //  · 주문 기록이 끝난 뒤에만 보낸다.
+  //  · 실패해도 200 을 반환한다. 주문 처리는 이미 끝났으므로 그로블 재전송을
+  //    유발하면 안 된다. 실패는 capi_events 에만 남는다.
+  //  · 토큰(META_CAPI_TOKEN)이 없으면 조용히 건너뛰고 사유만 기록한다.
+  //  · event_id = merchantUid — 브라우저(/library/)도 같은 값으로 쏘므로 메타가 중복제거한다.
+  // ══════════════════════════════════════════════════════════════════════════
+  try {
+    // 중복 집계 방지: capi_sent_at 을 원자적으로 선점한다.
+    // 그로블은 최대 7회 재전송하므로, 선점에 성공한 요청만 실제로 전송한다.
+    const claim = await fetch(
+      `${SUPA_URL}/rest/v1/purchases` +
+      `?groble_purchase_id=eq.${encodeURIComponent(merchantUid)}&capi_sent_at=is.null`,
+      {
+        method: "PATCH",
+        headers: { ...H, Prefer: "return=representation" },
+        body: JSON.stringify({ capi_sent_at: new Date().toISOString() }),
+      },
+    );
+    const claimed = claim.ok ? await claim.json() : [];
+
+    if (Array.isArray(claimed) && claimed.length > 0) {
+      const p = product;
+      const amount = num(obj, "pricing.finalAmount");
+      const result = await sendMetaEvent({
+        eventName: "Purchase",
+        eventId: merchantUid,                      // 브라우저 픽셀과 동일한 중복제거 키
+        eventTime: (() => {
+          const t = str(obj, "payment.purchasedAt");
+          const ms = t ? Date.parse(t) : NaN;
+          return Number.isFinite(ms) ? Math.floor(ms / 1000) : Math.floor(Date.now() / 1000);
+        })(),
+        eventSourceUrl: p ? `https://simgoksa.com${p.landingPath}` : "https://simgoksa.com/",
+        value: amount,
+        currency: str(obj, "pricing.currency") ?? "KRW",
+        contentId: contentId,
+        contentName: contentTitle,
+        user: {
+          email: buyerEmail ?? leadEmail,
+          phone: str(obj, "buyer.phoneNumber"),
+          name: buyerName,
+          externalId: leadUserId,
+          fbp: leadFbp,          // 해시하지 않는다
+          fbc: leadFbc,          // 해시하지 않는다
+          clientUserAgent: leadUserAgent,
+          // client_ip_address 는 싣지 않는다 — 리드가 브라우저에서 직접 INSERT 되어
+          // 서버가 방문자 IP 를 캡처할 지점이 없다. (개선하려면 pay_intent 를
+          // 엣지 함수 경유로 바꿔 IP 를 서버에서 잡아 leads 에 저장해야 한다)
+        },
+      });
+
+      await logCapiEvent(SUPA_URL, SERVICE_KEY, {
+        event_name: "Purchase",
+        event_id: merchantUid,
+        value: amount,
+        currency: str(obj, "pricing.currency") ?? "KRW",
+        result,
+      });
+
+      if (!result.configured) {
+        console.log(`[capi] skipped — ${result.note}`);
+      } else if (!result.ok) {
+        console.error(`[capi] send failed status=${result.status} ${result.note}`);
+        // 선점을 되돌려 다음 재전송이 다시 시도할 수 있게 한다.
+        // (그로블이 재전송하지 않는 경우엔 capi_events 의 ok=false 로 추적한다)
+        await fetch(
+          `${SUPA_URL}/rest/v1/purchases?groble_purchase_id=eq.${encodeURIComponent(merchantUid)}`,
+          { method: "PATCH", headers: { ...H, Prefer: "return=minimal" }, body: JSON.stringify({ capi_sent_at: null }) },
+        ).catch(() => {});
+      } else {
+        console.log(`[capi] ok matched=${result.matched} ${result.note}`);
+      }
+    }
+  } catch (e) {
+    // CAPI 는 어떤 경우에도 결제 처리를 방해하지 않는다.
+    console.error("[capi] unexpected", String(e));
   }
 
   if (productKey === UNKNOWN_PRODUCT) {
