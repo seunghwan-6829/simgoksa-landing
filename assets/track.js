@@ -134,15 +134,20 @@
       var p = key && PRODUCTS[key];
       var params = {};
 
+      // 금액이 의미 있는 이벤트에만 value 를 싣는다 (Lead 등에 붙이면 집계가 왜곡된다)
+      var VALUED = ['InitiateCheckout', 'Purchase', 'AddToCart', 'ViewContent'];
       if (p) {
         params.content_ids = [p.id];
         params.content_name = p.name;
         params.content_type = 'product';
-        // 금액이 의미 있는 이벤트에만 value 를 싣는다 (Lead 등에 붙이면 집계가 왜곡된다)
-        if (eventName === 'InitiateCheckout' || eventName === 'Purchase' ||
-            eventName === 'AddToCart' || eventName === 'ViewContent') {
-          params.value = opts.value != null ? opts.value : p.value;
-          params.currency = CURRENCY;
+      }
+      if (VALUED.indexOf(eventName) !== -1) {
+        // 상품 표에 없는 키(예: 웹훅이 unknown 으로 격리한 건)라도
+        // 실제 결제 금액을 알면 그대로 싣는다 — value 가 0/누락이면 ROAS 를 못 본다.
+        var v = opts.value != null ? opts.value : (p ? p.value : null);
+        if (v != null) {
+          params.value = v;
+          params.currency = opts.currency || CURRENCY;
         }
       }
       if (opts.params) {

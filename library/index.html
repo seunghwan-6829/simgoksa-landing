@@ -235,6 +235,47 @@ const STATUS_MAP = {
   delivered: { label: '도착 — 읽기', cls: 'done' },
   refunded:  { label: '환불됨', cls: 'refund' }
 };
+/* ───────── Meta Purchase 전환 ─────────
+   결제가 groble.im(외부 도메인)에서 끝나므로 결제창에서는 픽셀이 못 돈다.
+   그로블이 결제 완료 후 이 페이지로 돌려보내니, 여기서 새로 도착한 주문을 잡아 발화한다.
+
+   ⚠️ 이건 임시 방편이다. 창을 닫거나 애드블록이 걸리면 유실된다(대략 20~40%).
+      전환 API 토큰이 나오면 웹훅에서 서버로 보내는 게 정답이고,
+      그때도 이 코드는 그대로 둔다 — eventID 가 merchantUid 로 동일해서
+      메타가 중복제거하고 서로를 보완한다(브라우저가 놓친 건 서버가 채운다).
+
+   중복 발화 방지 2중 장치:
+     1) 최근 결제만 — 오래된 주문이 재방문 때 새 전환으로 잡히면 안 된다
+     2) 이미 보고한 주문번호는 localStorage 에 기록해 다시 쏘지 않는다            */
+const PURCHASE_WINDOW_MS = 30 * 60 * 1000;   // 결제 후 리다이렉트는 수 초 — 30분이면 충분
+const REPORTED_KEY = 'sg_reported_purchases';
+
+function reportedSet(){
+  try { return new Set(JSON.parse(localStorage.getItem(REPORTED_KEY) || '[]')); }
+  catch(e){ return new Set(); }
+}
+function markReported(set){
+  // 무한정 쌓이지 않게 최근 50건만 보관
+  try { localStorage.setItem(REPORTED_KEY, JSON.stringify([...set].slice(-50))); }catch(e){}
+}
+
+function reportPurchases(rows){
+  if (!window.metaTrack || !Array.isArray(rows)) return;
+  const seen = reportedSet();
+  let changed = false;
+  for (const p of rows){
+    const uid = p.groble_purchase_id;
+    if (!uid) continue;                                   // 주문번호 없으면 중복제거 키가 없다
+    if (p.status === 'refunded') continue;                // 환불건은 전환이 아니다
+    if (seen.has(uid)) continue;
+    if (Date.now() - new Date(p.created_at).getTime() > PURCHASE_WINDOW_MS) continue;
+    // eventID = merchantUid — 나중에 서버(CAPI)도 같은 값을 쓰면 메타가 중복제거한다
+    window.metaTrack('Purchase', { product: p.product, value: p.amount }, uid);
+    seen.add(uid); changed = true;
+  }
+  if (changed) markReported(seen);
+}
+
 let lastBookCount = -1;
 async function loadBooks(quiet){
   const loading = document.getElementById('booksLoading');
@@ -244,10 +285,11 @@ async function loadBooks(quiet){
   if (!quiet){ loading.style.display = 'block'; booksEl.innerHTML = ''; emptyEl.style.display = 'none'; noteEl.style.display = 'none'; }
   try{
     const { data, error } = await sb.from('purchases')
-      .select('id,created_at,product,product_name,amount,status,saju_answer')
+      .select('id,created_at,product,product_name,amount,status,saju_answer,groble_purchase_id')
       .order('created_at', { ascending: false });
     loading.style.display = 'none';
     if (error) throw error;
+    reportPurchases(data);
     const n = data ? data.length : 0;
     if (quiet && n === lastBookCount) return;   // 변화 없으면 화면 유지 (깜빡임 방지)
     lastBookCount = n;
