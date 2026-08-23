@@ -713,11 +713,12 @@ footer b{color:#7a6f66}
 .modal-veil{
   position:fixed;inset:0;z-index:220;display:none;
   background:rgba(2,1,1,.82);backdrop-filter:blur(6px);
-  align-items:center;justify-content:center;padding:22px;
+  align-items:flex-start;justify-content:center;padding:22px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;   /* 짧은 화면: 모달이 잘리지 않고 스크롤 */
 }
 .modal-veil.on{display:flex}
 .modal{
-  width:100%;max-width:400px;
+  width:100%;max-width:400px;margin:auto;   /* 공간이 남으면 가운데, 모자라면 위부터 */
   background:linear-gradient(170deg,#140d0b,#080505);
   border:1px solid rgba(208,140,58,.35);border-radius:8px;
   padding:30px 24px 26px;position:relative;

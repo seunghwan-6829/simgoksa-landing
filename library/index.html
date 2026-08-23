@@ -328,7 +328,7 @@ async function loadBooks(quiet){
       // 찢어간 장 표시
       const HJ = ['','壹','貳','參','肆','伍','陸','柒','捌','玖','拾'];
       const tierLabel = p.product === 'myodam' && p.tier && p.tier !== 'all'
-        ? (p.picks ? `찢어간 장 · ${String(p.picks).split(',').map(n => HJ[+n] || '').filter(Boolean).join(' ')}` : '찢어간 장 · 확인 중')
+        ? (p.picks ? `찢어간 대목 · ${String(p.picks).split(',').map(n => HJ[+n] || '').filter(Boolean).join(' ')}` : '찢어간 대목 · 확인 중')
         : null;
       const inner = `
         <div class="b-row">

@@ -618,7 +618,7 @@ body{
   padding:18px 16px;color:var(--ink);transition:border-color .2s,background .2s;
 }
 .tier.sel{background:rgba(164,22,26,.14);border-color:var(--blood-bright);box-shadow:0 0 24px rgba(164,22,26,.18)}
-.tier .t-n{font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:800;color:var(--paper);white-space:nowrap;min-width:58px}
+.tier .t-n{font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:800;color:var(--paper);white-space:nowrap;min-width:74px}
 .tier .t-d{font-size:13.5px;color:var(--ink-dim);line-height:1.5;word-break:keep-all}
 .tier .t-d b{color:var(--ink);font-weight:700}
 .tier.sel .t-d{color:var(--ink)}
@@ -699,11 +699,12 @@ footer b{color:#7a6f66}
 .modal-veil{
   position:fixed;inset:0;z-index:220;display:none;
   background:rgba(2,1,1,.82);backdrop-filter:blur(6px);
-  align-items:center;justify-content:center;padding:22px;
+  align-items:flex-start;justify-content:center;padding:22px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;   /* 짧은 화면: 모달이 잘리지 않고 스크롤 */
 }
 .modal-veil.on{display:flex}
 .modal{
-  width:100%;max-width:400px;
+  width:100%;max-width:400px;margin:auto;   /* 공간이 남으면 가운데, 모자라면 위부터 */
   background:linear-gradient(170deg,#140d0b,#080505);
   border:1px solid rgba(208,140,58,.35);border-radius:8px;
   padding:30px 24px 26px;position:relative;
@@ -1178,7 +1179,7 @@ footer b{color:#7a6f66}
       <div class="inner">
         <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">네가 받을 것</p>
         <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">아흔아홉 장,<br><span class="r">운명 사용설명서</span></h2>
-        <p class="p-dim rv" id="bookOwner" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">네 이름이 적힌, 단 한 권의 기록.<br>전부 받아도, 궁금한 장만 찢어가도 된다.</p>
+        <p class="p-dim rv" id="bookOwner" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">네 이름이 적힌, 단 한 권의 기록.<br>전부 받아도, 궁금한 대목만 찢어가도 된다.</p>
         <div class="toc rv">
           <div class="t"><span class="n">壹</span><span class="x">원국(原局) — 네가 타고난 판부터 펼친다</span></div>
           <div class="t"><span class="n">貳</span><span class="x">살(殺) — 네 발목을 잡아 온 것들의 정체</span></div>
@@ -1229,31 +1230,31 @@ footer b{color:#7a6f66}
       <!-- 미리 열람 -->
       <a class="peek-btn rv" href="#" onclick="openPreview(event)">
         <span class="eye">👁</span>
-        <span class="tx"><b>미리 열람하기</b><small>앞머리 몇 장을 먼저 펼쳐 보여준다 — 중요한 대목은 가려 둔다</small></span>
+        <span class="tx"><b>미리 열람하기</b><small>네 이름이 적힌 책의 앞머리 열한 장을 먼저 펼친다 — 핵심 문장은 가려 둔다</small></span>
       </a>
 
       <div class="hr-knife rv" style="margin-top:54px"></div>
-      <p class="h-red rv" style="margin-top:50px">전부 살 필요 없다</p>
-      <h2 class="h-big rv">궁금한 장만<br><span class="r">찢어가라.</span></h2>
-      <p class="p-dim rv" style="margin-top:18px">아흔아홉 장을 다 읽을 여유가 없다면—<br>제일 아픈 자리 <b style="color:var(--ink)">한 장만 뜯어 가도 된다.</b><br>차례에서 고르면, 그 부(部)만 네 이름으로 적어 준다.</p>
+      <p class="h-red rv" style="margin-top:50px">묘담이 일러둔다</p>
+      <h2 class="h-big rv">궁금한 대목만<br><span class="r">찢어서 봐도 된다.</span></h2>
+      <p class="p-dim rv" style="margin-top:18px">아흔아홉 장을 한 번에 다 읽을 여유가 없다면—<br>제일 아픈 자리 <b style="color:var(--ink)">한 대목만 뜯어 가도 된다.</b><br>차례에서 고르면, 그 대목만 네 이름으로 적어 준다.</p>
 
       <!-- 등급 -->
       <div class="tiers rv" id="tiers">
         <button class="tier" data-tier="one" onclick="setTier('one')">
-          <span class="t-n">한 장</span>
-          <span class="t-d">차트 <b>1개</b>만 뜯어본다</span>
+          <span class="t-n">한 대목</span>
+          <span class="t-d">궁금한 대목 <b>하나</b>만 뜯어본다</span>
           <span class="t-p">3,900<small>원</small></span>
         </button>
         <button class="tier" data-tier="five" onclick="setTier('five')">
           <span class="t-tag">가장 많이 찢는다</span>
-          <span class="t-n">다섯 장</span>
-          <span class="t-d">차트 <b>5개</b>를 골라 뜯는다</span>
+          <span class="t-n">다섯 대목</span>
+          <span class="t-d">대목 <b>다섯</b>을 골라 뜯는다</span>
           <span class="t-p">14,900<small>원</small></span>
         </button>
         <button class="tier sel" data-tier="all" onclick="setTier('all')">
           <span class="t-tag">먼저 문을 두드린 값</span>
           <span class="t-n">전부</span>
-          <span class="t-d">아흔아홉 장 <b>전부</b> 받는다</span>
+          <span class="t-d">열 대목, 아흔아홉 장 <b>전부</b></span>
           <span class="t-p">38,900<small>원</small></span>
         </button>
       </div>
@@ -1350,9 +1351,9 @@ footer b{color:#7a6f66}
 
 <!-- 미리 열람 오버레이 -->
 <div id="peek">
-  <div class="peek-bar"><span>深谷寺 · 미리 열람</span><button onclick="closePreview()">닫기 ✕</button></div>
+  <div class="peek-bar"><span id="peekNo">深谷寺 · 미리 열람</span><button onclick="closePreview()">미리 열람 닫기 ✕</button></div>
   <iframe id="peekFrame" title="미리 열람"></iframe>
-  <div class="peek-foot"><a href="#" onclick="closePreview(event, true)">궁금한 장, 찢어가기 →</a></div>
+  <div class="peek-foot"><a href="#" onclick="closePreview(event, true)">궁금한 대목, 찢어가기 →</a></div>
 </div>
 
 <!-- 하단 고정 CTA -->
@@ -1760,7 +1761,7 @@ function fillSales(){
     document.getElementById('graphOwner').textContent = user.name + ' — 財物運 흐름도';
     document.getElementById('stickyText').textContent = nm + ', 네 살(殺)의 풀이를 받아라';
     document.getElementById('ctaWho').textContent = nm + ', ';
-    document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>네 이름이 적힌, 단 한 권의 기록.<br>전부 받아도, 궁금한 장만 찢어가도 된다.';
+    document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>네 이름이 적힌, 단 한 권의 기록.<br>전부 받아도, 궁금한 대목만 찢어가도 된다.';
   }
   if (user.birth){
     const y = user.birth.y;
@@ -1976,8 +1977,8 @@ document.getElementById('authPw2').addEventListener('keydown', e => { if (e.key 
 /* ───────── 찢어가기 — 등급 · 차례 선택 ─────────
    그로블 결제창 세 개가 한 상품(묘담)이다. 웹훅(groble-webhook)의 TIER_BY_CONTENT 와 같은 코드. */
 const TIERS = {
-  one:  { n:1,  price:3900,  url:'https://www.groble.im/payment/xiXpcK', head:'묘담의 살풀이 · 고른 한 장',   name:'한 장' },
-  five: { n:5,  price:14900, url:'https://www.groble.im/payment/e7Ntiv', head:'묘담의 살풀이 · 고른 다섯 장', name:'다섯 장' },
+  one:  { n:1,  price:3900,  url:'https://www.groble.im/payment/xiXpcK', head:'묘담의 살풀이 · 고른 한 대목',   name:'한 대목' },
+  five: { n:5,  price:14900, url:'https://www.groble.im/payment/e7Ntiv', head:'묘담의 살풀이 · 고른 다섯 대목', name:'다섯 대목' },
   all:  { n:10, price:38900, url:'https://www.groble.im/payment/kAAJFx', head:'묘담의 심층 살풀이 · 아흔아홉 장', name:'전부' }
 };
 const PART_NAMES = ['','뿌리','살(殺)','오르막과 내리막','인연','재물','업(業)','몸','귀인','열두 달','십 년'];
@@ -2010,9 +2011,9 @@ function syncPicks(){
   boxes.forEach(b => { b.disabled = full && !b.checked; });
   document.getElementById('pickCnt').textContent = `${pick.parts.length} / ${t.n}`;
   document.getElementById('pickTitle').textContent =
-    pick.tier === 'all' ? '차례 — 전부 네 것이다'
+    pick.tier === 'all' ? '차례 — 열 대목 전부 네 것이다'
     : pick.parts.length >= t.n ? '차례 — 다 골랐다'
-    : `차례 — ${t.n - pick.parts.length}장 더 고를 수 있다`;
+    : `차례 — ${t.n - pick.parts.length}대목 더 고를 수 있다`;
   document.getElementById('ctaPrice').textContent = won(t.price);
   document.getElementById('pickErr').style.display = 'none';
 }
@@ -2026,15 +2027,15 @@ function picksReady(){
   const wrap = document.querySelector('.pick-wrap');
   const err = document.getElementById('pickErr');
   err.textContent = pick.parts.length === 0
-    ? `찢어갈 장을 골라라 — ${t.n}장.`
-    : `${t.n - pick.parts.length}장 더 골라라. (${t.n}장 값이다)`;
+    ? `찢어갈 대목을 골라라 — ${t.n}대목.`
+    : `${t.n - pick.parts.length}대목 더 골라라. (${t.n}대목 값이다)`;
   err.style.display = 'block';
   wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake');
   wrap.scrollIntoView({ behavior:'smooth', block:'center' });
   return false;
 }
 function picksLabel(){
-  if (pick.tier === 'all') return '壹 ~ 拾 · 열 부(部) 전부';
+  if (pick.tier === 'all') return '壹 ~ 拾 · 열 대목 전부';
   return pick.parts.map(n => `<b>${PART_HJ[n]}</b> ${PART_NAMES[n]}`).join(' · ');
 }
 function reportQuery(){
@@ -2059,7 +2060,11 @@ function closePreview(e, toTear){
   document.body.style.overflow = '';
   if (toTear) document.getElementById('tiers').scrollIntoView({ behavior:'smooth', block:'center' });
 }
-window.addEventListener('message', ev => { if (ev.data && ev.data.sgs === 'closePreview') closePreview(null, true); });
+window.addEventListener('message', ev => {
+  if (!ev.data) return;
+  if (ev.data.sgs === 'closePreview') closePreview(null, true);
+  if (ev.data.sgs === 'page') document.getElementById('peekNo').textContent = `미리 열람 · 第 ${ev.data.cur} 章 / ${ev.data.total}`;
+});
 
 /* ───────── 구매 모달 ───────── */
 const ADMIN_EMAILS = ['motiol_6829@naver.com'];   // 관리자 — 결제 없이 바로 열람 (admin-api 의 목록과 동일)
