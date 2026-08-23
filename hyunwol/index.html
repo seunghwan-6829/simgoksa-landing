@@ -719,7 +719,7 @@ body{
 .pk:has(input:disabled) .x{color:var(--ink-dim)}
 .pk.owned{background:rgba(208,140,58,.06)}
 .pk.owned input{opacity:.7;background:var(--ember);border-color:var(--ember)}
-.pk.owned .x::after{content:"이미 찢어간 대목 — 서고에 있다";display:block;font-size:11px;color:var(--ember);margin-top:2px}
+.pk.owned .x::after{content:"이미 찢어간 편 — 서고에 있다";display:block;font-size:11px;color:var(--ember);margin-top:2px}
 .pick-wrap.all .pk input{pointer-events:none}
 .pick-err{display:none;padding:10px 16px;font-size:12.5px;color:var(--blood-bright);border-top:1px solid rgba(232,224,216,.08)}
 .pick-wrap.shake{animation:shake .4s}
@@ -1487,33 +1487,33 @@ footer b{color:#7a6f66}
 
       <div class="hr-knife rv" style="margin-top:54px"></div>
       <p class="h-red rv" style="margin-top:50px">현월이 일러둔다</p>
-      <h2 class="h-big rv">급한 권(卷)만<br><span class="r">찢어서 봐도 된다.</span></h2>
-      <p class="p-dim rv" style="margin-top:18px">여든여덟 장을 한 번에 다 읽을 여유가 없다면—<br>제일 새는 자리 <b style="color:var(--ink)">한 권만 뜯어 가도 된다.</b><br>차례에서 고르면, 그 권만 네 이름으로 셈해 준다.</p>
+      <h2 class="h-big rv">급한 편(篇)만<br><span class="r">찢어서 봐도 된다.</span></h2>
+      <p class="p-dim rv" style="margin-top:18px">여든여덟 장을 한 번에 다 읽을 여유가 없다면—<br>제일 새는 자리 <b style="color:var(--ink)">한 편만 뜯어 가도 된다.</b><br>차례에서 고르면, 그 편만 네 이름으로 셈해 준다.</p>
 
       <!-- 등급 -->
       <div class="tiers rv" id="tiers">
         <button class="tier" data-tier="one" onclick="setTier('one')">
-          <span class="t-n">한 권</span>
-          <span class="t-d">급한 권 <b>하나</b>만 뜯어본다</span>
+          <span class="t-n">한 편</span>
+          <span class="t-d">급한 <b>한 편</b>만 뜯어본다</span>
           <span class="t-p">6,900<small>원</small></span>
         </button>
         <button class="tier" data-tier="five" onclick="setTier('five')">
           <span class="t-tag">가장 많이 찢는다</span>
-          <span class="t-n">다섯 권</span>
-          <span class="t-d">권 <b>다섯</b>을 골라 뜯는다</span>
+          <span class="t-n">다섯 편</span>
+          <span class="t-d"><b>다섯 편</b>을 골라 뜯는다</span>
           <span class="t-p">24,900<small>원</small></span>
         </button>
         <button class="tier sel" data-tier="all" onclick="setTier('all')">
           <span class="t-tag">장부를 먼저 편 값</span>
           <span class="t-n">전부</span>
-          <span class="t-d">十卷, 여든여덟 장 <b>전부</b></span>
+          <span class="t-d">열 편, 여든여덟 장 <b>전부</b></span>
           <span class="t-p">49,000<small>원</small></span>
         </button>
       </div>
 
       <!-- 차례 고르기 -->
       <div class="pick-wrap rv">
-        <div class="pick-head"><span id="pickTitle">차례 — 十卷 전부 네 것이다</span><span class="pick-cnt" id="pickCnt">10 / 10</span></div>
+        <div class="pick-head"><span id="pickTitle">차례 — 열 편 전부 네 것이다</span><span class="pick-cnt" id="pickCnt">10 / 10</span></div>
         <div class="picks" id="picks">
           <label class="pk"><input type="checkbox" value="1"><span class="n">卷一</span><span class="x">재물 원국 — 네 돈의 생김새<small>벌어도 늘 그 모양인 이유— 타고난 재물 판부터 편다.</small></span></label>
           <label class="pk"><input type="checkbox" value="2"><span class="n">卷二</span><span class="x">구멍(漏) — 새는 자리 전부<small>누가, 어디로, 얼마나 새는지— 구멍마다 이름을 붙인다.</small></span></label>
@@ -1606,7 +1606,7 @@ footer b{color:#7a6f66}
 <div id="peek">
   <div class="peek-bar"><span id="peekNo">深谷寺 · 미리 열람</span><button onclick="closePreview()">미리 열람 닫기 ✕</button></div>
   <iframe id="peekFrame" title="미리 열람"></iframe>
-  <div class="peek-foot"><a href="#" onclick="closePreview(event, true)">급한 권, 찢어가기 →</a></div>
+  <div class="peek-foot"><a href="#" onclick="closePreview(event, true)">급한 편, 찢어가기 →</a></div>
 </div>
 
 <!-- 하단 고정 CTA -->
@@ -2307,9 +2307,9 @@ function syncPicks(){
   boxes.forEach(b => { b.disabled = full && !b.checked; });
   document.getElementById('pickCnt').textContent = `${pick.parts.length} / ${t.n}`;
   document.getElementById('pickTitle').textContent =
-    pick.tier === 'all' ? (OWNED.length ? '차례 — 전부 (이미 찢어간 권 포함)' : '차례 — 十卷 전부 네 것이다')
+    pick.tier === 'all' ? (OWNED.length ? '차례 — 전부 (이미 찢어간 편 포함)' : '차례 — 열 편 전부 네 것이다')
     : pick.parts.length >= t.n ? '차례 — 다 골랐다'
-    : `차례 — ${t.n - pick.parts.length}권 더 고를 수 있다`;
+    : `차례 — ${t.n - pick.parts.length}편 더 고를 수 있다`;
   document.getElementById('ctaPrice').textContent = won(t.price);
   document.getElementById('pickErr').style.display = 'none';
 }
@@ -2324,15 +2324,15 @@ function picksReady(){
   const wrap = document.querySelector('.pick-wrap');
   const err = document.getElementById('pickErr');
   err.textContent = pick.parts.length === 0
-    ? `찢어갈 권을 골라라 — ${t.n}권.`
-    : `${t.n - pick.parts.length}권 더 골라라. (${t.n}권 값이다)`;
+    ? `찢어갈 편을 골라라 — ${t.n}편.`
+    : `${t.n - pick.parts.length}편 더 골라라. (${t.n}편 값이다)`;
   err.style.display = 'block';
   wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake');
   wrap.scrollIntoView({ behavior:'smooth', block:'center' });
   return false;
 }
 function picksLabel(){
-  if (pick.tier === 'all') return '卷一 ~ 卷十 · 十卷 전부';
+  if (pick.tier === 'all') return '卷一 ~ 卷十 · 열 편 전부';
   return pick.parts.map(n => `<b>${PART_HJ[n]}</b> ${PART_NAMES[n]}`).join(' · ');
 }
 function reportQuery(){

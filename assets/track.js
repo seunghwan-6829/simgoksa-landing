@@ -44,8 +44,8 @@
       } },
     hyunwol: { id: '5xeDtU', name: '스님 현월 · 재물의 경 여든여덟 장',       value: 49000,
       tiers: {
-        one:  { id: 'vuzWHN', name: '스님 현월 · 재물의 경 한 권 찢어가기',   value: 6900 },
-        five: { id: 'RpxRzG', name: '스님 현월 · 재물의 경 다섯 권 찢어가기', value: 24900 },
+        one:  { id: 'vuzWHN', name: '스님 현월 · 재물의 경 한 편 찢어가기',   value: 6900 },
+        five: { id: 'RpxRzG', name: '스님 현월 · 재물의 경 다섯 편 찢어가기', value: 24900 },
         all:  { id: '5xeDtU', name: '스님 현월 · 재물의 경 여든여덟 장',       value: 49000 }
       } }
   };

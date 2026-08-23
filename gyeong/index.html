@@ -378,7 +378,7 @@ addPage(`
 addPage(`${pgHead('開卷')}
   <h2 class="pg-title">여든여덟 장으로 엮은<br><span class="r">단 한 사람의 장부</span></h2>
   <div class="hr"></div>
-  <p class="pg-body">${nm}. 이 경(經)은 세상에 단 한 권이다. 네 이름과 태어난 날로 셈하여, 열 권(十卷) 여든여덟 장으로 엮었다.${PARTIAL ? ` 그중 네가 급하다 한 <em>${['','한','두','세','네','다섯','여섯','일곱','여덟','아홉'][PICKS.length]} 권</em>만 먼저 찢어 왔다— 나머지는 장경각에 봉해 두었다.` : ''}</p>
+  <p class="pg-body">${nm}. 이 경(經)은 세상에 단 한 권이다. 네 이름과 태어난 날로 셈하여, 열 권(十卷) 여든여덟 장으로 엮었다.${PARTIAL ? ` 그중 네가 급하다 한 <em>${['','한','두','세','네','다섯','여섯','일곱','여덟','아홉'][PICKS.length]} 편</em>만 먼저 찢어 왔다— 나머지는 장경각에 봉해 두었다.` : ''}</p>
   <p class="pg-body">순서대로 읽어도 좋고, 목차에서 급한 권부터 펴도 좋다. 다만 <em>둘째 권— 구멍(漏)</em>만은 건너뛰지 마라. 새는 독에는 어떤 가르침을 부어도 고이지 않는다.</p>
   <p class="pg-note">장경각 검증 필사본 · 제 ${bookNoS}호<br>갈무리 단추로 평생 소장할 수 있다</p>`);
 
@@ -630,7 +630,7 @@ function applyPicks(){
   const newToc = tocEntries.filter(t => !KWON.includes(t.label));
   ranges.forEach(r => {
     if (PICKS.includes(r.no)){ newToc.push({label:r.hj, title:r.title, page: out.length + 1}); out.push(...pages.slice(r.start, r.end)); }
-    else { newToc.push({label:r.hj, title:r.title, page: out.length + 1, locked:true}); out.push(lockPage(r, '이 권은 찢어가지 않았다.<br>네 이름으로 이미 셈해 두었으니—<br>급해지거든 마저 찢어가라.', '이 권 찢어가기 →')); }
+    else { newToc.push({label:r.hj, title:r.title, page: out.length + 1, locked:true}); out.push(lockPage(r, '이 편은 찢어가지 않았다.<br>네 이름으로 이미 셈해 두었으니—<br>급해지거든 마저 찢어가라.', '이 편 찢어가기 →')); }
   });
   out.push(...tail);
   pages.length = 0; pages.push(...out);
@@ -641,7 +641,7 @@ function applyPreview(){
   const out = pages.slice(0, ranges[0].start);
   out.push(...pages.slice(ranges[0].start, Math.min(ranges[0].start + 3, ranges[0].end)));
   if (ranges[1]) out.push(...pages.slice(ranges[1].start, Math.min(ranges[1].start + 2, ranges[1].end)));
-  out.push(lockPage({hj:'封', title:'여기부턴, 찢어가야 읽는다'}, `남은 ${88 - out.length}장— 구멍의 크기, 물길, 그릇, 때, 업·장·귀인, 열두 달과 십 년.<br>급한 권만 골라 찢어갈 수도 있다.`, '찢어가러 가기 →'));
+  out.push(lockPage({hj:'封', title:'여기부턴, 찢어가야 읽는다'}, `남은 ${88 - out.length}장— 구멍의 크기, 물길, 그릇, 때, 업·장·귀인, 열두 달과 십 년.<br>급한 편만 골라 찢어갈 수도 있다.`, '찢어가러 가기 →'));
   pages.length = 0; pages.push(...out);
   tocEntries.length = 0;
 }

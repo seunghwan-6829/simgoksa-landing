@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
 
   const since = new Date(Date.now() - 24 * 3600e3).toISOString();
   const r = await fetch(
-    `${url}/rest/v1/purchases?seller_reference=eq.${encodeURIComponent(sid)}&created_at=gte.${since}&select=id,buyer_email,user_id,status&order=created_at.desc&limit=1`,
+    `${url}/rest/v1/purchases?seller_reference=eq.${encodeURIComponent(sid)}&created_at=gte.${since}&select=id,buyer_email,user_id,status,product&order=created_at.desc&limit=1`,
     { headers: H },
   );
   if (!r.ok) return json({ ok: false, error: "db" }, 500);
@@ -48,5 +48,6 @@ Deno.serve(async (req) => {
   }
   const g = await generateMagic(url, H, email);
   if (!g?.tokenHash) return json({ ok: false, error: "token" }, 500);
-  return json({ ok: true, token_hash: g.tokenHash, email });
+  // 서고가 곧장 그 책을 열 수 있게 주문 id·상품·상태도 돌려준다
+  return json({ ok: true, token_hash: g.tokenHash, email, purchase: { id: p.id, product: p.product, status: p.status } });
 });

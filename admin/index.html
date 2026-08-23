@@ -342,7 +342,7 @@ const KW10 = ['','卷一','卷二','卷三','卷四','卷五','卷六','卷七',
 function tierTxt(p){
   if (!p.tier || p.tier === 'all') return '';
   const hw = p.product === 'hyunwol';
-  const name = (hw ? { one: '한 권', five: '다섯 권' } : { one: '한 대목', five: '다섯 대목' })[p.tier] || p.tier;
+  const name = (hw ? { one: '한 편', five: '다섯 편' } : { one: '한 대목', five: '다섯 대목' })[p.tier] || p.tier;
   const picks = p.picks ? String(p.picks).split(',').map(n => (hw ? KW10 : HJ10)[+n] || n).join(' ') : '<span style="color:#e5383b">고른 장 없음 — 구매자 확인 필요</span>';
   return ` · <b>${name}</b> ${picks}`;
 }

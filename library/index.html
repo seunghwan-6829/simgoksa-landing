@@ -352,7 +352,7 @@ async function loadBooks(quiet){
       const ownerEsc = owner ? owner.replace(/</g,'&lt;') : null;
       // 찢어간 장 표시
       const HJ = p.product === 'hyunwol' ? ['','卷一','卷二','卷三','卷四','卷五','卷六','卷七','卷八','卷九','卷十'] : ['','壹','貳','參','肆','伍','陸','柒','捌','玖','拾'];
-      const unitL = p.product === 'hyunwol' ? '권' : '대목';
+      const unitL = p.product === 'hyunwol' ? '편' : '대목';
       const tierLabel = p.tier && p.tier !== 'all'
         ? (p.picks ? `찢어간 ${unitL} · ${String(p.picks).split(',').map(n => HJ[+n] || '').filter(Boolean).join(' ')}` : `찢어간 ${unitL} · 확인 중`)
         : null;
@@ -374,7 +374,7 @@ async function loadBooks(quiet){
             : `<span class="b-wait">${ch.label}이 적는 중이다 — 곧 꽂힌다</span>`}
         </div>`;
       // 부분 구매자 — 남은 대목을 마저 찢어가는 길 (이미 산 대목은 랜딩에서 잠긴다)
-      const unit = p.product === 'hyunwol' ? '권' : '대목';
+      const unit = p.product === 'hyunwol' ? '편' : '대목';
       const more = (href && ch.landing && p.tier && p.tier !== 'all' && p.picks)
         ? `<a class="b-more" href="${ch.landing}?owned=${encodeURIComponent(p.picks)}#tear">남은 ${unit}, 마저 찢어가기 →</a>` : '';
       return (href
@@ -404,7 +404,13 @@ async function claimSession(sid){
       const j = await r.json();
       if (j.ok){
         const v = await sb.auth.verifyOtp({ token_hash: j.token_hash, type: 'magiclink' });
-        if (!v.error){ localStorage.removeItem('sgs_sid'); show(true, v.data.user.email); return true; }
+        if (!v.error){
+          localStorage.removeItem('sgs_sid');
+          // 방금 산 책이 바로 열람 가능하면 서고를 거치지 않고 곧장 결과지로 (서고는 뒤로가기/「내 서고」로)
+          const pr = j.purchase, ch = pr && SGS.PRODUCTS[pr.product];
+          if (pr && pr.status === 'delivered' && ch && ch.report){ location.replace(ch.report + '?p=' + encodeURIComponent(pr.id)); return true; }
+          show(true, v.data.user.email); return true;
+        }
         break;
       }
       if (j.error === 'refunded'){ localStorage.removeItem('sgs_sid'); break; }
