@@ -372,7 +372,7 @@ addPage(`
     <div class="cv-label">${nm}의 재물의 경</div>
     <div class="cv-reg">${y}년 ${user.birth.m}월 ${user.birth.d}일생 · ${esc(user.gender)} · ${yearPillar}년주</div>
     <div class="cv-no">제 ${bookNoS}호 — 현월 셈하여 적다</div>
-    <div class="cv-seal">漏</div>
+    <div class="cv-seal">器</div>
     <p class="cv-hint">◀ 옆으로 넘겨, 첫 장을 편다</p>
   </div>`, 'cover');
 
@@ -399,7 +399,7 @@ addPage(`${pgHead('斷 · 단안(斷案)')}
   <h2 class="pg-title">네 앞의 결정 셋—<br><span class="r">장부가 대신 끝낸다</span></h2>
   <div class="hr"></div>
   <p class="pg-body">고민은 네가 하는 게 아니다. 그릇 <b>${VS.eok}억</b>에 지금 <b>${SGS.HAL[VS.filled]}</b>— 이 셈 위에서 판결한다. 까닭은 뒤의 권(卷)마다 길게 적었으니, 여기선 결론만 받아라.</p>
-  ${VS.verdicts.map((v, i) => `<div class="rowl"><span class="k">${['其一','其二','其三'][i]} ${v.q}</span><span class="v${PARTIAL ? ' sealed' : ''}"><em>${v.label}${v.when ? ' — ' + v.when + ' 이후' : ''}</em><br><span style="font-size:13px;color:var(--ink)">${v.why}</span></span></div>`).join('')}
+  ${VS.verdicts.map((v, i) => `<div class="rowl" style="flex-direction:column;gap:6px;align-items:stretch"><span class="k" style="width:auto;white-space:nowrap">${['其一','其二','其三'][i]} · ${v.q}</span><span class="v${PARTIAL ? ' sealed' : ''}"><em>${v.label}${v.when ? ' — ' + v.when + ' 이후' : ''}</em><br><span style="font-size:13px;color:var(--ink)">${v.why}</span></span></div>`).join('')}
   ${PARTIAL ? `<p class="pg-note" style="color:var(--brass-hi)">封 — 판결은 열 권을 전부 찢은 자에게만 열린다. 고른 편만 먼저 읽고, 급해지거든 마저 찢어가라.</p>` : `<p class="pg-note">판결은 ${nowY}년 장부 기준이다. 해가 바뀌면 卷十을 다시 펴라.</p>`}`);
 
 /* 卷一 */
