@@ -579,6 +579,23 @@ body{
 .stepline{width:1px;height:46px;background:linear-gradient(180deg,var(--blood),transparent);margin:14px auto}
 /* 장부 조판(좌측 정렬) 안에서는 구분선도 숫자(貳·參) 밑에 맞춘다 */
 #sales .ledger-sec .stepline{margin:14px 0 14px 20px}
+/* 그릇 채움 막대 */
+.fill-bar{display:flex;gap:3px;margin:14px auto 0;max-width:320px}
+.fill-bar i{flex:1;height:10px;border-radius:2px;background:rgba(232,224,216,.12);border:1px solid rgba(232,224,216,.12)}
+.fill-bar i.on{background:linear-gradient(180deg,#e0a43c,#7a4a12);border-color:#e0a43c;box-shadow:0 0 10px rgba(224,164,60,.35)}
+.fill-cap{margin-top:10px;font-size:13px;color:var(--ink-dim);letter-spacing:.06em}
+.fill-cap b{color:var(--paper)}
+.type-strip{margin-top:16px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 12px;padding:14px 18px;border:1px solid rgba(201,162,92,.3);background:rgba(201,162,92,.05);text-align:left}
+.type-strip .ts-k{font-size:11.5px;letter-spacing:.25em;color:var(--ember)}
+.type-strip .ts-v{font-family:'Nanum Myeongjo',serif;font-size:19px;font-weight:800;color:var(--paper)}
+.type-strip .ts-d{flex-basis:100%;font-size:12.5px;color:var(--ink-dim);line-height:1.7;word-break:keep-all}
+/* 단안 */
+.verdicts{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+.vd{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:14px 16px;border:1px solid rgba(201,162,92,.3);background:rgba(240,234,226,.04);text-align:left}
+.vd .vd-n{font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:13px;white-space:nowrap}
+.vd .vd-q{font-size:15px;color:var(--paper);font-weight:700;word-break:keep-all}
+.vd .vd-v{font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:800;color:var(--brass-hi);white-space:nowrap}
+.vd .vd-w{grid-column:2/4;font-size:12.5px;color:var(--ink-dim);line-height:1.7;word-break:keep-all}
 /* 또래 비교 — 돈 문답 결과 한 줄 */
 .peer-strip{margin:26px 0 18px;padding:16px 18px;border:1px solid rgba(201,162,92,.35);border-left:3px solid var(--ember);background:rgba(201,162,92,.06);text-align:left}
 .peer-strip .ps-k{font-size:11.5px;letter-spacing:.25em;color:var(--ember);margin-bottom:8px}
@@ -1032,7 +1049,7 @@ footer b{color:#7a6f66}
       <div class="gate-hanja">深谷寺</div>
       <div class="gate-sub">심곡사 아랫길 — 해 질 무렵</div>
     </div>
-    <p class="gate-warn">길 끝의 노승이<br><b>지나는 걸음을 세고 있습니다</b></p>
+    <p class="gate-warn">길 끝의 노승이<br><b>지나는 사내들의 그릇을 재고 있습니다</b></p>
     <button class="gate-btn" id="enterBtn">길을 지나간다</button>
     <p class="gate-note">· 소리와 함께 걸으시길 바랍니다 ·</p>
   </div>
@@ -1081,8 +1098,8 @@ footer b{color:#7a6f66}
     <div class="dialog" data-scene="1">
       <p class="line voice">"…잠깐."</p>
       <p class="line">잿빛 승복의 노승이<br>손목을 쥔 채, 눈을 좁힌다.</p>
-      <p class="line voice">"너… <em>놓치는 게 너무 많구나.</em>"</p>
-      <p class="line voice">"관상이 아니다. 손금도 아니다.<br>네게서— <em>새는 소리가 들린다.</em>"</p>
+      <p class="line voice">"너… <em>그릇은 큰데, 반도 못 채웠구나.</em>"</p>
+      <p class="line voice">"관상이 아니다. 손금도 아니다.<br>네게서— <em>빈 그릇 소리가 난다.</em>"</p>
       <div class="choices">
         <button class="choice" data-next="2">"…무슨 소리예요, 그게?"</button>
         <button class="choice" data-next="2" data-hesitate="1">(손을 뿌리치려 한다)</button>
@@ -1101,7 +1118,7 @@ footer b{color:#7a6f66}
       <p class="line voice">"말로는 못 믿을 터."</p>
       <p class="line">노승이 손목을 쥔 채<br>돌계단을 오르기 시작한다.<br>끌려가는 건지, 따라가는 건지—</p>
       <p class="line voice">"장경각(藏經閣).<br>사십 년 치 <em>재물 장부</em>가 잠든 곳이다."</p>
-      <p class="line voice">"네 장부도— <em>거기 있다.</em>"</p>
+      <p class="line voice">"네 장부도— <em>거기 있다.</em><br>얼마까지 가는 놈인지, 적혀 있지."</p>
       <div class="choices">
         <button class="choice" data-ask="start">"…내, 장부요?"</button>
       </div>
@@ -1178,7 +1195,7 @@ footer b{color:#7a6f66}
       <div class="ask-step" id="ask4" style="display:none">
         <p class="line whisper">스님이 낡은 장부를 넘긴다.<br>붓끝이— 한 자리에서 멈춘다.</p>
         <p class="line voice" id="reactLine1">"……"</p>
-        <p class="line voice"><em>"셈이 맞지 않는군."</em></p>
+        <p class="line voice"><em>"그릇과 담긴 것이— 맞지 않는군."</em></p>
         <p class="line whisper">처음으로, 스님이 붓을 내려놓고<br>당신을 똑바로 본다.</p>
         <div class="choices">
           <button class="choice" data-next="3">"…뭐가, 맞지 않습니까?"</button>
@@ -1194,14 +1211,14 @@ footer b{color:#7a6f66}
     <span class="scene-tag">參</span>
     <div class="dialog" data-scene="3">
       <p class="line voice" id="sorryLine">"셈이 나왔다…"</p>
-      <p class="line voice">"<em>모자란 게 아니라, 새고 있던 것이야.</em>"</p>
+      <p class="line voice">"<em>작은 놈이 아니다. 작게 살고 있었을 뿐이지.</em>"</p>
       <p class="line" style="margin-top:8px">스님이 엽전 한 닢을,<br>소리 나게— 내려놓는다.</p>
-      <p class="line voice" data-quake>"네 재물 장부에 <em>구멍(漏)</em>이 뚫려 있다."</p>
+      <p class="line voice" data-quake>"네 그릇은— <em>지금 사는 것보다 훨씬 크다.</em>"</p>
       <p class="line">낮은 목소리가<br>서가 전체에 가라앉는다.</p>
-      <p class="line voice">"벌이는 죄가 없다.<br>장부에 구멍이 난 줄—<br><em>몰랐을 뿐이지.</em>"</p>
-      <p class="line voice" id="showLine">"장부째 보여주마.<br>네 돈이 빠져나간— <em>자리 전부.</em>"</p>
+      <p class="line voice">"못 채운 데는 이유가 있다.<br>구멍 몇 개, 그리고—<br><em>잘못 고른 길 몇 번.</em>"</p>
+      <p class="line voice" id="showLine">"장부째 보여주마.<br>네 그릇의 숫자, 그리고—<br><em>지금 네가 내려야 할 결정까지.</em>"</p>
       <div class="choices">
-        <button class="choice" data-next="sales">"…어디입니까, 그 구멍이."</button>
+        <button class="choice" data-next="sales">"…얼마입니까, 그 그릇이."</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -1218,7 +1235,7 @@ footer b{color:#7a6f66}
         <div class="cover-label"><span id="coverName">그대의 재물 장부</span></div>
         <div class="cover-reg" id="coverReg">— 년 — 월 — 일생</div>
         <div class="cover-no" id="coverNo">장경각 검증 필사본 · 제 4,001호</div>
-        <div class="cover-seal">漏</div>
+        <div class="cover-seal">器</div>
       </div>
       <p class="cover-hint rv">아래로 넘겨— 첫 장을 편다 ▾</p>
     </section>
@@ -1227,8 +1244,8 @@ footer b{color:#7a6f66}
     <section class="sec ledger-sec" style="padding-top:60px"><span class="vtag">序 · 소견</span>
       <p class="h-red rv">감정 소견</p>
       <div class="verdict rv">
-        <p class="v-head" id="vHead">허어…<br><span class="r">너, 크게 새고 있다.</span></p>
-        <p class="v-body">"마흔 해 장부를 지킨 눈은 못 속인다.<br>지금부터 한 장씩— <em>네 재물의 판</em>을 편다."</p>
+        <p class="v-head" id="vHead">허어…<br><span class="r">너, 작게 살고 있다.</span></p>
+        <p class="v-body">"마흔 해 장부를 지킨 눈은 못 속인다.<br>지금부터 한 장씩— <em>네 그릇의 숫자</em>와<br><em>네가 고를 길</em>을 편다."</p>
         <div class="v-sign">감정인 — 장경각 <b>현월</b><span class="v-stamp">玄月</span></div>
       </div>
       <div class="vid-attach rv">
@@ -1252,11 +1269,11 @@ footer b{color:#7a6f66}
           </div>
           <div class="lrow">
             <span class="lk">그릇의 크기</span>
-            <span class="lv"><span class="veiled" id="vBowl">여덟 섬 한 말</span></span>
-            <span class="lmark seal">封</span>
+            <span class="lv"><b id="vEok" style="color:var(--brass-hi);font-family:'Noto Sans KR',sans-serif;font-size:17px">—억</b> · 채운 것 <b id="vFilled">—</b></span>
+            <span class="lmark done">記</span>
           </div>
           <div class="lrow leak">
-            <span class="lk">새는 자리</span>
+            <span class="lk">못 채우는 자리</span>
             <span class="lv"><span class="veiled" id="vDir">서남 방(方)</span> · <span class="veiled" id="vAge">스물여섯살 무렵부터</span></span>
             <span class="lmark loo">漏</span>
           </div>
@@ -1271,44 +1288,49 @@ footer b{color:#7a6f66}
     </section>
 
     <!-- 잃은 돈 셈 — 주판 연출 -->
-    <section class="sec ledger-sec" style="padding-top:44px"><span class="vtag">第二頁 · 셈</span>
-      <p class="h-red rv">스님이 주판을 놓는다</p>
-      <h2 class="h-big rv">여태 새어 나간 돈,<br><span class="r">셈해 보았다</span></h2>
+    <section class="sec ledger-sec" style="padding-top:44px"><span class="vtag">第二頁 · 그릇</span>
+      <p class="h-red rv">스님이 됫박을 내려놓는다</p>
+      <h2 class="h-big rv">네가 평생 담을 돈,<br><span class="r">숫자로 재 보았다</span></h2>
       <div class="peer-strip rv" id="peerStrip" style="display:none">
         <div class="ps-k">또래 장부와 맞대어 보니</div>
-        <div class="ps-v">네 또래 <b id="peerPct">00%</b>가 너보다 <em>덜 벌고, 더 모은다.</em></div>
+        <div class="ps-v">네 또래 <b id="peerPct">00%</b>가 <em>너보다 작은 그릇으로, 더 채웠다.</em></div>
         <div class="ps-s" id="peerSub">들어오는 물은 얕지 않은데 고이는 게 없다— 구멍이 있다는 뜻이다.</div>
       </div>
       <div class="lost-frame rv">
-        <div class="lost-label" id="lostOwner">— 누적 누재(漏財) 추산 —</div>
-        <div class="lost-amount"><span id="lostNum">0</span><small>만 원<em>어치</em></small></div>
-        <div class="lost-stamp" id="lostStamp">漏</div>
-        <p class="lost-note">앞자리는 가려 두마.<br>정확한 셈은— 값을 치르고 보거라.</p>
+        <div class="lost-label" id="lostOwner">— 평생 그릇(器)의 크기 —</div>
+        <div class="lost-amount"><span id="lostNum">0</span><small>억<em>까지</em></small></div>
+        <div class="fill-bar" id="fillBar"></div>
+        <p class="fill-cap" id="fillCap">지금 채운 것 — <b>두 할</b> · 남은 <b>여덟 할</b></p>
+        <div class="lost-stamp" id="lostStamp">器</div>
+        <p class="lost-note" id="lostNote">그릇은 네 탓이 아니라 타고난 것이다.<br>남은 할(割)을 어떻게 채우는지— 값을 치르고 보거라.</p>
+      </div>
+      <div class="type-strip rv" id="typeStrip">
+        <span class="ts-k">돈 팔자</span><span class="ts-v" id="typeName">—</span><span class="ts-d" id="typeDesc"></span>
       </div>
     </section>
 
     <!-- 흉살 진단 -->
     <section class="sec ledger-sec" style="padding-top:30px"><span class="vtag">第三頁 · 구멍</span>
-      <p class="h-red rv">네 재물 장부에서 나온</p>
+      <p class="h-red rv">그릇이 안 차는 이유</p>
       <h2 class="h-big rv"><span class="r" id="salCount">2개의 구멍</span></h2>
       <div id="salCards"></div>
-      <p class="toc-note rv">* 구멍이 벌어지는 해, 크기, 막는 법—<br>전부 셈해 뒀다. 풀이에서 열어 봐라.</p>
+      <p class="toc-note rv">* 구멍은 막는 법이 있다. 막히는 순간부터<br>남은 할(割)이 차기 시작한다— 풀이에서 열어 봐라.</p>
     </section>
 
     <!-- 후크 -->
     <section class="sec ledger-sec"><span class="vtag">第四頁 · 물음</span>
-      <p class="h-red rv">"왜 이렇게</p>
-      <h2 class="h-big rv">벌어도 <span class="r">안 모이지?"</span></h2>
-      <div class="h-hanja rv">漏財</div>
-      <p class="p-body rv">사주 속 <em>새는 구멍(漏)</em>이<br>네 돈을 흘려보내고 있다.</p>
+      <p class="h-red rv">"나는 왜</p>
+      <h2 class="h-big rv">아직 <span class="r">여기지?"</span></h2>
+      <div class="h-hanja rv">器</div>
+      <p class="p-body rv">그릇이 작아서가 아니다.<br><em>그릇의 크기를 모른 채</em> 작게 골라 온 것이다.</p>
       <ul class="chk">
-        <li class="rv" style="transition-delay:.05s">월급은 오르는데, 통장은 그대로고</li>
-        <li class="rv" style="transition-delay:.25s">목돈 좀 모이면, 꼭 나갈 일이 생기고</li>
-        <li class="rv" style="transition-delay:.45s">남 좋은 일만 하고, 내 몫은 없고</li>
-        <li class="rv" style="transition-delay:.65s">투자만 하면, 꼭 꼭지에서 물리고</li>
-        <li class="rv" style="transition-delay:.85s">열심히 버는데— 잔고는 멈춰 있고</li>
+        <li class="rv" style="transition-delay:.05s">나보다 못한 놈이 먼저 집을 샀고</li>
+        <li class="rv" style="transition-delay:.25s">이직할지 버틸지— 3년째 같은 고민이고</li>
+        <li class="rv" style="transition-delay:.45s">투자는 늘 한 발 늦거나, 한 발 빠르고</li>
+        <li class="rv" style="transition-delay:.65s">동업·보증 얘기가 들어오면 흔들리고</li>
+        <li class="rv" style="transition-delay:.85s">열심히는 사는데— 판이 안 커진다</li>
       </ul>
-      <p class="p-dim rv">"돈복이 없다"는 말은<br>장부를 안 본 자의 말이다.<br><b style="color:var(--ink)">장부는 늘— 새는 자리를 알고 있다.</b></p>
+      <p class="p-dim rv">"돈복이 없다"는 말은<br>장부를 안 본 자의 말이다.<br><b style="color:var(--ink)">장부는 늘— 네 그릇의 크기를 알고 있다.</b></p>
     </section>
 
     <!-- 살이란 -->
@@ -1317,10 +1339,10 @@ footer b{color:#7a6f66}
       <div class="veil2"></div>
       <div class="inner">
         <div class="hr-knife rv"></div>
-        <p class="p-body rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">구멍(漏)은—</p>
-        <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">모르고 두면<br>평생 너를 마르게 하는 <em>가난</em>이지만,</p>
-        <p class="p-body rv" style="margin-top:44px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">막아 내면<br>그 자리부터 고이기 시작하는 <em>복(福)</em>이다.</p>
-        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">장부의 뒷장은<br>들추는 자의 것이다.<br><br>들추고— 막고— 담아라.</p>
+        <p class="p-body rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">그릇(器)은—</p>
+        <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">모르고 살면<br>평생 반만 채우는 <em>한계</em>지만,</p>
+        <p class="p-body rv" style="margin-top:44px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">알고 채우면<br>그때부터 판이 커지는 <em>야망</em>이다.</p>
+        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">장부의 뒷장은<br>들추는 자의 것이다.<br><br>들추고— 재고— 채워라.</p>
       </div>
     </section>
 
@@ -1344,7 +1366,7 @@ footer b{color:#7a6f66}
     <!-- 재물운 그래프 -->
     <section class="sec ledger-sec"><span class="vtag">第五頁 · 능선</span>
       <p class="h-red rv">셈 미리보기 · 壹</p>
-      <h2 class="h-big rv">"돈이 한 번 크게<br><span class="r">고이는 판이던데."</span></h2>
+      <h2 class="h-big rv">"네 그릇이 한 번<br><span class="r">크게 차는 해가 있던데."</span></h2>
       <div class="graph-frame rv">
         <div class="graph-title" id="graphOwner">財物運 능선도</div>
         <svg viewBox="0 0 320 150" width="100%" style="display:block">
@@ -1381,6 +1403,15 @@ footer b{color:#7a6f66}
       <p class="toc-note rv">재물이 크게 고이는 해와, 줄줄 새는 해.<br>정확한 연도는— 풀이에서 보여주마.</p>
     </section>
 
+    <!-- 단안(斷) 미리보기 — 남자가 사는 진짜 이유: 결정 -->
+    <section class="sec ledger-sec"><span class="vtag">第五頁 · 단안</span>
+      <p class="h-red rv">현월의 판결</p>
+      <h2 class="h-big rv">네 앞의 결정 셋—<br><span class="r">이미 적어 두었다.</span></h2>
+      <p class="p-dim rv">고민은 네가 하는 게 아니다. 장부가 한다.<br>한다 · 안 한다 · 미룬다— 셋 중 하나로 끝낸다.</p>
+      <div class="verdicts rv" id="verdictList"></div>
+      <p class="toc-note rv">* 판결과 그 까닭은 값을 치르면 열린다.<br>미루는 것은 몇 년 몇 월 이후인지까지 적혀 있다.</p>
+    </section>
+
     <!-- 잠긴 티저 목록 -->
     <section class="sec ledger-sec" style="background:var(--bg2)"><span class="vtag">第六頁 · 봉인</span>
       <p class="h-red rv">셈 미리보기 · 貳</p>
@@ -1388,24 +1419,24 @@ footer b{color:#7a6f66}
       <p class="p-dim rv">네 장부를 보고 전부 셈해 뒀다.<br>열람만 잠겨 있을 뿐.</p>
       <div class="locklist">
         <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其一</span><span class="li-title">평생 담을 수 있는<br>내 재물 그릇의 최대치</span></div>
-          <div class="li-body"><p>재성의 흐름이 대운과 맞물려 그릇이 가득 차는 구간이 두 번 존재하며 그 정점은 당신의 나이로 셈했을 때 대략…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
+          <div class="li-head"><span class="li-no">其一</span><span class="li-title">斷 · 단안 — 이직·투자·동업,<br>지금 네 앞의 결정 셋에 대한 판결</span></div>
+          <div class="li-body"><p>세 가지 결정 각각에 대해 한다·안 한다·미룬다를 적고, 미루는 것은 몇 년 몇 월 이후인지까지 못 박아 두었는데 네 원국에서는…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其二</span><span class="li-title">내 돈을 걷어가는 얼굴과<br>돈길을 열어 줄 귀인 — 가리는 법</span></div>
-          <div class="li-body"><p>당신의 원국은 특정 오행의 사람에게 재물이 새는 구조라서 지금까지 돈이 얽혔던 사람 중에서도…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
+          <div class="li-head"><span class="li-no">其二</span><span class="li-title">그릇이 가장 크게 차는 나이와,<br>그때까지 남은 할(割)을 채우는 순서</span></div>
+          <div class="li-body"><p>재성의 흐름이 대운과 맞물려 그릇이 가득 차는 구간이 두 번 존재하며 그 정점은 당신의 나이로 셈했을 때 대략…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其三</span><span class="li-title">월급·사업·투자 —<br>내 돈이 붙는 밥벌이의 생김새</span></div>
           <div class="li-body"><p>같은 노력으로도 재물이 배로 붙는 업의 방향이 원국마다 정해져 있는데 당신의 재성 구조로 보면…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其四</span><span class="li-title">지긋지긋한 마름이 끝나고<br>돈이 고이기 시작하는 시기</span></div>
-          <div class="li-body"><p>지금의 마른 구간은 당신 탓이 아니라 재물 대운의 골짜기이며 이 골짜기를 빠져나가는 정확한 시점은…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
+          <div class="li-head"><span class="li-no">其四</span><span class="li-title">판이 커지는 해 —<br>움직여야 할 정확한 시점</span></div>
+          <div class="li-body"><p>지금의 마른 구간은 당신 탓이 아니라 재물 대운의 골짜기이며 이 골짜기를 빠져나가 판이 커지는 정확한 시점은…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
         <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其五</span><span class="li-title">잃지 않고 불리는,<br>내 원국만의 지키는 법(藏)</span></div>
-          <div class="li-body"><p>드러나면 새고 감추면 고이는 것이 재물인데, 당신의 구조에서 돈을 감춰 둘 자리와 방위는…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
+          <div class="li-head"><span class="li-no">其五</span><span class="li-title">올해 할 일 셋 ·<br>하지 말 일 셋</span></div>
+          <div class="li-body"><p>그릇의 한 할을 채우는 데 필요한 행동만 골라 여섯 줄로 적었다. 첫 줄은 통장을 가르는 법이고 둘째 줄은…</p><div class="li-veil">封 — 값을 치르면 열린다</div></div>
         </div>
       </div>
     </section>
@@ -1418,7 +1449,7 @@ footer b{color:#7a6f66}
       <div style="margin-top:70px">
         <div class="stepnum rv">壹</div>
         <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">언제, 어디서 새는지</h3>
+        <h3 class="h-big rv" style="font-size:20px">그릇부터 잰다 — 그리고 못 채운 자리</h3>
         <div class="timeline rv" id="salTimeline"></div>
         <p class="toc-note rv">* 가려진 자리는 풀이에서 열린다.</p>
       </div>
@@ -1426,7 +1457,7 @@ footer b{color:#7a6f66}
       <div style="margin-top:80px">
         <div class="stepnum rv">貳</div>
         <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">구멍부터, 막는 법까지</h3>
+        <h3 class="h-big rv" style="font-size:20px">구멍 — 막는 순간 차기 시작한다</h3>
         <div class="card rv" id="salDeepCard">
           <h4>비겁탈재 <span>(比劫奪財)</span></h4>
           <p>곁의 사람이 재물을 걷어가는 구멍.
@@ -1440,19 +1471,19 @@ footer b{color:#7a6f66}
       <div style="margin-top:80px">
         <div class="stepnum rv">參</div>
         <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">막고 난 뒤</h3>
+        <h3 class="h-big rv" style="font-size:20px">단안(斷) — 결정을 끝낸다</h3>
         <div class="ba rv">
           <div class="b">
-            <h5>막기 전</h5>
-            <p>월말마다 잔고를 보며 한숨 쉬는 밤.
-            벌어도 벌어도 제자리인
-            패턴이 굳는다.</p>
+            <h5>결정 전</h5>
+            <p>이직할까 버틸까, 넣을까 말까—
+            3년째 같은 고민을 하는 사이
+            판은 조용히 작아진다.</p>
           </div>
           <div class="a">
-            <h5>막고 난 후</h5>
-            <p>같은 벌이가 <b>고이기 시작한다.</b>
-            언제 지키고 언제 굴릴지—
-            새는 자리를 아는 자의 돈은 다르다.</p>
+            <h5>결정 후</h5>
+            <p>할 것과 안 할 것, 그리고 <b>시기</b>가 정해진다.
+            그릇이 큰 놈의 돈은
+            벌이가 아니라 결정에서 갈린다.</p>
           </div>
         </div>
         <p class="toc-note rv" style="margin-top:26px">* 심곡사의 재물 풀이는 굿·부적 판매가 아닌,<br>명리학 재성론(財星論)에 근거한 서면 분석입니다.</p>
@@ -1468,10 +1499,10 @@ footer b{color:#7a6f66}
         <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">여든여덟 장,<br><span class="r">재물의 경(經)</span></h2>
         <p class="p-dim rv" id="bookOwner" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">열 권(十卷) 여든여덟 장으로 엮은,<br>네 이름의 단 한 권. 평생 소장한다.</p>
         <div class="toc rv">
-          <div class="t"><span class="n">壹</span><span class="x">재물 원국 — 네 돈의 그릇부터 잰다</span></div>
+          <div class="t"><span class="n">壹</span><span class="x">재물 원국 — 네 돈 팔자의 생김새</span></div>
           <div class="t"><span class="n">貳</span><span class="x">구멍(漏) — 새는 자리, 전부 짚는다</span></div>
           <div class="t"><span class="n">參</span><span class="x">물길 — 돈이 들어오는 길, 막힌 길</span></div>
-          <div class="t"><span class="n">肆</span><span class="x">그릇 — 평생 담을 재물의 최대치</span></div>
+          <div class="t"><span class="n">肆</span><span class="x">그릇 — 평생 담을 돈, 숫자로 · 斷 단안(판결)</span></div>
           <div class="t"><span class="n">伍</span><span class="x">때 — 고이는 해, 새는 해, 크게 열리는 해</span></div>
           <div class="t"><span class="n">陸</span><span class="x">업(業) — 돈이 붙는 밥벌이의 생김새</span></div>
           <div class="t"><span class="n">柒</span><span class="x">장(藏) — 지키고 감추고 불리는 법</span></div>
@@ -1484,22 +1515,22 @@ footer b{color:#7a6f66}
 
     <!-- 후기 -->
     <section class="sec ledger-sec"><span class="vtag">第八頁 · 증언</span>
-      <p class="h-red rv">구멍을 막은 뒤</p>
-      <h2 class="h-big rv">장부를 고쳐 적은 이들</h2>
+      <p class="h-red rv">판결을 받은 뒤</p>
+      <h2 class="h-big rv">결정을 끝낸 이들</h2>
       <div class="review rv">
         <div class="who">이○훈 · 41세 · 자영업</div>
-        <div class="quote">"가게 10년에, 남은 게 없었는데…"</div>
+        <div class="quote">"그릇 22억이라는 말에, 가게를 하나 더 냈습니다"</div>
         <p>새는 자리 세 군데를 딱 짚어주는데 소름이었어요. 동업 건 정리하고 나서 처음으로 월말에 돈이 남았습니다. 장부 넘기듯 설명해 줘서 어렵지도 않았고요.</p>
       </div>
       <div class="review rv">
-        <div class="who">김○아 · 33세 · 직장인</div>
-        <div class="quote">"제가 돈을 못 모으는 이유가, 있었어요"</div>
-        <p>적금 깨는 게 버릇이었는데 그릇 이야기를 읽고 관리 방식을 통째로 바꿨어요. 반년 만에 처음으로 목돈이라는 게 생겼습니다.</p>
+        <div class="who">김○민 · 34세 · 직장인</div>
+        <div class="quote">"이직— '미룬다, 내년 3월'. 그대로 했습니다"</div>
+        <p>3년을 고민만 하던 이직을 판결 한 줄로 끝냈어요. 적힌 달까지 버티고 옮겼는데 연봉이 1.6배. 고민하던 시간이 아까울 정도였습니다.</p>
       </div>
       <div class="review rv">
         <div class="who">정○석 · 38세 · 프리랜서</div>
-        <div class="quote">"투자만 하면 물리는 게, 팔자였다니"</div>
-        <p>움직여야 돈이 붙는 판이라는 말에 일하는 방식을 바꿨는데 진짜 수입 구조가 달라졌어요. 40만원 주고 봤던 대면 상담보다 낫습니다.</p>
+        <div class="quote">"보증— '안 한다'. 그 한 줄이 3천을 지켰어요"</div>
+        <p>친구 사업 보증을 설 뻔했는데 판결지 보고 거절했습니다. 반년 뒤 그 사업 접혔어요. 40만원 주고 봤던 대면 상담보다 낫습니다.</p>
       </div>
       <p class="review-src rv">* 실제 상담 후기를 재구성한 예시입니다.</p>
     </section>
@@ -1507,17 +1538,17 @@ footer b{color:#7a6f66}
     <!-- 가격 · 찢어가기 -->
     <section class="sec ledger-sec" style="background:var(--bg2)" id="tear"><span class="vtag">終頁 · 값</span>
       <p class="h-red rv">그 돈이면</p>
-      <h2 class="h-big rv">강의 듣고, 부적 쓰고—<br>또 새는 셈이다</h2>
+      <h2 class="h-big rv">강의 듣고, 책 읽고—<br>판은 그대로다</h2>
       <p class="price-strike rv">
         강의 <s>–39만원</s> · 부적 <s>–55만원</s> · 굿 <s>–120만원</s><br>
-        <b style="color:var(--ink)">막는 데는— 셈 한 번이면 된다.</b>
+        <b style="color:var(--ink)">판을 키우는 건— 네 그릇을 아는 것부터다.</b>
       </p>
-      <p class="p-body rv">장경각에서 받는 <em>재물 셈법</em></p>
+      <p class="p-body rv">장경각에서 받는 <em>그릇의 숫자와 판결</em></p>
 
       <!-- 미리 열람 -->
       <a class="peek-btn rv" href="#" onclick="openPreview(event)">
         <span class="eye">👁</span>
-        <span class="tx"><b>미리 열람하기</b><small>네 이름으로 셈한 경의 앞머리 열 장을 먼저 펼친다 — 핵심 셈은 가려 둔다</small></span>
+        <span class="tx"><b>미리 열람하기</b><small>네 그릇의 숫자와 판결 한 줄을 먼저 보여준다 — 까닭은 가려 둔다</small></span>
       </a>
 
       <div class="hr-knife rv" style="margin-top:54px"></div>
@@ -1646,7 +1677,7 @@ footer b{color:#7a6f66}
 
 <!-- 하단 고정 CTA -->
 <div id="sticky">
-  <a href="#" onclick="goCTA(event)"><span class="blink"></span><span id="stickyText">새는 구멍(漏)의 셈을 받아라</span></a>
+  <a href="#" onclick="goCTA(event)"><span class="blink"></span><span id="stickyText">네 그릇의 숫자를 받아라</span></a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js" integrity="sha384-l8ah+VgaWtk1mvOe9VC+OirC6qHFF4yH7l7mKRidV9MSti3E9F463bMp6ZVN4kuC" crossorigin="anonymous"></script>
@@ -2070,12 +2101,12 @@ function fillSales(){
   const h0 = hashUser();
   const bookNo = (4001 + (h0 % 979)).toLocaleString();
   if (nm){
-    document.getElementById('vHead').innerHTML = nm + '. 허어…<br><span class="r">너, 크게 새고 있다.</span>';
+    document.getElementById('vHead').innerHTML = nm + '. 허어…<br><span class="r">너, 작게 살고 있다.</span>';
     document.getElementById('coverName').textContent = user.name + '의 재물 장부';
     document.getElementById('chartOwner').textContent = '現月記 — ' + user.name + '의 재물 장부';
     document.getElementById('lostOwner').textContent = '— ' + user.name + '의 누적 누재(漏財) 추산 —';
     document.getElementById('graphOwner').textContent = user.name + ' — 財物運 능선도';
-    document.getElementById('stickyText').textContent = nm + ', 네 재물의 셈을 받아라';
+    document.getElementById('stickyText').textContent = nm + ', 네 그릇의 숫자를 받아라';
     document.getElementById('ctaWho').textContent = nm + ', ';
     document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>열 권(十卷) 여든여덟 장으로 엮은,<br>네 이름의 단 한 권. 평생 소장한다.';
   }
@@ -2090,7 +2121,7 @@ function fillSales(){
   // 흉살 진단 (이름+생일 기반 고정 선택 · 2~3개 가변)
   const h = hashUser();
   const picks = SGS.pickSals(SAL_POOL, h);   // 결과지와 동일 선택
-  document.getElementById('salCount').textContent = picks.length + '개의 구멍';
+  document.getElementById('salCount').textContent = picks.length + '개의 구멍이 막고 있다';
   document.getElementById('salCards').innerHTML = picks.map(s => `
     <div class="sal-card rv">
       <div class="sal-head">
@@ -2165,22 +2196,35 @@ function setupLostCounter(h){
   if (!numEl) return;
   lostDone = false; stamp.classList.remove('on');
   setupPeerStrip(h);
-  const SCALE = [1, 0.6, 1, 1.6, 2.4][user.income || 0] || 1;   // 수입 구간에 맞춘 누재 규모
-  const target = Math.round((1800 + (h % 4200)) * SCALE);   // 사람마다 고정
+  // 그릇의 숫자 — 결과지(재물의 경)와 같은 함수로 계산 (랜딩=결과지)
+  const VS = SGS.vessel(h);
+  const target = VS.eok;
+  const fb = document.getElementById('fillBar');
+  if (fb){ fb.innerHTML = Array.from({length:10}, (_, i) => `<i class="${i < VS.filled ? 'on' : ''}"></i>`).join(''); }
+  const cap = document.getElementById('fillCap');
+  if (cap) cap.innerHTML = `지금 채운 것 — <b>${SGS.HAL[VS.filled]}</b> · 남은 <b>${SGS.HAL[VS.remain]}</b> · 가장 크게 차는 나이 <b>${VS.peakAge}살</b>`;
+  const tn = document.getElementById('typeName'), td = document.getElementById('typeDesc');
+  if (tn){ tn.textContent = VS.type; td.textContent = VS.typeDesc; }
+  const vE = document.getElementById('vEok'), vF = document.getElementById('vFilled');
+  if (vE){ vE.textContent = VS.eok + '억'; vF.textContent = SGS.HAL[VS.filled]; }
+  const vl = document.getElementById('verdictList');
+  if (vl) vl.innerHTML = VS.verdicts.map((v, i) => `
+    <div class="vd">
+      <span class="vd-n">${['其一','其二','其三'][i]}</span>
+      <span class="vd-q">${v.q}</span>
+      <span class="vd-v"><span class="veiled">${v.label}${v.when ? ' · ' + v.when : ''}</span> <b style="color:#c9a25c">封</b></span>
+      <span class="vd-w"><span class="veiled">${v.why}</span></span>
+    </div>`).join('');
   const io = new IntersectionObserver(es => {
     es.forEach(e => {
       if (!e.isIntersecting || lostDone) return;
       lostDone = true; io.disconnect();
-      // 앞자리는 첫 프레임부터 끝까지 가린 채, 뒷자리만 주판 굴리듯 돈다 — 전체 값은 단 한 순간도 노출되지 않는다
-      const lead = Math.floor(target / 1000);
-      const rest = target % 1000;
+      // 그릇의 숫자는 가리지 않는다 — 이 숫자가 야망이다. 됫박 굴리듯 0에서 올라간다
       const t0 = performance.now(), DUR = 1900;
       (function tick(now){
         const p = Math.min(1, (now - t0) / DUR);
         const eased = 1 - Math.pow(1 - p, 3);
-        const v = Math.round(rest * eased);
-        const cyc = (Math.floor(now / 90) % 9) + 1; // 가려진 앞자리도 돌아가는 척 (블러라 안 읽힘)
-        numEl.innerHTML = '<span class="veiled-num">' + (p < 1 ? cyc : lead) + '</span>,' + String(v).padStart(3, '0');
+        numEl.textContent = Math.round(target * eased);
         if (p < 1) requestAnimationFrame(tick);
         else {
           setTimeout(()=>{ stamp.classList.add('on'); playTsk(); if (navigator.vibrate) navigator.vibrate([40,60,40]); }, 350);
@@ -2203,9 +2247,9 @@ function enterLoading(){
   if (lbg) { lbg.preload='auto'; lbg.play().catch(()=>{}); }
   const msgs = user.name ? [
     '장부를 펼친다…',
-    '<b>' + esc(user.name) + '</b>… 네 재물의 판을 센다…',
-    '새는 자리를 짚는다…'
-  ] : ['장부를 펼친다…','재물의 판을 센다…','새는 자리를 짚는다…'];
+    '<b>' + esc(user.name) + '</b>… 네 그릇을 잰다…',
+    '판결을 적는다…'
+  ] : ['장부를 펼친다…','그릇을 잰다…','판결을 적는다…'];
   const lt = document.getElementById('loadtext');
   let i = 0;
   lt.innerHTML = msgs[0];

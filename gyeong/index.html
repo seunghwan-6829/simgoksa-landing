@@ -98,6 +98,7 @@ h2.pg-title .r{color:var(--brass-hi)}
 .rowl .v{flex:1;font-family:'Nanum Myeongjo',serif;color:var(--ink)}
 .rowl .v b{color:var(--paper);font-weight:800}
 .rowl .v em{font-style:normal;color:var(--brass-hi)}
+.rowl .v.sealed{filter:blur(4.5px);user-select:none}
 .rowl .m{flex-shrink:0;font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:13px}
 .rowl .m.good{color:var(--brass)} .rowl .m.bad{color:var(--loo)}
 /* 규(規) */
@@ -358,6 +359,7 @@ const addToc = (label, title) => tocEntries.push({label, title, page: pages.leng
 const pgHead = (label) => `<p class="pg-no">財物經 · 第 ${pages.length+1} 張</p>` + (label?`<p class="pg-label">${label}</p>`:'');
 
 const SW = STEM_W[sIdx], BW = BRANCH_W[bIdx], GU = GUK[gukOf(bIdx)], UPv = UP[(H>>8)%6];
+const VS = SGS.vessel(H, nowY);   // 그릇의 숫자·팔자 유형·단안 — 랜딩(hyunwol)과 동일
 document.title = user.name + '의 재물의 경(經) — 深谷寺';
 
 /* 1 · 표지 */
@@ -378,7 +380,8 @@ addPage(`
 addPage(`${pgHead('開卷')}
   <h2 class="pg-title">여든여덟 장으로 엮은<br><span class="r">단 한 사람의 장부</span></h2>
   <div class="hr"></div>
-  <p class="pg-body">${nm}. 이 경(經)은 세상에 단 한 권이다. 네 이름과 태어난 날로 셈하여, 열 권(十卷) 여든여덟 장으로 엮었다.${PARTIAL ? ` 그중 네가 급하다 한 <em>${['','한','두','세','네','다섯','여섯','일곱','여덟','아홉'][PICKS.length]} 편</em>만 먼저 찢어 왔다— 나머지는 장경각에 봉해 두었다.` : ''}</p>
+  <p class="pg-body">${nm}. 네 돈 팔자는 <em>${VS.type}</em>다— ${VS.typeDesc}</p>
+  <p class="pg-body">이 경(經)은 세상에 단 한 권이다. 네 이름과 태어난 날로 셈하여, 열 권(十卷) 여든여덟 장으로 엮었다.${PARTIAL ? ` 그중 네가 급하다 한 <em>${['','한','두','세','네','다섯','여섯','일곱','여덟','아홉'][PICKS.length]} 편</em>만 먼저 찢어 왔다— 나머지는 장경각에 봉해 두었다.` : ''}</p>
   <p class="pg-body">순서대로 읽어도 좋고, 목차에서 급한 권부터 펴도 좋다. 다만 <em>둘째 권— 구멍(漏)</em>만은 건너뛰지 마라. 새는 독에는 어떤 가르침을 부어도 고이지 않는다.</p>
   <p class="pg-note">장경각 검증 필사본 · 제 ${bookNoS}호<br>갈무리 단추로 평생 소장할 수 있다</p>`);
 
@@ -390,6 +393,14 @@ addPage(`${pgHead('序 · 鑑定所見')}
   <p class="pg-body">길에서 네 손목을 잡았던 것은 무례가 아니라 급함이었다. 새는 소리가 들리는데 그냥 보낼 수는 없는 노릇 아니냐.</p>
   <p class="pg-body">마흔 해 장부를 지킨 눈으로 셈했다. 구멍은 <b>${sals.length}개</b>, 그릇은 <b>${bowl}</b>, 물꼬는 <b>${dirMain} 방(方)</b>. 이제 한 장씩— 전부 펴 보인다.</p>
   <p class="pg-note">감정인 — 장경각 현월 (玄月)</p>`);
+
+/* 斷 · 단안 — 남자가 이 경을 펴는 진짜 이유: 결정 */
+addPage(`${pgHead('斷 · 단안(斷案)')}
+  <h2 class="pg-title">네 앞의 결정 셋—<br><span class="r">장부가 대신 끝낸다</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">고민은 네가 하는 게 아니다. 그릇 <b>${VS.eok}억</b>에 지금 <b>${SGS.HAL[VS.filled]}</b>— 이 셈 위에서 판결한다. 까닭은 뒤의 권(卷)마다 길게 적었으니, 여기선 결론만 받아라.</p>
+  ${VS.verdicts.map((v, i) => `<div class="rowl"><span class="k">${['其一','其二','其三'][i]} ${v.q}</span><span class="v${PARTIAL ? ' sealed' : ''}"><em>${v.label}${v.when ? ' — ' + v.when + ' 이후' : ''}</em><br><span style="font-size:13px;color:var(--ink)">${v.why}</span></span></div>`).join('')}
+  ${PARTIAL ? `<p class="pg-note" style="color:var(--brass-hi)">封 — 판결은 열 권을 전부 찢은 자에게만 열린다. 고른 편만 먼저 읽고, 급해지거든 마저 찢어가라.</p>` : `<p class="pg-note">판결은 ${nowY}년 장부 기준이다. 해가 바뀌면 卷十을 다시 펴라.</p>`}`);
 
 /* 卷一 */
 addToc('卷一','재물 원국 — 네 돈의 생김새');
@@ -473,6 +484,14 @@ addPage(`${pgHead('卷四 · 됫박')}
   <p class="pg-body">${BOWL_T[H%5]}</p>
   <div class="pg-quote">"그릇은 정해져 있으나<br>채움은 정해져 있지 않다.<br>구멍 막은 자만이— <em>제 그릇만큼 산다.</em>"</div>
   <p class="pg-note">섬(石)은 재물의 부피가 아니라 감당의 깊이를 이른다.</p>`);
+addPage(`${pgHead('卷四 · 숫자')}
+  <p class="pg-label">그릇을 오늘 돈으로 옮기면</p>
+  <div class="pg-hanja" style="font-family:'Noto Sans KR',sans-serif;font-size:58px">${VS.eok}<span style="font-size:26px">억</span></div>
+  <p class="pg-sub">평생 담을 수 있는 최대치 · 가장 크게 차는 나이 <b>${VS.peakAge}살</b></p>
+  <div class="hr"></div>
+  <p class="pg-body">지금 채운 것은 <em>${SGS.HAL[VS.filled]}</em>. 남은 <b>${SGS.HAL[VS.remain]}</b>이 이 경의 나머지 권(卷)에 적혀 있다— 구멍을 막아 한 할, 물길을 트어 두 할, 때를 맞춰 나머지를 채운다.</p>
+  <div class="pg-quote">"작은 놈이 아니다.<br><em>작게 살고 있었을 뿐이지.</em>"</div>
+  <p class="pg-note">숫자는 오늘 값 기준의 감당 규모다. 네 손에 한 번에 쥐는 돈이 아니라 평생 흐르는 물의 총량이다.</p>`);
 
 /* 卷五 */
 addToc('卷五','때 — 고이는 해, 새는 해, 열리는 해');
@@ -536,6 +555,14 @@ addPage(`${pgHead('卷八 · 합')}
     <div class="rowl"><span class="k">삼가야 할 상</span><span class="v">달콤한 셈부터 먼저 꺼내는 자 — 귀인은 셈을 나중에 말한다</span><span class="m bad">戒</span></div>
   </div>`);
 
+/* 今年 · 올해 할 일 셋 · 하지 말 일 셋 — 찢어 두고 보는 한 장 */
+addPage(`${pgHead('今年 · 올해')}
+  <h2 class="pg-title">올해 할 일 셋,<br><span class="r">하지 말 일 셋</span></h2>
+  <div class="hr"></div>
+  <div class="fix"><div class="ft">할 일 · 行</div><ul>${VS.todo.map(t => `<li>${t}</li>`).join('')}</ul></div>
+  <div class="fix" style="border-color:rgba(210,74,62,.45)"><div class="ft" style="color:var(--loo)">하지 말 일 · 戒</div><ul>${VS.dont.map(t => `<li>${t}</li>`).join('')}</ul></div>
+  <p class="pg-note">이 한 장은 찢어 두고 보아라. 여섯 줄이 그릇의 한 할(割)이다.</p>`);
+
 /* 卷九 — 열두 달, 한 달 한 장 */
 addToc('卷九','열두 달 — 재물 달력');
 addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
@@ -578,7 +605,7 @@ const END_IDX = pages.length;   // 여기서부터 맺음 (권 경계 계산용)
 addPage(`${pgHead('終')}
   <h2 class="pg-title">맺으며</h2>
   <div class="hr"></div>
-  <p class="pg-body">${nm}. 구멍을 알았으니 반은 막은 것이다.</p>
+  <p class="pg-body">${nm}. 그릇은 ${VS.eok}억, 채운 건 ${SGS.HAL[VS.filled]}— 이제 숫자를 알았으니 반은 채운 것이다. 결정 셋(${VS.verdicts.map(v => v.label).join(' · ')})은 첫 장 斷에 적어 두었다.</p>
   <p class="pg-body">이 경은 네 서고에 평생 머문다. 해가 바뀌거든 아홉째 권을 다시 펴고, 큰 셈을 앞두거든 일곱째 권을 다시 펴라.</p>
   <div class="pg-quote" style="text-align:center">"돈은 벌리는 것이 아니라,<br><em>새지 않게 하는 것이다.</em>"</div>
   <p class="pg-note">셈하고 적다 — 장경각 현월</p>
@@ -660,6 +687,8 @@ function unlockMore(){
 if (PREVIEW) applyPreview();
 else if (PARTIAL) applyPicks();
 else fitTo88();
+/* 장 번호 다시 매기기 — 간지 삽입/봉인으로 순서가 바뀌므로 최종 순서로 */
+pages.forEach((p, i) => { p.html = p.html.replace(/財物經 · 第 \d+ 張/, `財物經 · 第 ${i + 1} 張`); });
 
 /* ═══ 렌더 + 페이저 (스와이프당 무조건 1장) ═══ */
 const pager = document.getElementById('pager');
