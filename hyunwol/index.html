@@ -577,6 +577,9 @@ body{
 .stepline{width:1px;height:46px;background:linear-gradient(180deg,var(--blood),transparent);margin:14px auto}
 /* 장부 조판(좌측 정렬) 안에서는 구분선도 숫자(貳·參) 밑에 맞춘다 */
 #sales .ledger-sec .stepline{margin:14px 0 14px 20px}
+/* 찢어가기 칸은 세로 꼬리표(終頁) 아래부터 전폭으로 — 좁은 폰에서 등급 카드가 찌그러지지 않게 */
+#sales #tear .tiers,#sales #tear .pick-wrap,#sales #tear .peek-btn,#sales #tear .cta-big{margin-right:-34px}
+@media (min-width:480px){#sales #tear .tiers,#sales #tear .pick-wrap,#sales #tear .peek-btn,#sales #tear .cta-big{margin-right:0}}
 .card{
   margin-top:30px;background:rgba(20,14,12,.75);border:1px solid rgba(150,96,26,.25);
   border-radius:4px;padding:26px 22px;text-align:left;
@@ -672,6 +675,66 @@ body{
 .guarantee h5{color:var(--blood-bright);font-size:15px;margin-bottom:10px;letter-spacing:.1em}
 .guarantee p{font-size:13px;line-height:2;color:var(--ink-dim);word-break:keep-all}
 /* CTA */
+/* 미리 열람 버튼 */
+.peek-btn{
+  display:flex;align-items:center;gap:14px;margin-top:34px;text-decoration:none;text-align:left;
+  border:1px solid rgba(208,140,58,.45);border-radius:5px;padding:14px 16px;
+  background:rgba(208,140,58,.06);color:var(--paper);
+}
+.peek-btn .eye{font-size:20px;flex-shrink:0;filter:grayscale(.2)}
+.peek-btn .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.peek-btn b{font-size:15px;letter-spacing:.1em;color:var(--ember)}
+.peek-btn small{font-size:12px;color:var(--ink-dim);line-height:1.6;word-break:keep-all}
+/* 등급 */
+.tiers{margin-top:30px;display:flex;flex-direction:column;gap:10px}
+.tier{
+  position:relative;appearance:none;cursor:pointer;font-family:inherit;text-align:left;width:100%;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;
+  background:rgba(240,234,226,.05);border:1px solid rgba(232,224,216,.16);border-radius:5px;
+  padding:18px 16px;color:var(--ink);transition:border-color .2s,background .2s;
+}
+.tier.sel{background:rgba(164,22,26,.14);border-color:var(--blood-bright);box-shadow:0 0 24px rgba(164,22,26,.18)}
+.tier .t-n{font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:800;color:var(--paper);white-space:nowrap;min-width:74px}
+.tier .t-d{font-size:13.5px;color:var(--ink-dim);line-height:1.5;word-break:keep-all}
+.tier .t-d b{color:var(--ink);font-weight:700}
+.tier.sel .t-d{color:var(--ink)}
+.tier .t-p{font-family:'Noto Sans KR',sans-serif;font-size:20px;font-weight:900;color:var(--paper);white-space:nowrap}
+.tier .t-p small{font-size:12px;font-weight:400;margin-left:1px}
+.tier .t-tag{position:absolute;top:-9px;left:12px;background:var(--blood);color:#fff;font-size:10.5px;letter-spacing:.12em;padding:3px 8px;border-radius:2px}
+.tier[data-tier="all"].sel .t-tag{background:var(--ember);color:#1a0f08}
+/* 차례 고르기 */
+.pick-wrap{margin-top:22px;border:1px solid rgba(232,224,216,.12);border-radius:5px;overflow:hidden;text-align:left}
+.pick-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(240,234,226,.05);font-size:12.5px;letter-spacing:.1em;color:var(--ink-dim)}
+.pick-cnt{font-family:'Noto Sans KR',sans-serif;font-weight:700;color:var(--ember)}
+.picks{display:flex;flex-direction:column}
+.pk{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-top:1px solid rgba(232,224,216,.08);cursor:pointer;transition:background .15s}
+.pk input{appearance:none;width:18px;height:18px;flex-shrink:0;margin-top:3px;border:1px solid rgba(232,224,216,.4);border-radius:3px;background:transparent;position:relative;cursor:pointer}
+.pk input:checked{background:var(--blood);border-color:var(--blood-bright)}
+.pk input:checked::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.pk input:disabled{opacity:.35;cursor:not-allowed}
+.pk .n{font-family:'Nanum Myeongjo',serif;color:var(--ember);font-size:13px;font-weight:700;margin-top:3px;white-space:nowrap}
+.pk .x{display:flex;flex-direction:column;gap:3px;font-size:14.5px;color:var(--ink);line-height:1.5;word-break:keep-all;min-width:0}
+.pk .x small{font-size:12px;color:var(--ink-dim);line-height:1.55}
+.pk:has(input:checked){background:rgba(164,22,26,.1)}
+.pk:has(input:disabled) .x{color:var(--ink-dim)}
+.pk.owned{background:rgba(208,140,58,.06)}
+.pk.owned input{opacity:.7;background:var(--ember);border-color:var(--ember)}
+.pk.owned .x::after{content:"이미 찢어간 대목 — 서고에 있다";display:block;font-size:11px;color:var(--ember);margin-top:2px}
+.pick-wrap.all .pk input{pointer-events:none}
+.pick-err{display:none;padding:10px 16px;font-size:12.5px;color:var(--blood-bright);border-top:1px solid rgba(232,224,216,.08)}
+.pick-wrap.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* 미리 열람 오버레이 */
+#peek{position:fixed;inset:0;z-index:230;display:none;background:rgba(2,1,1,.92);flex-direction:column}
+#peek.on{display:flex}
+#peek iframe{flex:1;width:100%;border:none;background:#060404}
+#peek .peek-bar{flex:none;display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;background:#060404;border-bottom:1px solid rgba(208,140,58,.25)}
+#peek .peek-bar span{font-size:12px;letter-spacing:.2em;color:var(--ember);font-family:'Nanum Myeongjo',serif}
+#peek .peek-bar button{appearance:none;background:none;border:1px solid rgba(232,224,216,.3);color:var(--ink);border-radius:999px;padding:6px 14px;font-family:inherit;font-size:12.5px;cursor:pointer}
+#peek .peek-foot{flex:none;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);background:#060404;border-top:1px solid rgba(208,140,58,.25)}
+#peek .peek-foot a{display:block;text-align:center;background:linear-gradient(160deg,#c1121f,#780000);color:#fff;text-decoration:none;font-weight:700;letter-spacing:.12em;font-size:15px;padding:15px;border-radius:3px}
+.buy-card .b-picks{margin-top:10px;font-size:12.5px;color:#3a322d;line-height:1.7;word-break:keep-all}
+.buy-card .b-picks b{color:#a4161a}
 .cta-big{
   display:block;width:100%;margin-top:40px;
   background:linear-gradient(160deg,#a3701c,#5c3c0a);
@@ -1406,8 +1469,8 @@ footer b{color:#7a6f66}
       <p class="review-src rv">* 실제 상담 후기를 재구성한 예시입니다.</p>
     </section>
 
-    <!-- 가격 -->
-    <section class="sec ledger-sec" style="background:var(--bg2)"><span class="vtag">終頁 · 값</span>
+    <!-- 가격 · 찢어가기 -->
+    <section class="sec ledger-sec" style="background:var(--bg2)" id="tear"><span class="vtag">終頁 · 값</span>
       <p class="h-red rv">그 돈이면</p>
       <h2 class="h-big rv">강의 듣고, 부적 쓰고—<br>또 새는 셈이다</h2>
       <p class="price-strike rv">
@@ -1415,43 +1478,60 @@ footer b{color:#7a6f66}
         <b style="color:var(--ink)">막는 데는— 셈 한 번이면 된다.</b>
       </p>
       <p class="p-body rv">장경각에서 받는 <em>재물 셈법</em></p>
-      <p class="p-body rv" style="margin-top:50px"><span style="font-family:'Nanum Myeongjo',serif;color:var(--blood-bright);font-size:22px">開門 기념 — 셈값</span></p>
 
-      <div class="plan hot rv">
-        <div class="head"><span>장부를 먼저 편 값 · 현월의 재물 셈법</span><span class="tag">한정</span></div>
-        <div class="body">
-          <div class="row1">
-            <div>
-              <div class="amount">38,900<small>원</small></div>
-              <div class="was"><s>정가 229,000원</s> · 선착순 마감</div>
-            </div>
-            <div class="off">83<small>%</small></div>
-          </div>
-          <ul>
-            <li>현월이 네 재물 판을 직접 셈하고, 직접 적는다</li>
-            <li>여든여덟 장 「재물의 경(經)」 (평생 소장)</li>
-            <li>구멍의 뿌리 — 시기·크기·막는 법까지</li>
-            <li>그릇·물길·때 + 업·귀인·십년 대운</li>
-          </ul>
-        </div>
+      <!-- 미리 열람 -->
+      <a class="peek-btn rv" href="#" onclick="openPreview(event)">
+        <span class="eye">👁</span>
+        <span class="tx"><b>미리 열람하기</b><small>네 이름으로 셈한 경의 앞머리 열 장을 먼저 펼친다 — 핵심 셈은 가려 둔다</small></span>
+      </a>
+
+      <div class="hr-knife rv" style="margin-top:54px"></div>
+      <p class="h-red rv" style="margin-top:50px">현월이 일러둔다</p>
+      <h2 class="h-big rv">급한 권(卷)만<br><span class="r">찢어서 봐도 된다.</span></h2>
+      <p class="p-dim rv" style="margin-top:18px">여든여덟 장을 한 번에 다 읽을 여유가 없다면—<br>제일 새는 자리 <b style="color:var(--ink)">한 권만 뜯어 가도 된다.</b><br>차례에서 고르면, 그 권만 네 이름으로 셈해 준다.</p>
+
+      <!-- 등급 -->
+      <div class="tiers rv" id="tiers">
+        <button class="tier" data-tier="one" onclick="setTier('one')">
+          <span class="t-n">한 권</span>
+          <span class="t-d">급한 권 <b>하나</b>만 뜯어본다</span>
+          <span class="t-p">3,900<small>원</small></span>
+        </button>
+        <button class="tier" data-tier="five" onclick="setTier('five')">
+          <span class="t-tag">가장 많이 찢는다</span>
+          <span class="t-n">다섯 권</span>
+          <span class="t-d">권 <b>다섯</b>을 골라 뜯는다</span>
+          <span class="t-p">14,900<small>원</small></span>
+        </button>
+        <button class="tier sel" data-tier="all" onclick="setTier('all')">
+          <span class="t-tag">장부를 먼저 편 값</span>
+          <span class="t-n">전부</span>
+          <span class="t-d">十卷, 여든여덟 장 <b>전부</b></span>
+          <span class="t-p">38,900<small>원</small></span>
+        </button>
       </div>
 
-      <div class="plan base rv">
-        <div class="head"><span>정가</span><span class="tag">기간 후</span></div>
-        <div class="body">
-          <div class="row1">
-            <div>
-              <div class="amount">229,000<small>원</small></div>
-            </div>
-          </div>
+      <!-- 차례 고르기 -->
+      <div class="pick-wrap rv">
+        <div class="pick-head"><span id="pickTitle">차례 — 十卷 전부 네 것이다</span><span class="pick-cnt" id="pickCnt">10 / 10</span></div>
+        <div class="picks" id="picks">
+          <label class="pk"><input type="checkbox" value="1"><span class="n">卷一</span><span class="x">재물 원국 — 네 돈의 생김새<small>벌어도 늘 그 모양인 이유— 타고난 재물 판부터 편다.</small></span></label>
+          <label class="pk"><input type="checkbox" value="2"><span class="n">卷二</span><span class="x">구멍(漏) — 새는 자리 전부<small>누가, 어디로, 얼마나 새는지— 구멍마다 이름을 붙인다.</small></span></label>
+          <label class="pk"><input type="checkbox" value="3"><span class="n">卷三</span><span class="x">물길 — 들어오는 길, 막힌 길<small>돈이 들어오는 길과, 막혀서 돌아가는 길.</small></span></label>
+          <label class="pk"><input type="checkbox" value="4"><span class="n">卷四</span><span class="x">그릇 — 평생 담을 최대치<small>네가 평생 쥘 수 있는 돈의 됫박 크기.</small></span></label>
+          <label class="pk"><input type="checkbox" value="5"><span class="n">卷五</span><span class="x">때 — 고이는 해, 새는 해<small>크게 열리는 해가 언제인지— 연도로 짚는다.</small></span></label>
+          <label class="pk"><input type="checkbox" value="6"><span class="n">卷六</span><span class="x">업(業) — 돈이 붙는 밥벌이<small>같은 노력에 돈이 배로 붙는 판, 말라붙는 판.</small></span></label>
+          <label class="pk"><input type="checkbox" value="7"><span class="n">卷七</span><span class="x">장(藏) — 지키고 감추는 법<small>드러내면 새고 감추면 고인다— 창고의 자리.</small></span></label>
+          <label class="pk"><input type="checkbox" value="8"><span class="n">卷八</span><span class="x">귀인 — 돈길을 여는 얼굴들<small>누구와 엮여야 돈길이 열리는지.</small></span></label>
+          <label class="pk"><input type="checkbox" value="9"><span class="n">卷九</span><span class="x">열두 달 — 재물 달력<small>달마다 넣을 때와 뺄 때.</small></span></label>
+          <label class="pk"><input type="checkbox" value="10"><span class="n">卷十</span><span class="x">십 년 — 재물 대운의 능선<small>앞으로 십 년, 돈이 오르는 해와 꺾이는 해.</small></span></label>
         </div>
+        <p class="pick-err" id="pickErr"></p>
       </div>
 
-      <p class="toc-note rv" style="margin-top:20px">한 번 셈한 장부는, 평생 네 것이다.</p>
+      <p class="toc-note rv" style="margin-top:26px">한 번 셈한 장부는, 평생 네 것이다.<br>값을 치르는 그 순간— 네 서고에 꽂힌다.</p>
 
-      <p class="toc-note rv" style="margin-top:30px">값을 치르는 그 순간,<br>네 「재물의 경(經)」이 서고에 꽂힌다.</p>
-
-      <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain">내 돈 새는 구멍(漏) 확인하기</a>
+      <a class="cta-big rv" href="#" onclick="goCTA(event)" id="ctaMain"><span id="ctaWho"></span>열람하기 · <span id="ctaPrice">38,900원</span></a>
     </section>
 
     <!-- 공유 (맨 하단 — 푸터 직전) -->
@@ -1510,15 +1590,23 @@ footer b{color:#7a6f66}
     <h3 id="buyTitle">셈을 받는다</h3>
     <p class="m-sub" id="buySub">값을 치르는 그 순간,<br>네 서고에 「재물의 경(經)」이 꽂힌다.</p>
     <div class="buy-card">
-      <div class="b-head">현월의 재물 셈법 · 재물의 경(經)</div>
+      <div class="b-head" id="buyHead">현월의 재물 셈법 · 재물의 경(經)</div>
       <div class="b-body">
         <div class="b-name" id="buyFor">—</div>
-        <div class="b-price"><s>229,000원</s>38,900<small>원</small><span class="pct">83%↓</span></div>
+        <div class="b-price" id="buyPrice">38,900<small>원</small></div>
+        <div class="b-picks" id="buyPicks"></div>
       </div>
     </div>
     <button class="m-btn" id="buyGo" onclick="startPay()">결제하기</button>
     <p class="m-note">결제 완료 즉시 접수되며,<br>완성된 풀이는 <a href="../library/" style="color:var(--ember)">내 서고</a>에서 언제든 읽을 수 있습니다.</p>
   </div>
+</div>
+
+<!-- 미리 열람 오버레이 -->
+<div id="peek">
+  <div class="peek-bar"><span id="peekNo">深谷寺 · 미리 열람</span><button onclick="closePreview()">미리 열람 닫기 ✕</button></div>
+  <iframe id="peekFrame" title="미리 열람"></iframe>
+  <div class="peek-foot"><a href="#" onclick="closePreview(event, true)">급한 권, 찢어가기 →</a></div>
 </div>
 
 <!-- 하단 고정 CTA -->
@@ -1548,7 +1636,7 @@ const META_EVENT = {
   pay_click:      'InitiateCheckout'      // 결제 버튼
 };
 function track(event, extra){
-  try{ if (window.metaTrack && META_EVENT[event]) window.metaTrack(META_EVENT[event], { product: 'hyunwol' }); }catch(e){}
+  try{ if (window.metaTrack && META_EVENT[event]) window.metaTrack(META_EVENT[event], { product: 'hyunwol', tier: window.SGS_TIER || 'all' }); }catch(e){}
   try{
     const row = {
       event,
@@ -1720,6 +1808,7 @@ function fadeOutGateAmb(){
 
 document.getElementById('enterBtn').addEventListener('click', (e) => {
   e.stopPropagation();
+  track('gate_enter');
   const gate = document.getElementById('gate');
   gate.classList.add('off');
   ensureSound();
@@ -1733,6 +1822,18 @@ document.getElementById('enterBtn').addEventListener('click', (e) => {
 }, {once:true});
 
 /* (지난 결과 바로가기 버튼은 이탈 방지를 위해 제거 — 모든 방문자는 처음처럼 시작) */
+
+setTimeout(function resumeToTear(){   // 스크립트 하단의 const(order 등) 초기화가 끝난 뒤 실행
+  if (location.hash !== '#tear') return;
+  const d = loadProgress();
+  if (!d) return;
+  user.name = d.name; user.birth = d.birth; user.gender = d.gender;
+  const gate = document.getElementById('gate'); gate.classList.add('off'); gateClosed = true;
+  order.forEach(id => { const sc = document.getElementById(id); if (sc) sc.style.display = 'none'; });
+  enterSales();
+  document.getElementById('sales').classList.add('show');
+  setTimeout(() => { const t = document.getElementById('tiers'); if (t) t.scrollIntoView({ behavior:'smooth', block:'center' }); }, 400);
+}, 0);
 
 /* ───────── story engine ───────── */
 const order = ['hero','scene1','scene2','sceneAsk','scene3'];
@@ -1770,6 +1871,7 @@ function quake(){
 }
 
 function gotoScene(id){
+  track('scene', { detail: id });
   pauseAllScenes(); // 이전 씬 영상·사운드 정지
   order.forEach(s => { const el = document.getElementById(s); if (el) el.style.display = 'none'; });
   const nxt = document.getElementById(id);
@@ -1909,7 +2011,7 @@ function fillSales(){
     document.getElementById('lostOwner').textContent = '— ' + user.name + '의 누적 누재(漏財) 추산 —';
     document.getElementById('graphOwner').textContent = user.name + ' — 財物運 능선도';
     document.getElementById('stickyText').textContent = nm + ', 네 재물의 셈을 받아라';
-    document.getElementById('ctaMain').textContent = nm + ', 네 재물의 셈을 받아라';
+    document.getElementById('ctaWho').textContent = nm + ', ';
     document.getElementById('bookOwner').innerHTML = esc(user.name) + '.<br>열 권(十卷) 여든여덟 장으로 엮은,<br>네 이름의 단 한 권. 평생 소장한다.';
   }
   document.getElementById('coverNo').textContent = '장경각 검증 필사본 · 제 ' + bookNo + '호';
@@ -2091,11 +2193,14 @@ let afterAuth = null;
 
 function openAuth(next){
   afterAuth = next || null;
+  track('auth_open');
+  authDone = false;
   document.getElementById('authErr').style.display = 'none';
   document.getElementById('authModal').classList.add('on');
   setTimeout(()=>document.getElementById('authEmail').focus(), 300);
 }
-function closeAuth(){ document.getElementById('authModal').classList.remove('on'); }
+let authDone = false;
+function closeAuth(){ document.getElementById('authModal').classList.remove('on'); if (!authDone) track('auth_abandon'); }
 function toggleAuthMode(){
   authMode = authMode === 'signup' ? 'login' : 'signup';
   document.getElementById('authGo').textContent = authMode === 'signup' ? '열쇠 받기 · 회원가입' : '서고 열기 · 로그인';
@@ -2147,6 +2252,7 @@ async function submitAuth(){
     track(authMode === 'signup' ? 'signup' : 'login');
     btn.disabled = false;
     closeAuth();
+    authDone = true;
     if (afterAuth) { const f = afterAuth; afterAuth = null; f(); }
   }catch(e){
     authError('문이 열리지 않는다. 잠시 후 다시 시도하라.');
@@ -2157,33 +2263,140 @@ document.getElementById('authPw').addEventListener('keydown', e => { if (e.key =
 document.getElementById('authPw2').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 
 /* ───────── 구매 모달 ───────── */
-/* 그로블 결제 URL — 2026-08-20 개문 */
-const PAY_URL = SGS.payUrl(SGS.PRODUCTS.hyunwol.tiers.all.code);   // /assets/sgs-config.js
+/* ───────── 찢어가기 — 등급 · 차례 선택 ─────────
+   그로블 결제창 세 개가 한 상품(묘담)이다. 웹훅(groble-webhook)의 TIER_BY_CONTENT 와 같은 코드. */
+const TIERS = {};   // /assets/sgs-config.js 의 상품표에서 가져온다 (결제 코드·가격 한 곳 관리)
+Object.entries(SGS.PRODUCTS.hyunwol.tiers).forEach(([k, t]) => { TIERS[k] = { ...t, url: SGS.payUrl(t.code) }; });
+const PART_NAMES = ['','재물 원국','구멍(漏)','물길','그릇','때','업(業)','장(藏)','귀인','열두 달','십 년'];
+const PART_HJ = ['','卷一','卷二','卷三','卷四','卷五','卷六','卷七','卷八','卷九','卷十'];
+const pick = { tier:'all', parts:[] };
+/* 이미 찢어간 권(서고에서 "마저 찢어가기"로 온 경우 ?owned=2,5) — 다시 팔지 않는다 */
+const OWNED = [...new Set((new URLSearchParams(location.search).get('owned') || '').split(/[^0-9]+/).map(Number).filter(n => n >= 1 && n <= 10))];
+const won = n => n.toLocaleString('ko-KR') + '원';
+function pickBoxes(){ return [...document.querySelectorAll('#picks input')].filter(b => !OWNED.includes(+b.value)); }
+(function markOwned(){
+  document.querySelectorAll('#picks input').forEach(b => {
+    if (!OWNED.includes(+b.value)) return;
+    b.checked = true; b.disabled = true;
+    b.closest('.pk').classList.add('owned');
+  });
+})();
+function setTier(t){
+  const fromAll = pick.tier === 'all' && t !== 'all';
+  pick.tier = t;
+  window.SGS_TIER = t;   // 픽셀(track.js)이 등급별 content_id·금액을 싣도록
+  document.querySelectorAll('.tier').forEach(b => b.classList.toggle('sel', b.dataset.tier === t));
+  const wrap = document.querySelector('.pick-wrap');
+  wrap.classList.toggle('all', t === 'all');
+  if (t === 'all'){ pickBoxes().forEach(b => { b.checked = true; b.disabled = false; }); }
+  else if (fromAll){ pickBoxes().forEach(b => { b.checked = false; b.disabled = false; }); }   // 전부→부분: 직접 고르게 비운다
+  else {
+    // 한도 넘는 선택은 앞에서부터 남긴다
+    const limit = TIERS[t].n;
+    let kept = 0;
+    pickBoxes().forEach(b => { if (b.checked){ kept++; if (kept > limit) b.checked = false; } });
+  }
+  syncPicks();
+  track('tier_select', { tier: t });
+}
+function syncPicks(){
+  const t = TIERS[pick.tier];
+  const boxes = pickBoxes();
+  pick.parts = boxes.filter(b => b.checked).map(b => +b.value);
+  const full = pick.tier !== 'all' && pick.parts.length >= t.n;
+  boxes.forEach(b => { b.disabled = full && !b.checked; });
+  document.getElementById('pickCnt').textContent = `${pick.parts.length} / ${t.n}`;
+  document.getElementById('pickTitle').textContent =
+    pick.tier === 'all' ? (OWNED.length ? '차례 — 전부 (이미 찢어간 권 포함)' : '차례 — 十卷 전부 네 것이다')
+    : pick.parts.length >= t.n ? '차례 — 다 골랐다'
+    : `차례 — ${t.n - pick.parts.length}권 더 고를 수 있다`;
+  document.getElementById('ctaPrice').textContent = won(t.price);
+  document.getElementById('pickErr').style.display = 'none';
+}
+document.querySelectorAll('#picks input').forEach(b => b.addEventListener('change', syncPicks));
+setTier(OWNED.length ? (OWNED.length >= 5 ? 'one' : 'five') : 'all');
+if (OWNED.length) pickBoxes().forEach(b => { b.checked = false; }), syncPicks();
+/* 선택이 모자라면 결제로 못 간다 */
+function picksReady(){
+  const t = TIERS[pick.tier];
+  if (pick.tier === 'all') return true;
+  if (pick.parts.length === t.n) return true;
+  const wrap = document.querySelector('.pick-wrap');
+  const err = document.getElementById('pickErr');
+  err.textContent = pick.parts.length === 0
+    ? `찢어갈 권을 골라라 — ${t.n}권.`
+    : `${t.n - pick.parts.length}권 더 골라라. (${t.n}권 값이다)`;
+  err.style.display = 'block';
+  wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake');
+  wrap.scrollIntoView({ behavior:'smooth', block:'center' });
+  return false;
+}
+function picksLabel(){
+  if (pick.tier === 'all') return '卷一 ~ 卷十 · 十卷 전부';
+  return pick.parts.map(n => `<b>${PART_HJ[n]}</b> ${PART_NAMES[n]}`).join(' · ');
+}
+function reportQuery(){
+  if (!user.birth) return '';
+  const q = `name=${encodeURIComponent(user.name)}&y=${user.birth.y}&m=${user.birth.m}&d=${user.birth.d}&g=${encodeURIComponent(user.gender)}`;
+  return pick.tier === 'all' ? q : q + '&picks=' + pick.parts.join(',');
+}
+
+/* ───────── 미리 열람 ───────── */
+function openPreview(e){
+  if (e) e.preventDefault();
+  track('preview_open');
+  const q = user.birth ? reportQuery().replace(/&picks=[^&]*/, '') : 'demo=1';
+  document.getElementById('peekFrame').src = '../gyeong/?' + q + '&preview=1';
+  document.getElementById('peek').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closePreview(e, toTear){
+  if (e) e.preventDefault();
+  document.getElementById('peek').classList.remove('on');
+  document.getElementById('peekFrame').src = 'about:blank';
+  document.body.style.overflow = '';
+  if (toTear) document.getElementById('tiers').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+window.addEventListener('message', ev => {
+  if (ev.origin !== location.origin || !ev.data) return;
+  if (ev.data.sgs === 'closePreview') closePreview(null, true);
+  if (ev.data.sgs === 'page') document.getElementById('peekNo').textContent = `미리 열람 · 第 ${ev.data.cur} 章 / ${ev.data.total}`;
+});
+
+/* ───────── 구매 모달 ───────── */
+const ADMIN_EMAILS = SGS.ADMIN_EMAILS;   // 관리자 — 결제 없이 바로 열람 (/assets/sgs-config.js)
+let isAdmin = false;
 function openBuy(){
+  const t = TIERS[pick.tier];
+  document.getElementById('buyHead').textContent = t.head;
   document.getElementById('buyFor').textContent = user.name ? (user.name + ' — 재물의 경(經)') : '재물의 경(經)';
+  document.getElementById('buyPrice').innerHTML = t.price.toLocaleString('ko-KR') + '<small>원</small>';
+  document.getElementById('buyPicks').innerHTML = picksLabel();
+  document.getElementById('buySub').innerHTML = pick.tier === 'all'
+    ? '값을 치르는 그 순간,<br>네 서고에 「재물의 경(經)」이 꽂힌다.'
+    : `값을 치르는 그 순간,<br>네가 고른 ${t.name}이 네 서고에 꽂힌다.`;
+  const go = document.getElementById('buyGo');
+  go.textContent = isAdmin ? '관리자 열람 · 결제 없이 열기' : '결제하기';
   document.getElementById('buyModal').classList.add('on');
+  track('buy_modal_open', { tier: pick.tier });
 }
 function closeBuy(){ document.getElementById('buyModal').classList.remove('on'); }
 async function startPay(){
-  track('pay_click');
-  if (!PAY_URL){
-    const btn = document.getElementById('buyGo');
-    btn.textContent = '開門 준비 중 — 곧 문이 열린다';
-    btn.disabled = true;
-    return;
-  }
+  if (isAdmin){ location.href = '../gyeong/?' + reportQuery(); return; }
+  const t = TIERS[pick.tier];
+  track('pay_click', { tier: pick.tier, picks: pick.tier === 'all' ? null : pick.parts.join(',') });
   // 결제 의향 기록 → 그로블 결제창으로 이탈하기 직전, 우리 쪽 정보를 리드에 남긴다.
   // 웹훅은 ?ref=<session_id> 로 되돌아오는 data.object.sellerReference 로 이 행을 찾아
-  // user_id / 이메일 / 사주를 주문에 붙인다. (결제창은 우리 화면이 아니라 자동으로 안 들어간다)
+  // user_id / 이메일 / 사주 / 등급 / 고른 장을 주문에 붙인다. (결제창은 우리 화면이 아니라 자동으로 안 들어간다)
   try{
     const { data } = await sb.auth.getSession();
     if (data && data.session && data.session.user){
       currentUserId = data.session.user.id;
-      await track('pay_intent', { email: data.session.user.email });
+      await track('pay_intent', { email: data.session.user.email, tier: pick.tier, picks: pick.tier === 'all' ? null : pick.parts.join(',') });
     }
   }catch(e){}
   // ?ref= 로 세션을 실어 보낸다. 허용 문자 A-Za-z0-9-_.:=~ / 1~128자 (UUID 는 조건 충족)
-  location.href = PAY_URL + '?ref=' + encodeURIComponent(sessionId);
+  location.href = t.url + '?ref=' + encodeURIComponent(sessionId);
 }
 
 /* ───────── 공유 (모바일: OS 공유시트 → 카카오톡 / PC: 링크 복사) ───────── */
@@ -2211,12 +2424,19 @@ async function shareSite(){
 /* ───────── CTA ───────── */
 async function goCTA(e){
   e.preventDefault();
-  track('cta_click');
+  track('cta_click', { tier: pick.tier });
+  if (!picksReady()) return;
   if (!sb) { openBuy(); return; }
   const { data } = await sb.auth.getSession();
-  if (data && data.session) openBuy();
-  else openAuth(openBuy);
+  if (data && data.session){
+    isAdmin = ADMIN_EMAILS.includes((data.session.user.email || '').toLowerCase());
+    openBuy();
+  } else openAuth(async () => {
+    try{ const r = await sb.auth.getSession(); isAdmin = !!(r.data && r.data.session) && ADMIN_EMAILS.includes((r.data.session.user.email || '').toLowerCase()); }catch(e){}
+    openBuy();
+  });
 }
+
 </script>
 </body>
 </html>

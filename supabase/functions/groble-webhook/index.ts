@@ -61,7 +61,7 @@ const PRODUCTS: Product[] = [
   {
     key: "hyunwol",
     label: "스님 현월 · 재물의 경 여든여덟 장",
-    contentIds: ["5xeDtU"],
+    contentIds: ["5xeDtU", "RpxRzG", "vuzWHN"],   // 전부 / 다섯 권 / 한 권
     titleHints: ["현월", "재물의 경", "재물"],
     amount: 38900,
     payUrl: "https://www.groble.im/payment/5xeDtU",
@@ -76,7 +76,10 @@ const UNKNOWN_PRODUCT = "unknown";
 
 // 부분 구매 등급 — 결제창 코드(판매자측 값)로 확정한다. 리드의 tier 는 보조용.
 //  one  = 고른 한 장(목차 1부)   five = 고른 다섯 장   all = 전부
-const TIER_BY_CONTENT: Record<string, string> = { xiXpcK: "one", e7Ntiv: "five", kAAJFx: "all" };
+const TIER_BY_CONTENT: Record<string, string> = {
+  xiXpcK: "one", e7Ntiv: "five", kAAJFx: "all",   // 묘담
+  vuzWHN: "one", RpxRzG: "five", "5xeDtU": "all",  // 현월
+};
 const TIER_LIMIT: Record<string, number> = { one: 1, five: 5, all: 10 };
 // picks 정규화: "2,5,7" → 1~10 사이 정수, 중복 제거, 등급 한도만큼만
 function normPicks(raw: string | null, tier: string): string | null {

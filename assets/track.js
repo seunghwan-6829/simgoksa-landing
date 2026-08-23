@@ -42,7 +42,12 @@
         five: { id: 'e7Ntiv', name: '무녀 묘담 · 살풀이 다섯 대목 찢어가기', value: 14900 },
         all:  { id: 'kAAJFx', name: '무녀 묘담 · 운명 사용설명서 아흔아홉 장', value: 38900 }
       } },
-    hyunwol: { id: '5xeDtU', name: '스님 현월 · 재물의 경 여든여덟 장',       value: 38900 }
+    hyunwol: { id: '5xeDtU', name: '스님 현월 · 재물의 경 여든여덟 장',       value: 38900,
+      tiers: {
+        one:  { id: 'vuzWHN', name: '스님 현월 · 재물의 경 한 권 찢어가기',   value: 3900 },
+        five: { id: 'RpxRzG', name: '스님 현월 · 재물의 경 다섯 권 찢어가기', value: 14900 },
+        all:  { id: '5xeDtU', name: '스님 현월 · 재물의 경 여든여덟 장',       value: 38900 }
+      } }
   };
   /* 결제창 코드 → 상품/등급 역조회 (서고의 Purchase 처럼 결제 코드만 아는 곳에서 쓴다) */
   function productByContentId(cid) {
