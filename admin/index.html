@@ -140,6 +140,14 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
         <div class="bars" id="leadBars"><div class="loading">불러오는 중…</div></div>
       </div>
       <div class="panel">
+        <h2>퍼널 (최근 7일)</h2>
+        <p class="p-sub">세션 수 기준 — 각 단계는 이전 단계 대비 비율</p>
+        <table>
+          <thead><tr><th>단계</th><th>세션</th><th>이전 단계 대비</th></tr></thead>
+          <tbody id="funnelRows"><tr><td colspan="3" class="loading">불러오는 중…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="panel">
         <h2>기간별 분석 (최근 7일)</h2>
         <p class="p-sub">서울 시간 기준</p>
         <table>
@@ -187,7 +195,7 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
   </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js" integrity="sha384-l8ah+VgaWtk1mvOe9VC+OirC6qHFF4yH7l7mKRidV9MSti3E9F463bMp6ZVN4kuC" crossorigin="anonymous"></script>
 <script>
 const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
 const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
@@ -292,6 +300,16 @@ async function loadDash(){
     const paidOrders = orders.filter(o => o.status !== 'refunded');
     document.getElementById('kOrders').textContent = paidOrders.length;
     document.getElementById('kRevenue').textContent = won(paidOrders.reduce((s,o)=>s+(o.amount||0),0));
+    // 퍼널 — 세션 단위(같은 방문이 같은 단계를 여러 번 찍어도 1)
+    const STEPS = [['gate_enter','문 들어섬'],['ask_name','이름 적음'],['input_complete','입력 완료(진단)'],['cta_click','열람하기 클릭'],['auth_open','로그인 창'],['signup','가입 완료'],['buy_modal_open','구매 모달'],['pay_click','결제로 이동']];
+    const sess = ev => new Set(leads.filter(l => l.event === ev && l.session_id).map(l => l.session_id)).size;
+    let prev = null;
+    document.getElementById('funnelRows').innerHTML = STEPS.map(([ev, label]) => {
+      const n = sess(ev);
+      const pct = prev ? (prev ? Math.round(n / prev * 100) : 0) + '%' : '—';
+      prev = n || prev;
+      return `<tr><td>${label}<div class="muted">${ev}</div></td><td><b>${n}</b></td><td>${pct}</td></tr>`;
+    }).join('');
     // 일별
     const days = [];
     for (let i = 6; i >= 0; i--){

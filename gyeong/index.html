@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-product="hyunwol">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>재물의 경(經) — 深谷寺 장경각</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0a0705">
@@ -12,6 +12,10 @@
 <meta name="facebook-domain-verification" content="r86v232n14r3kyj3ma78sbca9zhxia" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <!-- Meta Pixel + 전환 추적 — 공개 페이지 공통 (관리자 페이지 제외) -->
+<script src="/assets/sgs-config.js"></script>
+<script src="/assets/sgs-saju.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js" integrity="sha384-l8ah+VgaWtk1mvOe9VC+OirC6qHFF4yH7l7mKRidV9MSti3E9F463bMp6ZVN4kuC" crossorigin="anonymous"></script>
+<script src="/assets/sgs-access.js"></script>
 <script src="/assets/track.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -164,27 +168,27 @@ h2.pg-title .r{color:var(--brass-hi)}
 <script>
 /* ═══ 입력 (hyunwol 랜딩과 동일 규약) ═══ */
 const qs = new URLSearchParams(location.search);
+if (window.SGS_HALT) throw new Error('sgs:halt');   // 접근 확인 중 — /assets/sgs-access.js 가 다시 연다
 let user = null;
-if (qs.get('name') || qs.get('demo')){
-  user = { name:(qs.get('name')||'김심곡').trim(), birth:{y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender:(qs.get('g')||'여').trim() };
+const ACC = window.SGS_ACCESS;   // 서버가 확인한 주문
+if (ACC){
+  user = { name: ACC.name, birth: {y:ACC.y, m:ACC.m, d:ACC.d}, gender: ACC.g };
+} else if (qs.get('name') || qs.get('demo')){
+  user = { name:(qs.get('name')||'김심곡').trim().slice(0, 40), birth:{y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender:(qs.get('g')||'여').trim() };
+  if (user.gender !== '남' && user.gender !== '여') user.gender = '여';
   if (qs.get('demo')) document.getElementById('demoBar').style.display = 'block';
-} else {
-  try{ const raw = localStorage.getItem('sgs_hyunwol'); if (raw){ const d = JSON.parse(raw); if (d && d.name && d.birth) user = d; } }catch(e){}
-  if (!user){ location.replace('../hyunwol/'); }
 }
+if (!user){ location.replace('../library/'); throw new Error('sgs:nouser'); }
 const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
 const nm = esc(user.name);
 
 /* ═══ 해시 — 랜딩과 완전 동일 (같은 사람 = 같은 경) ═══ */
-function hashUser(){
-  const s = user.name + user.birth.y + user.birth.m + user.birth.d + user.gender;
-  let h = 0; for (let i = 0; i < s.length; i++){ h = ((h<<5)-h+s.charCodeAt(i))|0; }
-  return Math.abs(h);
-}
+/* 해시 — 랜딩과 같은 공통 함수. hv=1 은 구형 해시(2026-08-23 이전 주문) */
+const HASH_V = ACC ? ACC.hv : ((qs.get('hv') === '1') ? 1 : 2);
+function hashUser(){ return SGS.hashUser(user, HASH_V); }
 const H = hashUser();
-const y = user.birth.y, nowY = new Date().getFullYear(), age = nowY - y + 1;
-const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const y = user.birth.y, nowY = (ACC && ACC.yr) ? ACC.yr : new Date().getFullYear(), age = nowY - y + 1;
+const STEMS = SGS.STEMS, BRANCHES = SGS.BRANCHES;
 const sIdx = (y-4)%10, bIdx = (y-4)%12;
 const yearPillar = STEMS[sIdx] + BRANCHES[bIdx];
 
@@ -215,16 +219,8 @@ const SAL_POOL = [
    shape:'수입이 알려지면 꼭 손 벌리는 이가 나타나고, 자랑한 투자는 꼭 물리고, 보여준 지갑은 꼭 얇아진다. 네 재산의 반은— 감추는 법을 모르는 값으로 새었다.',
    fixes:['벌이를 묻거든 웃어라. 장부는 보여주는 것이 아니다.','재산은 겉과 속을 나눠라. 보이는 지갑은 얇게, 감춘 창고는 두껍게.','큰 셈(계약·투자)은 이뤄지기 전에 입 밖에 내지 마라. 말이 새면 돈이 샌다.']}
 ];
-const salCount = 2 + ((H >> 5) % 2);
-const sals = [];
-(function(){
-  let idx = H % SAL_POOL.length;
-  const step = ((H >> 7) % 2) ? 5 : 1;
-  while (sals.length < salCount){
-    if (!sals.includes(SAL_POOL[idx])) sals.push(SAL_POOL[idx]);
-    idx = (idx + step) % SAL_POOL.length;
-  }
-})();
+const sals = SGS.pickSals(SAL_POOL, H);   // 랜딩과 동일 선택
+const salCount = sals.length;
 
 /* 랜딩 가림값과 동일 공식 — 흐렸던 값이 여기서 열린다 */
 const BOWLS = ['여섯 섬 두 말','여덟 섬 한 말','아홉 섬 반','열두 섬 두 말','일곱 섬 세 말'];

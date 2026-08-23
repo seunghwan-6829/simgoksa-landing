@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-product="myodam">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>운명 사용설명서 — 深谷寺</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#050404">
@@ -12,6 +12,10 @@
 <meta name="facebook-domain-verification" content="r86v232n14r3kyj3ma78sbca9zhxia" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <!-- Meta Pixel + 전환 추적 — 공개 페이지 공통 (관리자 페이지 제외) -->
+<script src="/assets/sgs-config.js"></script>
+<script src="/assets/sgs-saju.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js" integrity="sha384-l8ah+VgaWtk1mvOe9VC+OirC6qHFF4yH7l7mKRidV9MSti3E9F463bMp6ZVN4kuC" crossorigin="anonymous"></script>
+<script src="/assets/sgs-access.js"></script>
 <script src="/assets/track.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -189,23 +193,22 @@ body.preview #topbar,body.preview #demoBar{display:none}
 <script>
 /* ═══════════ 입력 데이터 ═══════════ */
 const qs = new URLSearchParams(location.search);
+if (window.SGS_HALT) throw new Error('sgs:halt');   // 접근 확인 중 — /assets/sgs-access.js 가 다시 연다
 let user = null;
-if (qs.get('name') || qs.get('demo')){
+const ACC = window.SGS_ACCESS;   // 서버가 확인한 주문 (이름·생일·성별·등급·대목)
+if (ACC){
+  user = { name: ACC.name, birth: {y:ACC.y, m:ACC.m, d:ACC.d}, gender: ACC.g };
+} else if (qs.get('name') || qs.get('demo')){
   user = { name: (qs.get('name') || '김심곡').trim().slice(0, 40), birth: {y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender: (qs.get('g') || '여').trim() };
   if (user.gender !== '남' && user.gender !== '여') user.gender = '여';   // URL 값 화이트리스트
   if (qs.get('demo')) document.getElementById('demoBar').style.display = 'block';
-} else {
-  try{
-    const raw = localStorage.getItem('sgs_myodam');
-    if (raw){ const d = JSON.parse(raw); if (d && d.name && d.birth) user = d; }
-  }catch(e){}
 }
-if (!user){ location.href = '../myodam/'; }
+if (!user){ location.replace('../library/'); throw new Error('sgs:nouser'); }
 
 /* ═══════════ 부분 구매(찢어가기) · 미리 열람 ═══════════
    picks=2,5  → 목차 1~10부 가운데 고른 부만 실리고, 나머지는 封(봉인) 한 장으로 남는다.
    preview=1  → 앞머리 + 壹·貳 맛보기만, 핵심 문장은 흐려서 보여준다. (열람 기록은 demo 취급) */
-const PICKS = [...new Set((qs.get('picks') || '').split(/[^0-9]+/).map(Number).filter(n => n >= 1 && n <= 10))].sort((a,b)=>a-b);
+const PICKS = [...new Set(String(ACC ? (ACC.picks || '') : (qs.get('picks') || '')).split(/[^0-9]+/).map(Number).filter(n => n >= 1 && n <= 10))].sort((a,b)=>a-b);
 const PARTIAL = PICKS.length > 0 && PICKS.length < 10;
 const PREVIEW = !!qs.get('preview');
 if (PREVIEW){
@@ -213,13 +216,13 @@ if (PREVIEW){
 }
 
 /* ═══════════ 사주 계산 ═══════════ */
-const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const STEM_KO = ['갑','을','병','정','무','기','경','신','임','계'];
+const STEMS = SGS.STEMS;
+const STEM_KO = SGS.STEM_KO;
 const STEM_EL = ['나무','나무','불','불','흙','흙','쇠','쇠','물','물'];
 const STEM_SIDE = ['큰 나무','굽은 덩굴','타오르는 해','등잔의 불','산의 흙','밭의 흙','벼린 칼','다듬은 옥','큰 강물','이슬비'];
-const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const ZODIAC_KO = ['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
-const ZODIAC_FILE = ['rat','ox','tiger','rabbit','dragon','snake','horse','goat','monkey','rooster','dog','pig'];
+const BRANCHES = SGS.BRANCHES;
+const ZODIAC_KO = SGS.ZODIAC_KO;
+const ZODIAC_FILE = SGS.ZODIAC_FILE;
 
 const y = user.birth.y;
 const yStemIdx = (y - 4) % 10;
@@ -227,14 +230,12 @@ const yBranchIdx = (y - 4) % 12;
 const yearPillar = STEMS[yStemIdx] + BRANCHES[yBranchIdx];
 const zodiac = ZODIAC_KO[yBranchIdx];
 const zodiacImg = '../assets/zodiac/' + ZODIAC_FILE[yBranchIdx] + '.jpg';
-const nowY = new Date().getFullYear();
+const nowY = ACC && ACC.yr ? ACC.yr : new Date().getFullYear();   // 구매한 해로 고정 — 해가 바뀌어도 책이 안 변한다
 const age = nowY - y + 1;
 
-function hashUser(){
-  const s = user.name + y + user.birth.m + user.birth.d + user.gender;
-  let h = 0; for (let i = 0; i < s.length; i++){ h = ((h<<5)-h+s.charCodeAt(i))|0; }
-  return Math.abs(h);
-}
+/* 해시 — 랜딩과 같은 공통 함수. hv=1 은 구형 해시(2026-08-23 이전 주문) */
+const HASH_V = ACC ? ACC.hv : ((qs.get('hv') === '1') ? 1 : 2);
+function hashUser(){ return SGS.hashUser(user, HASH_V); }
 const H = hashUser();
 
 /* 살 선택 — 랜딩과 동일 로직 (결과 일치) */
@@ -246,16 +247,8 @@ const SAL_POOL = [
   {h:'驛', name:'역마살', hanja:'驛馬殺', desc:'한 곳에 뿌리내리지 못하게 흔드는 살. 이직과 이사, 이별이 잦다.', root:'길', gift:'낯선 곳에서도 길을 여는 개척의 힘'},
   {h:'桃', name:'도화살', hanja:'桃花殺', desc:'사람을 끌어당기는 힘이자, 구설을 부르는 칼.', root:'매력', gift:'다루기만 하면 사람이 모이는 인력(引力)'}
 ];
-const salCount = 2 + ((H >> 5) % 2);
-const sals = [];
-(function(){
-  let idx = H % SAL_POOL.length;
-  const step = ((H >> 7) % 2) ? 5 : 1;
-  while (sals.length < salCount){
-    if (!sals.includes(SAL_POOL[idx])) sals.push(SAL_POOL[idx]);
-    idx = (idx + step) % SAL_POOL.length;
-  }
-})();
+const sals = SGS.pickSals(SAL_POOL, H);   // 랜딩과 동일 선택
+const salCount = sals.length;
 
 /* 개인화 연도 */
 const pastY = nowY - 2 - (H % 3);

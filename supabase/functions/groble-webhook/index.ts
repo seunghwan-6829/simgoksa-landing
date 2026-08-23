@@ -458,8 +458,10 @@ Deno.serve(async (req) => {
         if (rows.length) {
           leadTier = leadTier ?? rows[0].tier;
           leadPicks = leadPicks ?? rows[0].picks;
-          leadUserId = leadUserId ?? rows[0].user_id;
-          leadEmail = leadEmail ?? rows[0].email;
+          // ⚠️ 이메일 폴백에서는 리드의 user_id / email 을 신뢰하지 않는다.
+          //    leads 는 anon INSERT 가 열린 표라, 남의 결제 이메일을 적은 가짜 pay_intent 로
+          //    타인의 주문을 자기 계정(서고)에 붙일 수 있기 때문이다. 서고 연결은
+          //    RLS 의 buyer_email 매칭(구매자 본인 이메일)만으로 이뤄진다.
           leadProductKey = leadProductKey ?? rows[0].product;
           sajuFromLead = sajuFromLead ?? sajuOf(rows[0]);
           leadFbp = leadFbp ?? rows[0].fbp;

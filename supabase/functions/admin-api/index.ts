@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
     if (action === "stats") {
       const since = new Date(Date.now() - 7 * 86400e3).toISOString();
       const [leads, orders, views] = await Promise.all([
-        fetch(`${url}/rest/v1/leads?select=id,created_at,event&created_at=gte.${since}&limit=5000`, { headers: S }).then(j),
+        fetch(`${url}/rest/v1/leads?select=id,created_at,event,session_id&created_at=gte.${since}&limit=5000`, { headers: S }).then(j),
         fetch(`${url}/rest/v1/purchases?select=id,created_at,amount,status&limit=5000`, { headers: S }).then(j),
         fetch(`${url}/rest/v1/report_views?select=id,created_at,event,is_demo&created_at=gte.${since}&limit=5000`, { headers: S }).then(j),
       ]);

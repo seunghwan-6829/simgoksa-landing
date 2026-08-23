@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /report/
+Disallow: /gyeong/
+Disallow: /library/
+Disallow: /admin/
+Sitemap: https://simgoksa.com/sitemap.xml

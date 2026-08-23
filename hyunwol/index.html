@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>심곡사(深谷寺) — 당신의 돈이 모이지 않는 이유</title>
 <meta name="description" content="심곡사 뒤편, 장경각(藏經閣). 스님 현월이 당신의 사주 속 새는 구멍(漏)을 셈합니다.">
 <meta property="og:type" content="website">
@@ -17,6 +17,8 @@
 <meta name="facebook-domain-verification" content="r86v232n14r3kyj3ma78sbca9zhxia" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <!-- Meta Pixel + 전환 추적 — 공개 페이지 공통 (관리자 페이지 제외) -->
+<script src="/assets/sgs-config.js"></script>
+<script src="/assets/sgs-saju.js"></script>
 <script src="/assets/track.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1074,7 +1076,8 @@ footer b{color:#7a6f66}
             <button class="ask-opt" onclick="askGender('남',this)">男 · 남자</button>
           </div>
           <p style="font-size:11px;color:#5c534c;letter-spacing:.06em;line-height:1.8;text-align:center;margin-top:4px">
-            선택 시 적은 이름·생년월일·성별이 풀이 접수 목적으로만 기록됩니다.
+            선택 시 적은 이름·생년월일·성별이 풀이 접수 목적으로만 기록되며,<br>
+            <a href="../privacy/" target="_blank" rel="noopener" style="color:#8a7a6a;text-decoration:underline">개인정보처리방침</a>에 동의한 것으로 봅니다.
           </p>
         </div>
       </div>
@@ -1471,6 +1474,7 @@ footer b{color:#7a6f66}
       <p class="toc-note rv" id="shareDone" style="display:none;margin-top:14px">셈이 전해졌다.</p>
     </section>
 
+    <p style="text-align:center;font-size:11px;letter-spacing:.12em;margin:0 0 -6px"><a href="../privacy/" style="color:#6b5f57;text-decoration:none;border-bottom:1px solid #3a322d">개인정보처리방침 · 이용약관 · 환불규정</a></p>
     <footer style="user-select:none;-webkit-user-select:none;pointer-events:none">
       深谷寺 심곡사 · 장경각 현월<br>
       상호명 이공이사랩 · 대표자 송승환<br>
@@ -1522,14 +1526,13 @@ footer b{color:#7a6f66}
   <a href="#" onclick="goCTA(event)"><span class="blink"></span><span id="stickyText">새는 구멍(漏)의 셈을 받아라</span></a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js" integrity="sha384-l8ah+VgaWtk1mvOe9VC+OirC6qHFF4yH7l7mKRidV9MSti3E9F463bMp6ZVN4kuC" crossorigin="anonymous"></script>
 <script>
 /* ───────── state ───────── */
 const user = { name:'', birth:null, gender:'' };
 
 /* ───────── Supabase 리드 수집 (INSERT 전용 키 — RLS로 조회 차단됨) ───────── */
-const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
-const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
+const SUPA_URL = SGS.SUPA_URL, SUPA_KEY = SGS.SUPA_KEY;   // /assets/sgs-config.js
 const sessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
 let lastSals = [];
 // 로그인 사용자 id — 리드에 함께 남겨야 웹훅이 ?ref=<session_id> 로 주문에 신원을 붙일 수 있다.
@@ -1885,8 +1888,7 @@ function prepScene3(){
 }
 
 /* ───────── 만세력 : 년주 계산 (갑자) ───────── */
-const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const STEMS = SGS.STEMS, BRANCHES = SGS.BRANCHES;   // 공통 모듈(/assets/sgs-saju.js)
 const SAL_POOL = [
   {h:'奪', name:'비겁탈재', hanja:'比劫奪財', lv:'심각', desc:'곁의 사람이 네 돈을 걷어가는 구멍이다. 동업, 보증, 빌려주고 못 받은 돈— 전부 이 구멍으로 샜다.', lock:'누가, 어느 방향의 사람이 가져가는지는 네 경우'},
   {h:'弱', name:'재다신약', hanja:'財多身弱', lv:'심각', desc:'그릇보다 물이 많은 격이다. 큰돈이 들어와도 쥐지 못하고 흘려보낸다— 담을 그릇부터 길러야 한다.', lock:'네 그릇이 여물어 큰물을 담아내는 때는'},
@@ -1895,12 +1897,7 @@ const SAL_POOL = [
   {h:'驛', name:'역마재', hanja:'驛馬財', lv:'주의', desc:'돈이 길 위에 떠 있는 격이다. 앉아서 버는 재물은 얇고, 움직여야 돈이 붙는다— 방향이 문제다.', lock:'역마가 재와 만나 크게 열리는 방위와 해는'},
   {h:'劫', name:'겁재노출', hanja:'劫財露出', lv:'주의', desc:'드러난 돈은 뺏기는 격이다. 벌이가 알려질수록 새는 속도가 빨라진다— 감추는 법을 알아야 한다.', lock:'재물을 감추고 불리는 장(藏)의 법은 네 원국에서'}
 ];
-function hashUser(){
-  const s = user.name + (user.birth ? user.birth.y+''+user.birth.m+''+user.birth.d : '') + user.gender;
-  let h = 0;
-  for (let i = 0; i < s.length; i++){ h = ((h<<5)-h+s.charCodeAt(i))|0; }
-  return Math.abs(h);
-}
+function hashUser(){ return SGS.hashUser(user); }   // v2 — 결과지와 같은 함수
 function fillSales(){
   const nm = user.name ? esc(user.name) : '';
   const h0 = hashUser();
@@ -1925,14 +1922,7 @@ function fillSales(){
   }
   // 흉살 진단 (이름+생일 기반 고정 선택 · 2~3개 가변)
   const h = hashUser();
-  const count = 2 + ((h >> 5) % 2);
-  const picks = [];
-  let idx = h % SAL_POOL.length;
-  const step = ((h >> 7) % 2) ? 5 : 1; // 6과 서로소인 걸음만 사용 → 전체 순환 보장
-  while (picks.length < count){
-    if (!picks.includes(SAL_POOL[idx])) picks.push(SAL_POOL[idx]);
-    idx = (idx + step) % SAL_POOL.length;
-  }
+  const picks = SGS.pickSals(SAL_POOL, h);   // 결과지와 동일 선택
   document.getElementById('salCount').textContent = picks.length + '개의 구멍';
   document.getElementById('salCards').innerHTML = picks.map(s => `
     <div class="sal-card rv">
@@ -2168,7 +2158,7 @@ document.getElementById('authPw2').addEventListener('keydown', e => { if (e.key 
 
 /* ───────── 구매 모달 ───────── */
 /* 그로블 결제 URL — 2026-08-20 개문 */
-const PAY_URL = 'https://www.groble.im/payment/5xeDtU';
+const PAY_URL = SGS.payUrl(SGS.PRODUCTS.hyunwol.tiers.all.code);   // /assets/sgs-config.js
 function openBuy(){
   document.getElementById('buyFor').textContent = user.name ? (user.name + ' — 재물의 경(經)') : '재물의 경(經)';
   document.getElementById('buyModal').classList.add('on');
