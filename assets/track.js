@@ -35,9 +35,25 @@
    *  웹훅(supabase/functions/groble-webhook/index.ts)의 PRODUCTS 표와 일치시킨다.
    *  새 상품 추가 시 두 곳을 함께 고칠 것.                                 */
   var PRODUCTS = {
-    myodam:  { id: 'kAAJFx', name: '무녀 묘담 · 운명 사용설명서 아흔아홉 장', value: 38900 },
+    myodam:  { id: 'kAAJFx', name: '무녀 묘담 · 운명 사용설명서 아흔아홉 장', value: 38900,
+      /* 찢어가기 등급 — 결제창이 셋이라 content_id 와 금액이 등급마다 다르다 */
+      tiers: {
+        one:  { id: 'xiXpcK', name: '무녀 묘담 · 살풀이 한 대목 찢어가기',   value: 3900 },
+        five: { id: 'e7Ntiv', name: '무녀 묘담 · 살풀이 다섯 대목 찢어가기', value: 14900 },
+        all:  { id: 'kAAJFx', name: '무녀 묘담 · 운명 사용설명서 아흔아홉 장', value: 38900 }
+      } },
     hyunwol: { id: '5xeDtU', name: '스님 현월 · 재물의 경 여든여덟 장',       value: 38900 }
   };
+  /* 결제창 코드 → 상품/등급 역조회 (서고의 Purchase 처럼 결제 코드만 아는 곳에서 쓴다) */
+  function productByContentId(cid) {
+    for (var k in PRODUCTS) {
+      if (!Object.prototype.hasOwnProperty.call(PRODUCTS, k)) continue;
+      var p = PRODUCTS[k];
+      if (p.id === cid) return p.tiers && p.tiers.all ? p.tiers.all : p;
+      if (p.tiers) for (var t in p.tiers) if (p.tiers[t].id === cid) return p.tiers[t];
+    }
+    return null;
+  }
   var CURRENCY = 'KRW';
 
   /* 현재 페이지의 상품 추정 — /myodam/ → myodam, /gyeong/ → hyunwol(현월 결과지) */
@@ -122,7 +138,8 @@
 
   /* ── metaTrack — 전환 이벤트 전송 ─────────────────────────────────────
    *  metaTrack('Lead')
-   *  metaTrack('InitiateCheckout', { product: 'myodam' })
+   *  metaTrack('InitiateCheckout', { product: 'myodam', tier: 'five' })   ← 등급별 코드·금액
+   *  metaTrack('Purchase', { contentId: 'xiXpcK', value: 3900 }, merchantUid)
    *  metaTrack('ViewContent', { product: 'hyunwol' }, myEventId)
    *
    *  product 키를 주면 PRODUCTS 표에서 content_ids / value / currency 를 채운다.
@@ -132,6 +149,9 @@
       opts = opts || {};
       var key = opts.product || currentProduct();
       var p = key && PRODUCTS[key];
+      // 등급(tier)이나 결제창 코드(contentId)를 알면 그 등급의 코드·금액을 쓴다
+      if (p && opts.tier && p.tiers && p.tiers[opts.tier]) p = p.tiers[opts.tier];
+      else if (opts.contentId) p = productByContentId(opts.contentId) || p;
       var params = {};
 
       // 금액이 의미 있는 이벤트에만 value 를 싣는다 (Lead 등에 붙이면 집계가 왜곡된다)

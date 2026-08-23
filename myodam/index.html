@@ -1384,7 +1384,7 @@ const META_EVENT = {
   pay_click:      'InitiateCheckout'      // 결제 버튼
 };
 function track(event, extra){
-  try{ if (window.metaTrack && META_EVENT[event]) window.metaTrack(META_EVENT[event], { product: 'myodam' }); }catch(e){}
+  try{ if (window.metaTrack && META_EVENT[event]) window.metaTrack(META_EVENT[event], { product: 'myodam', tier: window.SGS_TIER || 'all' }); }catch(e){}
   try{
     const row = {
       event,
@@ -1989,6 +1989,7 @@ function pickBoxes(){ return [...document.querySelectorAll('#picks input')]; }
 function setTier(t){
   const fromAll = pick.tier === 'all' && t !== 'all';
   pick.tier = t;
+  window.SGS_TIER = t;   // 픽셀(track.js)이 등급별 content_id·금액을 싣도록
   document.querySelectorAll('.tier').forEach(b => b.classList.toggle('sel', b.dataset.tier === t));
   const wrap = document.querySelector('.pick-wrap');
   wrap.classList.toggle('all', t === 'all');
@@ -2061,7 +2062,7 @@ function closePreview(e, toTear){
   if (toTear) document.getElementById('tiers').scrollIntoView({ behavior:'smooth', block:'center' });
 }
 window.addEventListener('message', ev => {
-  if (!ev.data) return;
+  if (ev.origin !== location.origin || !ev.data) return;
   if (ev.data.sgs === 'closePreview') closePreview(null, true);
   if (ev.data.sgs === 'page') document.getElementById('peekNo').textContent = `미리 열람 · 第 ${ev.data.cur} 章 / ${ev.data.total}`;
 });

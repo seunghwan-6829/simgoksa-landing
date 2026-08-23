@@ -193,7 +193,7 @@ const SUPA_URL = 'https://lpjuanegereuzufjzgbq.supabase.co';
 const SUPA_KEY = 'sb_publishable_6cw7cndY7zeRh-u50zGL2w_qRKj8Jfa';
 const API = SUPA_URL + '/functions/v1/admin-api';
 const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-const esc = s => String(s ?? '').replace(/</g,'&lt;');
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');   // 구매자 입력값이 속성·본문에 들어간다
 const won = n => (Number(n)||0).toLocaleString() + '원';
 const dt = s => { const d = new Date(s); return `${d.getMonth()+1}.${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
 const dOnly = s => { const d = new Date(s); return `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; };
@@ -344,7 +344,7 @@ async function loadOrders(){
               `<option value="${s}" ${p.status===s?'selected':''}>${{paid:'접수(paid)',preparing:'작성중',delivered:'도착',refunded:'환불'}[s]}</option>`).join('')}
           </select>
         </td>
-        <td><button class="mini" onclick="toggleViews(this, '${esc((p.saju_answer||'').split('/')[0].trim())}')">열람 기록</button></td>
+        <td><button class="mini" data-name="${esc((p.saju_answer||'').split('/')[0].trim())}" onclick="toggleViews(this, this.dataset.name)">열람 기록</button></td>
       </tr>
       <tr class="vrow-holder" style="display:none"><td colspan="6"><div class="viewbox">불러오는 중…</div></td></tr>
     `).join('');

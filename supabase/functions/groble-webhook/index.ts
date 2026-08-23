@@ -496,7 +496,7 @@ Deno.serve(async (req) => {
   //  pay_intent 에 남긴 값. 부분 등급인데 선택 장이 없으면 자동 배송하지 않고
   //  paid 로 남겨 어드민이 구매자에게 확인한 뒤 넣는다.
   const tier = (contentId && TIER_BY_CONTENT[contentId]) ?? (leadTier && TIER_LIMIT[leadTier] ? leadTier : null) ?? "all";
-  const picks = tier === "all" ? null : normPicks(leadPicks, tier);
+  let picks = tier === "all" ? null : normPicks(leadPicks, tier);
   if (tier !== "all" && !picks && status === "delivered") status = "paid";
 
   // 이미 환불된 건이면 상태를 되돌리지 않는다.
@@ -504,13 +504,18 @@ Deno.serve(async (req) => {
   // 결제 재시도가 늦게 도착해 delivered 로 되살아나는 순서 역전이 가능하다.
   try {
     const ex = await fetch(
-      `${SUPA_URL}/rest/v1/purchases?groble_purchase_id=eq.${encodeURIComponent(merchantUid)}&select=status&limit=1`,
+      `${SUPA_URL}/rest/v1/purchases?groble_purchase_id=eq.${encodeURIComponent(merchantUid)}&select=status,picks&limit=1`,
       { headers: H },
     );
     if (ex.ok) {
       const rows = await ex.json();
       if (Array.isArray(rows) && rows.length && rows[0].status === "refunded") {
         status = "refunded";
+      }
+      // 어드민이 손으로 넣은 값(작성중/도착, 고른 대목)은 그로블 재전송이 덮어쓰지 않는다.
+      if (Array.isArray(rows) && rows.length) {
+        if (["preparing", "delivered"].includes(rows[0].status) && status === "paid") status = rows[0].status;
+        if (!picks && rows[0].picks) picks = rows[0].picks;
       }
     }
   } catch (_e) { /* 조회 실패 시에는 정상 판정을 그대로 쓴다 */ }
@@ -622,6 +627,11 @@ Deno.serve(async (req) => {
 
       if (!result.configured) {
         console.log(`[capi] skipped — ${result.note}`);
+        // 토큰이 아직 없다 — 선점을 되돌려 둬야 나중에 토큰을 붙였을 때 재전송/백필이 가능하다.
+        await fetch(
+          `${SUPA_URL}/rest/v1/purchases?groble_purchase_id=eq.${encodeURIComponent(merchantUid)}`,
+          { method: "PATCH", headers: { ...H, Prefer: "return=minimal" }, body: JSON.stringify({ capi_sent_at: null }) },
+        ).catch(() => {});
       } else if (!result.ok) {
         console.error(`[capi] send failed status=${result.status} ${result.note}`);
         // 선점을 되돌려 다음 재전송이 다시 시도할 수 있게 한다.

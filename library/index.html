@@ -270,7 +270,7 @@ function reportPurchases(rows){
     if (seen.has(uid)) continue;
     if (Date.now() - new Date(p.created_at).getTime() > PURCHASE_WINDOW_MS) continue;
     // eventID = merchantUid — 나중에 서버(CAPI)도 같은 값을 쓰면 메타가 중복제거한다
-    window.metaTrack('Purchase', { product: p.product, value: p.amount }, uid);
+    window.metaTrack('Purchase', { product: p.product, contentId: p.groble_content_id, value: p.amount }, uid);
     seen.add(uid); changed = true;
   }
   if (changed) markReported(seen);
@@ -285,7 +285,7 @@ async function loadBooks(quiet){
   if (!quiet){ loading.style.display = 'block'; booksEl.innerHTML = ''; emptyEl.style.display = 'none'; noteEl.style.display = 'none'; }
   try{
     const { data, error } = await sb.from('purchases')
-      .select('id,created_at,product,product_name,amount,status,saju_answer,groble_purchase_id')
+      .select('id,created_at,product,product_name,amount,status,saju_answer,groble_purchase_id,groble_content_id,tier,picks')
       .order('created_at', { ascending: false });
     loading.style.display = 'none';
     if (error) throw error;

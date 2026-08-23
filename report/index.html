@@ -191,7 +191,8 @@ body.preview #topbar,body.preview #demoBar{display:none}
 const qs = new URLSearchParams(location.search);
 let user = null;
 if (qs.get('name') || qs.get('demo')){
-  user = { name: (qs.get('name') || '김심곡').trim(), birth: {y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender: (qs.get('g') || '여').trim() };
+  user = { name: (qs.get('name') || '김심곡').trim().slice(0, 40), birth: {y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender: (qs.get('g') || '여').trim() };
+  if (user.gender !== '남' && user.gender !== '여') user.gender = '여';   // URL 값 화이트리스트
   if (qs.get('demo')) document.getElementById('demoBar').style.display = 'block';
 } else {
   try{
@@ -260,7 +261,8 @@ const sals = [];
 const pastY = nowY - 2 - (H % 3);
 const midY = nowY + 1 + ((H >> 3) % 2);
 const bigY = nowY + 3 + ((H >> 6) % 3);
-const nm = user.name;
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const nm = esc(user.name);   // URL·localStorage 값이 innerHTML 로 들어가므로 반드시 이스케이프
 const honor = user.gender === '여' ? '그녀' : '그';
 
 /* ═══════════ PART 1 변형 — 뿌리 기질 (년간 10종) ═══════════ */
@@ -677,7 +679,7 @@ function applyPreview(){
   tocEntries.length = 0;
 }
 function unlockMore(){
-  try{ if (window.parent !== window){ window.parent.postMessage({sgs:'closePreview'}, '*'); return; } }catch(e){}
+  try{ if (window.parent !== window){ window.parent.postMessage({sgs:'closePreview'}, location.origin); return; } }catch(e){}
   location.href = '../myodam/#tear';
 }
 
@@ -698,7 +700,7 @@ let cur = 0;
 function currentPage(){ return cur; }
 function updateBar(){
   document.getElementById('pageNo').textContent = `第 ${cur + 1} 章 / ${total}`;
-  if (PREVIEW){ try{ window.parent.postMessage({sgs:'page', cur: cur + 1, total}, '*'); }catch(e){} }
+  if (PREVIEW){ try{ window.parent.postMessage({sgs:'page', cur: cur + 1, total}, location.origin); }catch(e){} }
   document.getElementById('progressBar').style.width = ((cur + 1) / total * 100) + '%';
 }
 function goPage(i){
