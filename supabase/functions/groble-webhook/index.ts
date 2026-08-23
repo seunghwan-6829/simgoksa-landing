@@ -63,7 +63,7 @@ const PRODUCTS: Product[] = [
     label: "스님 현월 · 재물의 경 여든여덟 장",
     contentIds: ["5xeDtU", "RpxRzG", "vuzWHN"],   // 전부 / 다섯 권 / 한 권
     titleHints: ["현월", "재물의 경", "재물"],
-    amount: 38900,
+    amount: 49000,
     payUrl: "https://www.groble.im/payment/5xeDtU",
     reportPath: "/gyeong/",
     landingPath: "/hyunwol/",

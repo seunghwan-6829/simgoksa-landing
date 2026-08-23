@@ -28,9 +28,9 @@
       name: '스님 현월', book: '재물의 경(經) · 여든여덟 장', report: '/gyeong/', landing: '/hyunwol/',
       img: '/assets/hyunwol.jpg', label: '현월', store: 'sgs_hyunwol',
       tiers: {
-        one:  { n: 1,  price: 3900,  code: 'vuzWHN', head: '현월의 셈 · 고른 한 권',   name: '한 권' },
-        five: { n: 5,  price: 14900, code: 'RpxRzG', head: '현월의 셈 · 고른 다섯 권', name: '다섯 권' },
-        all:  { n: 10, price: 38900, code: '5xeDtU', head: '현월의 셈 · 재물의 경 여든여덟 장', name: '전부' }
+        one:  { n: 1,  price: 6900,  code: 'vuzWHN', head: '현월의 셈 · 고른 한 권',   name: '한 권' },
+        five: { n: 5,  price: 24900, code: 'RpxRzG', head: '현월의 셈 · 고른 다섯 권', name: '다섯 권' },
+        all:  { n: 10, price: 49000, code: '5xeDtU', head: '현월의 셈 · 재물의 경 여든여덟 장', name: '전부' }
       }
     },
     hongdan: { name: '아씨 홍단', book: '붉은 실의 기록', report: null, landing: '/hongdan/', img: '/assets/hongdan.jpg', label: '홍단', tiers: {} }
