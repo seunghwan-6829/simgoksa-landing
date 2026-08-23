@@ -376,7 +376,7 @@ async function loadBooks(quiet){
       // 부분 구매자 — 남은 대목을 마저 찢어가는 길 (이미 산 대목은 랜딩에서 잠긴다)
       const unit = p.product === 'hyunwol' ? '편' : '대목';
       const more = (href && ch.landing && p.tier && p.tier !== 'all' && p.picks)
-        ? `<a class="b-more" href="${ch.landing}?owned=${encodeURIComponent(p.picks)}#tear">남은 ${unit}, 마저 찢어가기 →</a>` : '';
+        ? `<a class="b-more" href="${ch.landing}?owned=${encodeURIComponent(p.picks)}#tear">${p.product === 'hyunwol' ? '셈이 끝나지 않았다 — 남은 편 마저 셈하기 →' : '남은 대목, 마저 찢어가기 →'}</a>` : '';
       return (href
         ? `<a class="book" href="${href}">${inner}</a>`
         : `<div class="book">${inner}</div>`) + more;

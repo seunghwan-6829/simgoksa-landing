@@ -273,6 +273,8 @@ body{
 .ask-opt.on{opacity:1;transform:none}
 .ask-opt:active,.ask-opt.sel{background:rgba(150,96,26,.3);border-color:var(--blood-bright)}
 .ask-err{font-size:12px;color:var(--blood-bright);letter-spacing:.08em;display:none}
+.money-row{flex-wrap:wrap}
+.money-row .ask-opt{flex:1 1 44%;min-width:0;font-size:14px;padding:13px 8px}
 /* ---------- 화면 흔들림 / 붉은 섬광 ---------- */
 .shake{animation:shake .55s ease}
 @keyframes shake{
@@ -577,6 +579,13 @@ body{
 .stepline{width:1px;height:46px;background:linear-gradient(180deg,var(--blood),transparent);margin:14px auto}
 /* 장부 조판(좌측 정렬) 안에서는 구분선도 숫자(貳·參) 밑에 맞춘다 */
 #sales .ledger-sec .stepline{margin:14px 0 14px 20px}
+/* 또래 비교 — 돈 문답 결과 한 줄 */
+.peer-strip{margin:26px 0 18px;padding:16px 18px;border:1px solid rgba(201,162,92,.35);border-left:3px solid var(--ember);background:rgba(201,162,92,.06);text-align:left}
+.peer-strip .ps-k{font-size:11.5px;letter-spacing:.25em;color:var(--ember);margin-bottom:8px}
+.peer-strip .ps-v{font-size:17px;line-height:1.6;color:var(--paper);word-break:keep-all}
+.peer-strip .ps-v b{font-family:'Noto Sans KR',sans-serif;font-size:26px;font-weight:900;color:var(--blood-bright);margin-right:2px}
+.peer-strip .ps-v em{font-style:normal;color:var(--blood-bright)}
+.peer-strip .ps-s{margin-top:8px;font-size:12.5px;color:var(--ink-dim);line-height:1.7;word-break:keep-all}
 /* 찢어가기 칸은 세로 꼬리표(終頁) 아래부터 전폭으로 — 좁은 폰에서 등급 카드가 찌그러지지 않게 */
 #sales #tear .tiers,#sales #tear .pick-wrap,#sales #tear .peek-btn,#sales #tear .cta-big{margin-right:-34px}
 @media (min-width:480px){#sales #tear .tiers,#sales #tear .pick-wrap,#sales #tear .peek-btn,#sales #tear .cta-big{margin-right:0}}
@@ -1144,6 +1153,27 @@ footer b{color:#7a6f66}
           </p>
         </div>
       </div>
+      <!-- step 3b : 돈 문답 — 셈의 기준점 (또래 비교 한 줄에 쓴다) -->
+      <div class="ask-step" id="ask3b" style="display:none">
+        <p class="line voice">"장부를 맞춰 보자.<br><em>한 달에 들어오는 돈</em>은—"</p>
+        <div class="ask-wrap on">
+          <div class="ask-row money-row" id="incomeRow">
+            <button class="ask-opt" onclick="askIncome(1,this)">200만 아래</button>
+            <button class="ask-opt" onclick="askIncome(2,this)">200~400만</button>
+            <button class="ask-opt" onclick="askIncome(3,this)">400~700만</button>
+            <button class="ask-opt" onclick="askIncome(4,this)">700만 위</button>
+          </div>
+          <div id="saveBlock" style="display:none">
+            <p class="line voice" style="margin-top:18px">"그럼 <em>달 끝에 남는 돈</em>은—"</p>
+            <div class="ask-row money-row">
+              <button class="ask-opt" onclick="askSave(1,this)">거의 없다</button>
+              <button class="ask-opt" onclick="askSave(2,this)">조금 남는다</button>
+              <button class="ask-opt" onclick="askSave(3,this)">절반쯤 남는다</button>
+            </div>
+          </div>
+          <p style="font-size:11px;color:#5c534c;letter-spacing:.06em;line-height:1.8;text-align:center;margin-top:6px">대략이면 된다 — 셈의 기준점으로만 쓴다.</p>
+        </div>
+      </div>
       <!-- step 4 : 반응 -->
       <div class="ask-step" id="ask4" style="display:none">
         <p class="line whisper">스님이 낡은 장부를 넘긴다.<br>붓끝이— 한 자리에서 멈춘다.</p>
@@ -1244,6 +1274,11 @@ footer b{color:#7a6f66}
     <section class="sec ledger-sec" style="padding-top:44px"><span class="vtag">第二頁 · 셈</span>
       <p class="h-red rv">스님이 주판을 놓는다</p>
       <h2 class="h-big rv">여태 새어 나간 돈,<br><span class="r">셈해 보았다</span></h2>
+      <div class="peer-strip rv" id="peerStrip" style="display:none">
+        <div class="ps-k">또래 장부와 맞대어 보니</div>
+        <div class="ps-v">네 또래 <b id="peerPct">00%</b>가 너보다 <em>덜 벌고, 더 모은다.</em></div>
+        <div class="ps-s" id="peerSub">들어오는 물은 얕지 않은데 고이는 게 없다— 구멍이 있다는 뜻이다.</div>
+      </div>
       <div class="lost-frame rv">
         <div class="lost-label" id="lostOwner">— 누적 누재(漏財) 추산 —</div>
         <div class="lost-amount"><span id="lostNum">0</span><small>만 원<em>어치</em></small></div>
@@ -1617,7 +1652,7 @@ footer b{color:#7a6f66}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js" integrity="sha384-l8ah+VgaWtk1mvOe9VC+OirC6qHFF4yH7l7mKRidV9MSti3E9F463bMp6ZVN4kuC" crossorigin="anonymous"></script>
 <script>
 /* ───────── state ───────── */
-const user = { name:'', birth:null, gender:'' };
+const user = { name:'', birth:null, gender:'', income:0, save:0 };
 
 /* ───────── Supabase 리드 수집 (INSERT 전용 키 — RLS로 조회 차단됨) ───────── */
 const SUPA_URL = SGS.SUPA_URL, SUPA_KEY = SGS.SUPA_KEY;   // /assets/sgs-config.js
@@ -1754,7 +1789,7 @@ function bellChime(){
 
 /* ───────── 진행 상태 저장/복원 (구매 퍼널 단축) ───────── */
 function saveProgress(){
-  try{ localStorage.setItem('sgs_hyunwol', JSON.stringify({name:user.name, birth:user.birth, gender:user.gender, t:Date.now()})); }catch(e){}
+  try{ localStorage.setItem('sgs_hyunwol', JSON.stringify({name:user.name, birth:user.birth, gender:user.gender, income:user.income||0, save:user.save||0, t:Date.now()})); }catch(e){}
 }
 function loadProgress(){
   try{
@@ -1827,7 +1862,7 @@ setTimeout(function resumeToTear(){   // 스크립트 하단의 const(order 등)
   if (location.hash !== '#tear') return;
   const d = loadProgress();
   if (!d) return;
-  user.name = d.name; user.birth = d.birth; user.gender = d.gender;
+  user.name = d.name; user.birth = d.birth; user.gender = d.gender; user.income = d.income || 0; user.save = d.save || 0;
   const gate = document.getElementById('gate'); gate.classList.add('off'); gateClosed = true;
   order.forEach(id => { const sc = document.getElementById(id); if (sc) sc.style.display = 'none'; });
   enterSales();
@@ -1928,7 +1963,7 @@ function startAsk(){
   showAskStep('ask1');
 }
 function showAskStep(id){
-  ['ask1','ask2','ask3','ask4'].forEach(s => document.getElementById(s).style.display = 'none');
+  ['ask1','ask2','ask3','ask3b','ask4'].forEach(s => document.getElementById(s).style.display = 'none');
   const step = document.getElementById(id);
   step.style.display = 'block';
   // 생년월일 단계부터: 장부에 붓글씨를 적어 내려가는 배경으로 전환
@@ -1978,6 +2013,21 @@ function askGender(g, el){
   const age = new Date().getFullYear() - user.birth.y + 1;
   document.getElementById('reactLine1').innerHTML =
     '"…' + esc(user.name) + '.<br>' + age + '해치 장부가— 여기 있구나."';
+  setTimeout(()=>showAskStep('ask3b'), 500);
+}
+function askIncome(v, el){
+  user.income = v; el.parentElement.querySelectorAll('.ask-opt').forEach(b => b.classList.remove('sel')); el.classList.add('sel');
+  if (navigator.vibrate) navigator.vibrate(20);
+  document.getElementById('saveBlock').style.display = 'block';
+}
+function askSave(v, el){
+  user.save = v; el.parentElement.querySelectorAll('.ask-opt').forEach(b => b.classList.remove('sel')); el.classList.add('sel');
+  if (navigator.vibrate) navigator.vibrate(20);
+  track('ask_money', { detail: `i${user.income}s${user.save}` });
+  // 반응 대사에 돈 문답을 섞는다
+  const r = document.getElementById('reactLine1');
+  if (user.save === 1 && user.income >= 2) r.innerHTML = '"…' + esc(user.name) + '.<br>들어오는 건 적지 않은데— <em>남는 게 없구나.</em>"';
+  else if (user.income === 1) r.innerHTML = '"…' + esc(user.name) + '.<br>들어오는 물부터 가늘다— 그런데 <em>그마저 새는군.</em>"';
   setTimeout(()=>showAskStep('ask4'), 500);
 }
 function esc(s){ const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -2080,12 +2130,28 @@ function fillSales(){
 }
 
 let lostDone = false;
+function setupPeerStrip(h){
+  const el = document.getElementById('peerStrip'); if (!el) return;
+  if (!user.income || !user.save){ el.style.display = 'none'; return; }
+  // 수입이 높을수록·남는 돈이 적을수록 "덜 벌고 더 모으는 또래" 비율이 커진다 (원국 해시로 끝자리 고정)
+  const pct = Math.min(79, Math.max(23, 28 + (user.income - 1) * 9 + (3 - user.save) * 11 + (h % 7)));
+  document.getElementById('peerPct').textContent = pct + '%';
+  const SUB = {
+    1: '들어오는 물은 얕지 않은데 고이는 게 없다— 구멍이 있다는 뜻이다.',
+    2: '조금은 남긴다만, 그 남는 양이 들어오는 양에 비해 턱없다— 어디선가 새고 있다.',
+    3: '제법 남긴다. 허나 또래의 셈과 맞대면— 네 그릇에 비해 아직 얕다.'
+  };
+  document.getElementById('peerSub').textContent = user.income === 1 && user.save === 3 ? '들어오는 물이 가는데도 잘 고인다— 물길만 트이면 크게 될 장부다.' : SUB[user.save];
+  el.style.display = 'block';
+}
 function setupLostCounter(h){
   const numEl = document.getElementById('lostNum');
   const stamp = document.getElementById('lostStamp');
   if (!numEl) return;
   lostDone = false; stamp.classList.remove('on');
-  const target = 1800 + (h % 4200);            // 1,800 ~ 6,000만 원 사이 — 사람마다 고정
+  setupPeerStrip(h);
+  const SCALE = [1, 0.6, 1, 1.6, 2.4][user.income || 0] || 1;   // 수입 구간에 맞춘 누재 규모
+  const target = Math.round((1800 + (h % 4200)) * SCALE);   // 사람마다 고정
   const io = new IntersectionObserver(es => {
     es.forEach(e => {
       if (!e.isIntersecting || lostDone) return;

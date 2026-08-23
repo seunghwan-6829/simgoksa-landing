@@ -630,7 +630,7 @@ function applyPicks(){
   const newToc = tocEntries.filter(t => !KWON.includes(t.label));
   ranges.forEach(r => {
     if (PICKS.includes(r.no)){ newToc.push({label:r.hj, title:r.title, page: out.length + 1}); out.push(...pages.slice(r.start, r.end)); }
-    else { newToc.push({label:r.hj, title:r.title, page: out.length + 1, locked:true}); out.push(lockPage(r, '이 편은 찢어가지 않았다.<br>네 이름으로 이미 셈해 두었으니—<br>급해지거든 마저 찢어가라.', '이 편 찢어가기 →')); }
+    else { newToc.push({label:r.hj, title:r.title, page: out.length + 1, locked:true}); out.push(lockPage(r, `셈은 끝나 있다— 네 이름으로 적힌 <b>${r.end - r.start}장</b>이<br>여기 봉해져 있다.<br>구멍 ${sals.length}개가 이 편에서 어떻게 움직이는지—<br>마저 찢으면 보인다.`, '이 편 마저 셈하기 →')); }
   });
   out.push(...tail);
   pages.length = 0; pages.push(...out);
@@ -641,7 +641,15 @@ function applyPreview(){
   const out = pages.slice(0, ranges[0].start);
   out.push(...pages.slice(ranges[0].start, Math.min(ranges[0].start + 3, ranges[0].end)));
   if (ranges[1]) out.push(...pages.slice(ranges[1].start, Math.min(ranges[1].start + 2, ranges[1].end)));
-  out.push(lockPage({hj:'封', title:'여기부턴, 찢어가야 읽는다'}, `남은 ${88 - out.length}장— 구멍의 크기, 물길, 그릇, 때, 업·장·귀인, 열두 달과 십 년.<br>급한 편만 골라 찢어갈 수도 있다.`, '찢어가러 가기 →'));
+  // 卷五 '때' 맛보기 — 남자들이 제일 궁금해하는 "언제"를 연도만 열어 보인다 (달·새는 해는 본편에)
+  out.push({cls:'divider', html:`
+    <div style="min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 26px">
+      <div class="dv-hanja" style="font-size:60px">時</div>
+      <div class="dv-t">卷五 · 때 — 한 줄만 먼저</div>
+      <div class="dv-s" style="margin-top:22px;font-size:15px;line-height:2;color:var(--paper);word-break:keep-all">${nm}. 네 장부에서 돈이 <em style="font-style:normal;color:var(--brass-hi);font-weight:700">크게 고이는 해</em>는—<br><span style="font-family:'Noto Sans KR',sans-serif;font-size:34px;font-weight:900;color:var(--brass-hi)">${gatherY}년</span></div>
+      <div class="dv-s" style="margin-top:16px;font-size:13px;line-height:1.9;word-break:keep-all">몇 월부터 고이는지, 그 전에 <b>크게 새는 해</b>가 언제인지,<br>그때 무엇을 하지 말아야 하는지— 卷五에 적어 두었다.</div>
+    </div>`});
+  out.push(lockPage({hj:'封', title:'여기부턴, 찢어가야 읽는다'}, `남은 ${88 - out.length}장— 구멍 ${sals.length}개의 크기와 막는 법, 물길, 그릇, 업·장·귀인, 열두 달과 십 년.<br>급한 편만 골라 찢어갈 수도 있다.`, '찢어가러 가기 →'));
   pages.length = 0; pages.push(...out);
   tocEntries.length = 0;
 }
