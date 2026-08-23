@@ -408,7 +408,15 @@ async function claimSession(sid){
           localStorage.removeItem('sgs_sid');
           // 방금 산 책이 바로 열람 가능하면 서고를 거치지 않고 곧장 결과지로 (서고는 뒤로가기/「내 서고」로)
           const pr = j.purchase, ch = pr && SGS.PRODUCTS[pr.product];
-          if (pr && pr.status === 'delivered' && ch && ch.report){ location.replace(ch.report + '?p=' + encodeURIComponent(pr.id)); return true; }
+          if (pr && pr.status === 'delivered' && ch && ch.report){
+            // 서고를 건너뛰므로 여기서 Purchase 픽셀을 먼저 쏘고 간다 (loadBooks 가 안 돌기 때문)
+            try{
+              const { data: rows } = await sb.from('purchases').select('groble_purchase_id,groble_content_id,product,amount,status,created_at').eq('id', pr.id);
+              reportPurchases(rows || []);
+              await new Promise(res => setTimeout(res, 700));   // 비콘이 나갈 시간
+            }catch(e){}
+            location.replace(ch.report + '?p=' + encodeURIComponent(pr.id)); return true;
+          }
           show(true, v.data.user.email); return true;
         }
         break;

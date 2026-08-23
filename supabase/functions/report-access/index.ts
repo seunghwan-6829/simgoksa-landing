@@ -55,6 +55,8 @@ Deno.serve(async (req) => {
     (p.site_email && String(p.site_email).toLowerCase() === email);
   if (!owner) return json({ ok: false, error: "forbidden" }, 403);
   if (p.status !== "delivered" && !isAdmin) return json({ ok: false, error: "not_delivered", status: p.status }, 409);
+  // 부분 등급인데 고른 대목이 없으면 전체를 열어 주지 않는다 (어드민이 picks 를 채운 뒤 열린다)
+  if (p.tier && p.tier !== "all" && !p.picks && !isAdmin) return json({ ok: false, error: "no_picks" }, 409);
 
   // "이름 / 1995.03.14 / 여" — 서고와 같은 규칙으로 푼다
   const m = String(p.saju_answer || "").match(/([^\/,]+)[\/,]\s*(\d{4})[.\-년\s]*(\d{1,2})[.\-월\s]*(\d{1,2})[일\s]*[\/,]\s*(남|여)/);
