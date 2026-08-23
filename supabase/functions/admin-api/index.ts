@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
     if (action === "inputs") {
       // 인적사항 입력 완료 리드 목록 (+같은 세션의 결제클릭 여부 판별용 pay_click 포함)
       const rows = await fetch(
-        `${url}/rest/v1/leads?select=created_at,event,session_id,name,birth,gender,product,sals&event=in.(input_complete,pay_click)&order=created_at.desc&limit=500`,
+        `${url}/rest/v1/leads?select=created_at,event,session_id,name,birth,gender,product,sals,tier,picks&event=in.(input_complete,pay_click)&order=created_at.desc&limit=500`,
         { headers: S },
       ).then(j);
       return new Response(JSON.stringify({ inputs: rows }), { headers: cors });

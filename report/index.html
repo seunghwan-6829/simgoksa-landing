@@ -141,6 +141,16 @@ h2.pg-title .r{color:var(--blood-bright)}
   appearance:none;background:none;border:none;color:var(--ink-dim);font-size:22px;cursor:pointer;
 }
 #tocOverlay h3{font-family:'Nanum Myeongjo',serif;font-size:15px;letter-spacing:.3em;color:var(--ember);text-align:center;margin-bottom:20px}
+/* 봉인(잠긴 부) · 미리 열람 */
+.toc-item.locked{opacity:.55}
+.toc-item.locked .x{text-decoration:line-through;text-decoration-color:rgba(164,22,26,.7)}
+.lock-seal{margin-top:26px;width:64px;height:64px;border:2px solid rgba(164,22,26,.85);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Nanum Myeongjo',serif;font-size:28px;color:var(--blood-bright);transform:rotate(-6deg);box-shadow:0 0 30px rgba(164,22,26,.25)}
+.lock-btn{margin-top:30px;appearance:none;cursor:pointer;font-family:inherit;background:#7a1015;color:#f3e9df;border:1px solid rgba(255,180,160,.25);border-radius:6px;font-size:14px;font-weight:700;letter-spacing:.12em;padding:14px 26px}
+body.preview .page:not(.cover):not(.divider) .pg-body em,
+body.preview .page:not(.cover):not(.divider) .pg-body b,
+body.preview .page:not(.cover):not(.divider) .pg-quote,
+body.preview .page:not(.cover):not(.divider) .pg-body:last-of-type{filter:blur(4.5px);user-select:none}
+body.preview #topbar button[onclick="saveReport()"]{display:none}
 /* 데모 배너 */
 #demoBar{
   display:none;flex:none;text-align:center;font-size:11px;letter-spacing:.15em;
@@ -190,6 +200,19 @@ if (qs.get('name') || qs.get('demo')){
   }catch(e){}
 }
 if (!user){ location.href = '../myodam/'; }
+
+/* ═══════════ 부분 구매(찢어가기) · 미리 열람 ═══════════
+   picks=2,5  → 목차 1~10부 가운데 고른 부만 실리고, 나머지는 封(봉인) 한 장으로 남는다.
+   preview=1  → 앞머리 + 壹·貳 맛보기만, 핵심 문장은 흐려서 보여준다. (열람 기록은 demo 취급) */
+const PICKS = [...new Set((qs.get('picks') || '').split(/[^0-9]+/).map(Number).filter(n => n >= 1 && n <= 10))].sort((a,b)=>a-b);
+const PARTIAL = PICKS.length > 0 && PICKS.length < 10;
+const PREVIEW = !!qs.get('preview');
+if (PREVIEW){
+  document.body.classList.add('preview');
+  const bar = document.getElementById('demoBar');
+  bar.textContent = '미리 열람 — 가려진 대목은 찢어가면 전부 열린다';
+  bar.style.display = 'block';
+}
 
 /* ═══════════ 사주 계산 ═══════════ */
 const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
@@ -351,7 +374,9 @@ addPage(`${pgHead(2)}
   <p class="pg-label">序 · 묘담의 말</p>
   <h2 class="pg-title">${nm}.<br>이 책은 <span class="r">너 하나</span>를 위해 적었다.</h2>
   <div class="hr"></div>
-  <p class="pg-body">아흔아홉 장. 짧지 않다. 허나 ${age}해를 살아온 팔자를 적는데, 이보다 짧으면 그건 성의가 아니라 요약이다.</p>
+  <p class="pg-body">${PARTIAL
+    ? `아흔아홉 장 가운데, 네가 고른 <em>${['','한','두','세','네','다섯','여섯','일곱','여덟','아홉'][PICKS.length]} 부(部)</em>만 찢어 왔다. 나머지는 서고에 봉해 두었다— 필요해지거든 언제든 마저 찢어가라.`
+    : `아흔아홉 장. 짧지 않다. 허나 ${age}해를 살아온 팔자를 적는데, 이보다 짧으면 그건 성의가 아니라 요약이다.`}</p>
   <p class="pg-body">나는 좋은 말만 골라 적지 않았다. 네 원국에 있는 것은 있는 대로, 없는 것은 없는 대로 적었다. <em>듣기 좋은 거짓보다, 쓰기 아픈 진실이 남는 법</em>이니.</p>
   <p class="pg-body">천천히 읽어라. 하루에 다 읽을 책이 아니다. 막히는 장이 있거든— 그 장이 지금 네게 필요한 장이다.</p>
   <p class="pg-note">深谷寺 여든세 번째 무녀, 묘담 씀</p>`);
@@ -384,7 +409,10 @@ addPage(`${pgHead(5)}
   <p class="pg-label">차례</p>
   <h2 class="pg-title">아흔아홉 장의 지도</h2>
   <div class="toc-list">
-    ${['壹 · 뿌리 — 타고난 판','貳 · 살(殺) — 발목을 잡던 것들','參 · 오르막과 내리막','肆 · 인연','伍 · 재물','陸 · 업(業)','柒 · 몸','捌 · 귀인','玖 · 열두 달','拾 · 십 년'].map(t=>`<div class="toc-item"><span class="x">${t}</span></div>`).join('')}
+    ${['壹 · 뿌리 — 타고난 판','貳 · 살(殺) — 발목을 잡던 것들','參 · 오르막과 내리막','肆 · 인연','伍 · 재물','陸 · 업(業)','柒 · 몸','捌 · 귀인','玖 · 열두 달','拾 · 십 년'].map((t,i)=>{
+      const lk = PARTIAL && !PICKS.includes(i+1);
+      return `<div class="toc-item${lk ? ' locked' : ''}"><span class="x">${t}</span>${lk ? '<span class="p">封</span>' : ''}</div>`;
+    }).join('')}
   </div>
   <p class="pg-note">상단의 [목차] 단추로 언제든 원하는 장으로 건너뛸 수 있다.</p>`);
 
@@ -576,7 +604,7 @@ addPage(`
   </div>`, 'divider');
 
 /* ═══ 99장 맞추기 — 간지 페이지 삽입/트림 ═══ */
-(function fitTo99(){
+function fitTo99(){
   const FILLERS = [
     ['殺','살을 아는 자는, 살에 잡히지 않는다.'],
     ['命','팔자는 대본이 아니라 지형이다.'],
@@ -598,7 +626,70 @@ addPage(`
       </div>`});
   }
   while (pages.length > 99){ pages.splice(pages.length - 2, 1); }
-})();
+}
+
+/* ═══ 부(部) 경계 계산 — tocEntries 의 壹~拾 사이가 한 부 ═══ */
+function partRanges(){
+  const parts = tocEntries.filter(t => PART_HANJA.includes(t.label));
+  const end = tocEntries.find(t => t.label === '終');
+  return parts.map((t, i) => ({
+    no: i + 1, hj: t.label, title: t.title,
+    start: t.page - 1,
+    end: (i + 1 < parts.length ? parts[i + 1].page : end.page) - 1   // exclusive
+  }));
+}
+function lockPage(r, sub, cta){
+  return {cls:'divider', html:`
+    <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 26px">
+      <div class="dv-hanja" style="opacity:.55">${r.hj}</div>
+      <div class="dv-t" style="opacity:.6;word-break:keep-all">${r.title}</div>
+      <div class="lock-seal">封</div>
+      <div class="dv-s" style="margin-top:18px;font-size:14px;line-height:1.9;word-break:keep-all">${sub}</div>
+      <button class="lock-btn" onclick="unlockMore()">${cta}</button>
+    </div>`};
+}
+/* 고른 부만 남기고, 안 고른 부는 봉인 한 장으로 */
+function applyPicks(){
+  const ranges = partRanges();
+  const front = pages.slice(0, ranges[0].start);
+  const tail  = pages.slice(ranges[ranges.length - 1].end);
+  const out = [...front];
+  const newToc = tocEntries.filter(t => !PART_HANJA.includes(t.label) && t.label !== '終');
+  ranges.forEach(r => {
+    if (PICKS.includes(r.no)){
+      newToc.push({label:r.hj, title:r.title, page: out.length + 1});
+      out.push(...pages.slice(r.start, r.end));
+    } else {
+      newToc.push({label:r.hj, title:r.title, page: out.length + 1, locked:true});
+      out.push(lockPage(r, '이 부(部)는 찢어가지 않았다.<br>네 원국으로 이미 적혀 있으니—<br>필요해지거든 마저 찢어가라.', '이 장 찢어가기 →'));
+    }
+  });
+  newToc.push({label:'終', title:'맺는 말', page: out.length + 1});
+  out.push(...tail);
+  pages.length = 0; pages.push(...out);
+  tocEntries.length = 0; tocEntries.push(...newToc);
+}
+/* 미리 열람 — 앞머리 + 壹 세 장 + 貳 두 장, 그리고 봉인 */
+function applyPreview(){
+  const ranges = partRanges();
+  const out = pages.slice(0, ranges[0].start);
+  out.push(...pages.slice(ranges[0].start, Math.min(ranges[0].start + 3, ranges[0].end)));
+  if (ranges[1]) out.push(...pages.slice(ranges[1].start, Math.min(ranges[1].start + 2, ranges[1].end)));
+  out.push(lockPage({hj:'封', title:'여기부턴, 찢어가야 한다'}, `남은 ${99 - out.length}장— 살의 뿌리, 오르막과 내리막, 인연·재물·업·몸·귀인, 열두 달과 십 년.<br>궁금한 부(部)만 골라 찢어갈 수도 있다.`, '찢어가러 가기 →'));
+  pages.length = 0; pages.push(...out);
+  tocEntries.length = 0;
+}
+function unlockMore(){
+  try{ if (window.parent !== window){ window.parent.postMessage({sgs:'closePreview'}, '*'); return; } }catch(e){}
+  location.href = '../myodam/#tear';
+}
+
+if (PREVIEW) applyPreview();
+else if (PARTIAL) applyPicks();
+else fitTo99();
+
+/* 장 번호 다시 매기기 — 부가 빠지면 "第 n 章" 이 어긋나므로 최종 순서로 다시 적는다 */
+pages.forEach((p, i) => { p.html = p.html.replace(/— 第 \d+ 章 —/, `— 第 ${i + 1} 章 —`); });
 
 /* ═══ 렌더 ═══ */
 const pager = document.getElementById('pager');
@@ -663,7 +754,7 @@ document.getElementById('tapNext').addEventListener('click', () => goPage(cur + 
 /* 목차 오버레이 */
 const tocList = document.getElementById('tocList');
 tocList.innerHTML = tocEntries.map(t =>
-  `<div class="toc-item" onclick="jumpTo(${t.page - 1})"><span class="n">${t.label}</span><span class="x">${t.title}</span><span class="p">${t.page}장</span></div>`
+  `<div class="toc-item${t.locked ? ' locked' : ''}" onclick="jumpTo(${t.page - 1})"><span class="n">${t.label}</span><span class="x">${t.title}</span><span class="p">${t.locked ? '封 · 잠김' : t.page + '장'}</span></div>`
 ).join('');
 function openToc(){ document.getElementById('tocOverlay').classList.add('on'); }
 function closeToc(){ document.getElementById('tocOverlay').classList.remove('on'); }
@@ -682,7 +773,7 @@ function trackReport(event){
         birth: `${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}`,
         gender: user.gender,
         product: 'myodam',
-        is_demo: !!qs.get('demo')
+        is_demo: !!(qs.get('demo') || qs.get('preview'))
       })
     }).catch(()=>{});
   }catch(e){}

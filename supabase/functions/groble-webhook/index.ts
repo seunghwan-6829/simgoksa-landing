@@ -50,7 +50,8 @@ const PRODUCTS: Product[] = [
   {
     key: "myodam",
     label: "무녀 묘담 · 운명 사용설명서 아흔아홉 장",
-    contentIds: ["kAAJFx"],
+    // 전부(38,900) / 다섯 장(14,900) / 한 장(3,900) — 세 결제창이 한 상품(묘담)이다.
+    contentIds: ["kAAJFx", "e7Ntiv", "xiXpcK"],
     titleHints: ["묘담", "살풀이", "운명 사용설명서"],
     amount: 38900,
     payUrl: "https://www.groble.im/payment/kAAJFx",
@@ -72,6 +73,23 @@ const PRODUCTS: Product[] = [
 // 미식별 상품의 기본값. 기존 상품으로 폴백하지 않는다 —
 // 오배송(다른 상품 결과지가 delivered 로 열리는 사고)이 조용히 발생하기 때문.
 const UNKNOWN_PRODUCT = "unknown";
+
+// 부분 구매 등급 — 결제창 코드(판매자측 값)로 확정한다. 리드의 tier 는 보조용.
+//  one  = 고른 한 장(목차 1부)   five = 고른 다섯 장   all = 전부
+const TIER_BY_CONTENT: Record<string, string> = { xiXpcK: "one", e7Ntiv: "five", kAAJFx: "all" };
+const TIER_LIMIT: Record<string, number> = { one: 1, five: 5, all: 10 };
+// picks 정규화: "2,5,7" → 1~10 사이 정수, 중복 제거, 등급 한도만큼만
+function normPicks(raw: string | null, tier: string): string | null {
+  if (!raw) return null;
+  const seen = new Set<number>();
+  for (const t of String(raw).split(/[^0-9]+/)) {
+    const n = Number(t);
+    if (Number.isInteger(n) && n >= 1 && n <= 10) seen.add(n);
+  }
+  const limit = TIER_LIMIT[tier] ?? 10;
+  const arr = [...seen].sort((a, b) => a - b).slice(0, limit);
+  return arr.length ? arr.join(",") : null;
+}
 
 // 화이트리스트는 명시적 배열 검사. (`key in OBJ` 는 'constructor' 같은 상속 키까지 통과한다)
 const PRODUCT_KEYS: string[] = PRODUCTS.map((p) => p.key);
@@ -391,6 +409,8 @@ Deno.serve(async (req) => {
   let leadFbp: string | null = null;
   let leadFbc: string | null = null;
   let leadUserAgent: string | null = null;
+  let leadTier: string | null = null;
+  let leadPicks: string | null = null;
 
   const sajuOf = (l: { name?: string | null; birth?: string | null; gender?: string | null }) => {
     if (!l.name || !l.birth) return null;
@@ -402,11 +422,13 @@ Deno.serve(async (req) => {
     try {
       const q = `${SUPA_URL}/rest/v1/leads?session_id=eq.${encodeURIComponent(sellerReference)}` +
         `&order=created_at.desc&limit=30` +
-        `&select=created_at,event,email,user_id,name,birth,gender,product,fbp,fbc,user_agent`;
+        `&select=created_at,event,email,user_id,name,birth,gender,product,fbp,fbc,user_agent,tier,picks`;
       const r = await fetch(q, { headers: H });
       if (r.ok) {
         const rows: Array<Record<string, string | null>> = await r.json();
         for (const l of rows) {
+          if (!leadTier && l.tier) leadTier = l.tier;
+          if (!leadPicks && l.picks) leadPicks = l.picks;
           if (!leadUserId && l.user_id) leadUserId = l.user_id;
           if (!leadEmail && l.email) leadEmail = l.email;
           if (!leadProductKey && l.product) leadProductKey = l.product;
@@ -429,11 +451,13 @@ Deno.serve(async (req) => {
       const q = `${SUPA_URL}/rest/v1/leads?event=eq.pay_intent&created_at=gte.${since}` +
         `&email=eq.${encodeURIComponent(buyerEmail)}` +
         `&order=created_at.desc&limit=5` +
-        `&select=created_at,email,user_id,name,birth,gender,product,fbp,fbc,user_agent`;
+        `&select=created_at,email,user_id,name,birth,gender,product,fbp,fbc,user_agent,tier,picks`;
       const r = await fetch(q, { headers: H });
       if (r.ok) {
         const rows: Array<Record<string, string | null>> = await r.json();
         if (rows.length) {
+          leadTier = leadTier ?? rows[0].tier;
+          leadPicks = leadPicks ?? rows[0].picks;
           leadUserId = leadUserId ?? rows[0].user_id;
           leadEmail = leadEmail ?? rows[0].email;
           leadProductKey = leadProductKey ?? rows[0].product;
@@ -467,6 +491,14 @@ Deno.serve(async (req) => {
   // 둘 중 하나라도 없으면 paid 로 남겨 어드민이 처리한다.
   let status = product && saju ? "delivered" : "paid";
 
+  // ── 부분 구매 등급·선택 장 ──────────────────────────────────────────────
+  //  등급은 결제창 코드가 정한다(구매자가 못 바꾼다). 선택 장은 우리 랜딩이
+  //  pay_intent 에 남긴 값. 부분 등급인데 선택 장이 없으면 자동 배송하지 않고
+  //  paid 로 남겨 어드민이 구매자에게 확인한 뒤 넣는다.
+  const tier = (contentId && TIER_BY_CONTENT[contentId]) ?? (leadTier && TIER_LIMIT[leadTier] ? leadTier : null) ?? "all";
+  const picks = tier === "all" ? null : normPicks(leadPicks, tier);
+  if (tier !== "all" && !picks && status === "delivered") status = "paid";
+
   // 이미 환불된 건이면 상태를 되돌리지 않는다.
   // 그로블은 payment.completed 를 최대 44시간 재시도하므로, 환불이 먼저 반영된 뒤
   // 결제 재시도가 늦게 도착해 delivered 로 되살아나는 순서 역전이 가능하다.
@@ -499,6 +531,8 @@ Deno.serve(async (req) => {
     content_title: contentTitle,
     amount: num(obj, "pricing.finalAmount"),
     saju_answer: saju,
+    tier,
+    picks,
     tracking_code: str(obj, "trackingLink.code"),
     purchased_at: str(obj, "payment.purchasedAt"),
     status,

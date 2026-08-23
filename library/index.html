@@ -319,16 +319,24 @@ async function loadBooks(quiet){
           owner = m[1].trim();
           if (p.status === 'delivered' && ch.report){
             href = `${ch.report}?name=${encodeURIComponent(owner)}&y=${m[2]}&m=${+m[3]}&d=${+m[4]}&g=${m[5]}`;
+            // 부분 구매(찢어가기): 고른 부만 열린다. 전부(all)는 picks 없이 연다.
+            if (p.tier && p.tier !== 'all' && p.picks) href += '&picks=' + encodeURIComponent(p.picks);
           }
         }
       }
       const ownerEsc = owner ? owner.replace(/</g,'&lt;') : null;
+      // 찢어간 장 표시
+      const HJ = ['','壹','貳','參','肆','伍','陸','柒','捌','玖','拾'];
+      const tierLabel = p.product === 'myodam' && p.tier && p.tier !== 'all'
+        ? (p.picks ? `찢어간 장 · ${String(p.picks).split(',').map(n => HJ[+n] || '').filter(Boolean).join(' ')}` : '찢어간 장 · 확인 중')
+        : null;
       const inner = `
         <div class="b-row">
           <div class="b-thumb" style="background-image:url('${ch.img}')"><span class="b-char">${ch.label}</span></div>
           <div class="b-info">
             <div class="b-kicker">${ch.name} · 深谷寺</div>
             <div class="b-t">${ch.book}</div>
+            ${tierLabel ? `<div class="b-owner" style="color:var(--ember,#d08c3a)">${tierLabel}</div>` : ''}
             ${ownerEsc ? `<div class="b-owner"><b>${ownerEsc}</b>의 원국으로 엮음</div>` : ''}
             <div class="b-s">${dateStr} 접수${p.amount ? ' · ' + p.amount.toLocaleString() + '원' : ''}</div>
           </div>

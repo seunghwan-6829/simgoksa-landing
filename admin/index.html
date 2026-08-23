@@ -262,7 +262,7 @@ async function loadInputs(){
       return;
     }
     // 같은 방문(session)에서 결제클릭까지 갔는지 표시
-    const paySessions = new Set(inputs.filter(l => l.event === 'pay_click').map(l => l.session_id).filter(Boolean));
+    const paySessions = new Map(inputs.filter(l => l.event === 'pay_click' && l.session_id).map(l => [l.session_id, l]));
     const rows = inputs.filter(l => l.event === 'input_complete');
     const PROD = { myodam: '묘담', hyunwol: '현월', hongdan: '홍단' };
     tb.innerHTML = rows.map(l => `
@@ -273,7 +273,7 @@ async function loadInputs(){
         <td>${esc(l.gender || '—')}</td>
         <td>${esc(PROD[l.product] || l.product || '—')}</td>
         <td class="muted">${(l.sals || []).map(esc).join(', ') || '—'}</td>
-        <td>${paySessions.has(l.session_id) ? '<span class="badge paid">결제클릭</span>' : '<span class="muted">입력만</span>'}</td>
+        <td>${paySessions.has(l.session_id) ? '<span class="badge paid">결제클릭</span><div class="muted">' + tierTxt(paySessions.get(l.session_id)).replace(/^ · /,'') + '</div>' : '<span class="muted">입력만</span>'}</td>
       </tr>`).join('');
   }catch(e){
     tb.innerHTML = '<tr><td colspan="7" class="loading">불러오기 실패 — 새로고침을 눌러 다시 시도하세요.</td></tr>';
@@ -318,6 +318,14 @@ async function loadDash(){
   }catch(e){ console.error(e); }
 }
 
+/* 찢어가기 표시 — 등급(한 장/다섯 장) + 고른 부 */
+const HJ10 = ['','壹','貳','參','肆','伍','陸','柒','捌','玖','拾'];
+function tierTxt(p){
+  if (!p.tier || p.tier === 'all') return '';
+  const name = { one: '한 장', five: '다섯 장' }[p.tier] || p.tier;
+  const picks = p.picks ? String(p.picks).split(',').map(n => HJ10[+n] || n).join(' ') : '<span style="color:#e5383b">고른 장 없음 — 구매자 확인 필요</span>';
+  return ` · <b>${name}</b> ${picks}`;
+}
 /* ── 주문 관리 ── */
 async function loadOrders(){
   try{
@@ -328,7 +336,7 @@ async function loadOrders(){
       <tr data-id="${p.id}">
         <td>${dt(p.created_at)}</td>
         <td>${esc(p.buyer_email || p.buyer_name || '—')}<div class="muted">${esc(p.buyer_phone || '')}</div></td>
-        <td>${esc(p.saju_answer || '—')}<div class="muted">${esc(p.product_name || '')}</div></td>
+        <td>${esc(p.saju_answer || '—')}<div class="muted">${esc(p.product_name || '')}${tierTxt(p)}</div></td>
         <td>${won(p.amount)}</td>
         <td>
           <select class="status" onchange="setStatus('${p.id}', this.value)">
