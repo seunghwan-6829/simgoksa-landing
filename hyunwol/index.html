@@ -1989,7 +1989,22 @@ function showAskStep(id){
 function askName(){
   const v = document.getElementById('inName').value.trim();
   const err = document.getElementById('errName');
-  if (v.length < 2) { err.style.display='block'; return; }
+  // 장난 이름("..", "ㅇㅇ", "asdf")은 받지 않는다 — 결과지에 그대로 박히기 때문
+  const bad = SGS.checkName(v);
+  if (bad){
+    err.textContent = ({
+      short:  '…이름을 말해야 한다.',
+      jamo:   '…그건 이름이 아니다. 부르는 이름을 제대로 적거라.',
+      symbol: '…점이나 기호로는 장부에 못 적는다. 이름을 적거라.',
+      repeat: '…놀리는 게냐. 네 이름을 적거라.',
+      fake:   '…그 이름으로는 장부가 열리지 않는다. 네 진짜 이름을 적거라.',
+      long:   '…너무 길다. 부르는 이름만 적거라.',
+      mixed:  '…한글이면 한글로, 영문이면 영문으로만 적거라.'
+    })[bad];
+    err.style.display='block';
+    track('ask_name_bad', { detail: bad });
+    return;
+  }
   err.style.display='none';
   user.name = v;
   if (navigator.vibrate) navigator.vibrate(20);

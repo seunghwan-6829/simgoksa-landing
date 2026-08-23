@@ -47,3 +47,23 @@
     return new Date(createdAt).getTime() < new Date(SGS.HASH_V2_SINCE).getTime() ? 1 : 2;
   };
 })(window);
+
+/* ── 이름 검사 — "..", "ㅇㅇ", "asdf" 같은 장난 입력을 거른다 ──
+   통과: 한글 2~6자(완성형), 또는 영문 2~20자(이름용). 자모만·기호·숫자·같은 글자 반복은 탈락.
+   반환: null(정상) 또는 무녀/스님 말투로 쓸 사유 키 */
+(function (w) {
+  'use strict';
+  w.SGS.checkName = function (raw) {
+    var v = String(raw || '').trim();
+    if (v.length < 2) return 'short';
+    if (/[ㄱ-ㅎㅏ-ㅣ]/.test(v)) return 'jamo';                        // ㅇㅇ, ㅋㅋ
+    if (/[0-9]/.test(v) || /[^가-힣A-Za-z\s]/.test(v)) return 'symbol';   // .., ??, 김철수!
+    var core = v.replace(/\s+/g, '');
+    if (/^(.)\1+$/.test(core)) return 'repeat';                       // 아아아, aaaa
+    var FAKE = ['asdf','asdfg','qwer','qwerty','zxcv','test','tester','abc','abcd','none','null','name','테스트','이름','본인','아무개','홍길동','무명','몰라','비밀','익명','그냥','없음','없어'];
+    if (FAKE.indexOf(core.toLowerCase()) !== -1) return 'fake';        // 자리표시 이름
+    if (/^[가-힣]+$/.test(core)) { if (core.length > 6) return 'long'; return null; }
+    if (/^[A-Za-z\s]+$/.test(v)) { if (core.length > 20) return 'long'; return null; }
+    return 'mixed';                                                     // 한글+영문 섞임
+  };
+})(window);
