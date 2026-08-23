@@ -1352,7 +1352,7 @@ footer b{color:#7a6f66}
       </div>
     </div>
     <button class="m-btn" id="buyGo" onclick="startPay()">결제하기</button>
-    <p class="m-note">결제 완료 즉시 접수되며,<br>완성된 풀이는 <a href="../library/" style="color:var(--ember)">내 서고</a>에서 언제든 읽을 수 있습니다.</p>
+    <p class="m-note">회원가입 없이 바로 결제합니다.<br>결제가 끝나면 <b>결제한 이메일</b>이 곧 열쇠가 되어<br><a href="../library/" style="color:var(--ember)">내 서고</a>가 자동으로 열립니다.</p>
   </div>
 </div>
 
@@ -2100,12 +2100,12 @@ async function startPay(){
   // 결제 의향 기록 → 그로블 결제창으로 이탈하기 직전, 우리 쪽 정보를 리드에 남긴다.
   // 웹훅은 ?ref=<session_id> 로 되돌아오는 data.object.sellerReference 로 이 행을 찾아
   // user_id / 이메일 / 사주 / 등급 / 고른 장을 주문에 붙인다. (결제창은 우리 화면이 아니라 자동으로 안 들어간다)
+  // 결제 기기 표식 — 서고가 이 값으로 "방금 결제한 사람"을 알아보고 회원가입 없이 문을 연다
+  try{ localStorage.setItem('sgs_sid', JSON.stringify({ sid: sessionId, t: Date.now() })); }catch(e){}
   try{
-    const { data } = await sb.auth.getSession();
-    if (data && data.session && data.session.user){
-      currentUserId = data.session.user.id;
-      await track('pay_intent', { email: data.session.user.email, tier: pick.tier, picks: pick.tier === 'all' ? null : pick.parts.join(',') });
-    }
+    let email = null;
+    if (sb){ const { data } = await sb.auth.getSession(); if (data && data.session && data.session.user){ currentUserId = data.session.user.id; email = data.session.user.email; } }
+    await track('pay_intent', { email, tier: pick.tier, picks: pick.tier === 'all' ? null : pick.parts.join(',') });
   }catch(e){}
   // ?ref= 로 세션을 실어 보낸다. 허용 문자 A-Za-z0-9-_.:=~ / 1~128자 (UUID 는 조건 충족)
   location.href = t.url + '?ref=' + encodeURIComponent(sessionId);
@@ -2138,15 +2138,13 @@ async function goCTA(e){
   e.preventDefault();
   track('cta_click', { tier: pick.tier });
   if (!picksReady()) return;
-  if (!sb) { openBuy(); return; }
-  const { data } = await sb.auth.getSession();
-  if (data && data.session){
-    isAdmin = ADMIN_EMAILS.includes((data.session.user.email || '').toLowerCase());
-    openBuy();
-  } else openAuth(async () => {
-    try{ const r = await sb.auth.getSession(); isAdmin = !!(r.data && r.data.session) && ADMIN_EMAILS.includes((r.data.session.user.email || '').toLowerCase()); }catch(e){}
-    openBuy();
-  });
+  // 회원가입 없이 바로 결제한다. 계정은 결제 이메일로 자동 생성되고(웹훅), 서고가 결제 기기를 알아본다(claim-session).
+  // 로그인 상태면 그 계정에 붙고, 관리자면 결제 없이 연다.
+  isAdmin = false;
+  try{
+    if (sb){ const { data } = await sb.auth.getSession(); if (data && data.session) isAdmin = ADMIN_EMAILS.includes((data.session.user.email || '').toLowerCase()); }
+  }catch(e){}
+  openBuy();
 }
 </script>
 </body>

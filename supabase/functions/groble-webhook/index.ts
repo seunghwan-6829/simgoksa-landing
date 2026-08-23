@@ -28,6 +28,7 @@
 // ════════════════════════════════════════════════════════════════════════════
 
 import { logCapiEvent, sendMetaEvent } from "../_shared/meta.ts";
+import { ensureAuthUser } from "../_shared/auth.ts";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  상품 표 — 새 상품은 여기 한 줄 추가로 끝난다.
@@ -524,6 +525,12 @@ Deno.serve(async (req) => {
       }
     }
   } catch (_e) { /* 조회 실패 시에는 정상 판정을 그대로 쓴다 */ }
+
+  // ── 계정 자동 생성 — 회원가입 없이 결제한 사람은 결제 이메일로 계정을 만들어 주문에 붙인다 ──
+  //  (이미 로그인 상태에서 산 사람은 ref 로 붙은 user_id 를 그대로 쓴다)
+  if (!leadUserId && buyerEmail) {
+    try { leadUserId = await ensureAuthUser(SUPA_URL, H, buyerEmail); } catch (e) { console.error("ensureAuthUser", String(e)); }
+  }
 
   const row = {
     groble_purchase_id: merchantUid,

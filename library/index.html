@@ -76,6 +76,14 @@ header a.back:hover{color:var(--paper)}
   font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:.1em;padding:15px;
 }
 .auth button.go:disabled{opacity:.55}
+.otp-row{margin-bottom:6px}
+.otp-row .err{display:block;color:var(--ink-dim)}
+.auth .or{display:flex;align-items:center;gap:10px;margin:14px 0 12px;color:#5c534c;font-size:11.5px;letter-spacing:.1em}
+.auth .or::before,.auth .or::after{content:"";flex:1;height:1px;background:rgba(232,224,216,.12)}
+.claim-dots{display:flex;justify-content:center;gap:8px;margin-top:6px}
+.claim-dots span{width:7px;height:7px;border-radius:50%;background:var(--ember);opacity:.3;animation:cd 1.2s infinite}
+.claim-dots span:nth-child(2){animation-delay:.2s}.claim-dots span:nth-child(3){animation-delay:.4s}
+@keyframes cd{0%,100%{opacity:.3}50%{opacity:1}}
 .auth .switch{margin-top:14px;text-align:center;font-size:13px;color:var(--ink-dim)}
 .auth .switch a{color:var(--ember);text-decoration:underline;cursor:pointer}
 /* 서고 */
@@ -166,18 +174,32 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
     <div class="hanja">書庫</div>
     <div class="sub">내 서고 · 받은 풀이가 꽂히는 곳</div>
     <p class="who" id="who"></p>
+    <p class="who" id="pwLink" style="display:none;margin-top:6px"><a onclick="setPassword()" style="color:var(--ember);cursor:pointer;text-decoration:underline;font-size:12px">비밀번호 만들기 · 바꾸기</a> <span style="font-size:11px;color:#6b5f57">— 다른 기기에서도 열려면</span></p>
+  </div>
+
+  <!-- 결제 직후 자동 입장 -->
+  <div class="auth" id="claimBox" style="display:none">
+    <h3>문을 여는 중</h3>
+    <p class="sub" id="claimMsg">값을 치른 것을 확인하고 있다…<br>잠시만 — 곧 네 서고가 열린다.</p>
+    <div class="claim-dots"><span></span><span></span><span></span></div>
   </div>
 
   <!-- 로그인 폼 -->
   <div class="auth" id="authBox">
     <h3 id="aTitle">서고 열기</h3>
-    <p class="sub" id="aSub">열쇠(계정)로 들어와야<br>네 풀이를 읽을 수 있다.</p>
+    <p class="sub" id="aSub"><b style="color:var(--paper)">결제한 이메일</b>이 곧 열쇠다.<br>다른 기기라면 이메일로 열쇠를 받아라.</p>
+    <div class="otp-row">
+      <input type="email" id="oEmail" placeholder="결제한 이메일" autocomplete="email">
+      <button class="go" id="oGo" onclick="sendOtp()">이메일로 열쇠 받기</button>
+      <p class="err" id="oMsg"></p>
+    </div>
+    <p class="or"><span>또는 비밀번호로</span></p>
     <input type="email" id="aEmail" placeholder="이메일" autocomplete="email">
     <input type="password" id="aPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password">
     <input type="password" id="aPw2" placeholder="비밀번호 다시 한 번" autocomplete="new-password" style="display:none">
     <p class="err" id="aErr"></p>
     <button class="go" id="aGo" onclick="doAuth()">서고 열기 · 로그인</button>
-    <p class="switch" id="aSwitch">열쇠가 없다면 <a onclick="toggleMode()">회원가입</a></p>
+    <p class="switch" id="aSwitch">비밀번호를 아직 안 만들었다면 — 위의 「이메일로 열쇠 받기」</p>
   </div>
 
   <!-- 서고 -->
@@ -213,6 +235,8 @@ let mode = 'login';
 
 function show(logged, email){
   document.getElementById('authBox').style.display = logged ? 'none' : 'block';
+  document.getElementById('claimBox').style.display = 'none';
+  document.getElementById('pwLink').style.display = logged ? 'block' : 'none';
   document.getElementById('shelf').style.display = logged ? 'block' : 'none';
   document.getElementById('logoutBtn').style.display = logged ? 'inline-block' : 'none';
   const who = document.getElementById('who');
@@ -364,11 +388,65 @@ async function loadBooks(quiet){
     noteEl.style.display = 'block';
   }
 }
+/* ── 결제 직후 자동 입장 ──
+   랜딩이 결제 직전 localStorage 에 남긴 sid 로 서버(claim-session)에 "방금 결제한 기기"임을 증명하면
+   서버가 결제 이메일 계정(자동 생성)의 1회용 토큰을 주고, 여기서 세션을 연다. 메일도 회원가입도 없다. */
+function pendingSid(){
+  try{ const d = JSON.parse(localStorage.getItem('sgs_sid') || 'null'); if (d && d.sid && Date.now() - d.t < 24*3600e3) return d.sid; }catch(e){}
+  return null;
+}
+async function claimSession(sid){
+  const box = document.getElementById('claimBox'), msg = document.getElementById('claimMsg');
+  document.getElementById('authBox').style.display = 'none'; box.style.display = 'block';
+  for (let i = 0; i < 20; i++){
+    try{
+      const r = await fetch(SGS.FN_URL + '/claim-session', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sid }) });
+      const j = await r.json();
+      if (j.ok){
+        const v = await sb.auth.verifyOtp({ token_hash: j.token_hash, type: 'magiclink' });
+        if (!v.error){ localStorage.removeItem('sgs_sid'); show(true, v.data.user.email); return true; }
+        break;
+      }
+      if (j.error === 'refunded'){ localStorage.removeItem('sgs_sid'); break; }
+      if (j.error !== 'pending') break;
+    }catch(e){}
+    if (i === 4) msg.innerHTML = '결제 확인이 조금 늦어진다…<br>문은 열린다, 잠시만.';
+    await new Promise(res => setTimeout(res, 4000));
+  }
+  box.style.display = 'none';
+  show(false);
+  const m = document.getElementById('oMsg');
+  m.textContent = '결제 확인이 늦어진다. 결제한 이메일을 적고 「이메일로 열쇠 받기」를 눌러라.'; m.style.display = 'block';
+  return false;
+}
 async function init(){
   if (!sb) { show(false); return; }
   const { data } = await sb.auth.getSession();
-  if (data && data.session) show(true, data.session.user.email);
-  else show(false);
+  if (data && data.session){ show(true, data.session.user.email); return; }
+  const sid = pendingSid();
+  if (sid){ await claimSession(sid); return; }
+  show(false);
+}
+/* 다른 기기: 결제 이메일로 매직링크 */
+async function sendOtp(){
+  const email = document.getElementById('oEmail').value.trim();
+  const m = document.getElementById('oMsg'); const btn = document.getElementById('oGo');
+  if (!/.+@.+\..+/.test(email)){ m.textContent = '이메일이 온전치 않다.'; m.style.display = 'block'; return; }
+  btn.disabled = true;
+  try{
+    const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + '/library/' } });
+    if (error){
+      m.textContent = /signups not allowed|not found|Signups/i.test(error.message) ? '그 이메일로 결제한 기록이 없다. 결제 때 적은 이메일을 확인하라.' : '메일을 보내지 못했다. 잠시 후 다시 시도하라.';
+    } else m.textContent = '메일을 보냈다 — 메일의 「열쇠」를 누르면 이 서고가 열린다.';
+  }catch(e){ m.textContent = '메일을 보내지 못했다. 잠시 후 다시 시도하라.'; }
+  m.style.display = 'block'; btn.disabled = false;
+}
+/* 자동 생성 계정에 비밀번호 달기 */
+async function setPassword(){
+  const pw = prompt('새 비밀번호 (6자 이상)'); if (!pw) return;
+  if (pw.length < 6){ alert('여섯 자 이상이어야 한다.'); return; }
+  const { error } = await sb.auth.updateUser({ password: pw });
+  alert(error ? '바꾸지 못했다. 잠시 후 다시 시도하라.' : '비밀번호를 걸었다. 이제 어느 기기에서든 이메일+비밀번호로 열린다.');
 }
 function toggleMode(){
   mode = mode === 'login' ? 'signup' : 'login';
