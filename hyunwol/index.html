@@ -1048,7 +1048,7 @@ footer b{color:#7a6f66}
 
 <!-- ═══════════ 도입 게이트 ═══════════ -->
 <div id="gate">
-  <div class="gate-frame"><video class="gate-bg" src="../assets/hw_road.mp4" muted loop playsinline autoplay poster="../assets/hw_road.jpg"></video></div>
+  <div class="gate-frame"><video class="gate-bg" src="../assets/hw_road_dawn.mp4" muted loop playsinline autoplay poster="../assets/hw_road_dawn.jpg"></video></div>
   <div class="gate-veil"></div>
   <div class="gate-inner">
     <div class="gate-brand">
@@ -1212,7 +1212,7 @@ footer b{color:#7a6f66}
 
   <!-- ═══════════ SCENE 3 : 선고 (가면 벗기) ═══════════ -->
   <section class="scene hidden-scene" id="scene3" style="display:none">
-    <video class="bg" src="../assets/hw_counting.mp4" muted loop playsinline preload="none" poster="../assets/hw_counting.jpg"></video>
+    <video class="bg" id="scene3Vid" src="../assets/hw_counting.mp4" muted playsinline preload="none" poster="../assets/hw_counting.jpg"></video>
     <div class="veil"></div>
     <span class="scene-tag">參</span>
     <div class="dialog" data-scene="3">
@@ -1964,6 +1964,21 @@ attachAmbience(document.querySelector('#scene2 video'), '../assets/sfx_hw_bell.m
 const askAmb = attachAmbience(document.getElementById('askBg'), '../assets/sfx_hw_desk.mp3', .85);
 attachAmbience(document.getElementById('askBg'), '../assets/sfx_hw_gate.mp3', .3);          // 바깥 밤공기 레이어
 attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_counting.mp3', .9);
+/* 선고 장면: 엽전 쌓기(1편)가 끝나면 손바닥 컷(2편)으로 넘어가고, 그 뒤로는 2편만 반복 */
+(function chainScene3(){
+  const v = document.getElementById('scene3Vid');
+  if (!v) return;
+  // 1편이 도는 동안 2편을 미리 내려받아 이음새 없이 넘어간다
+  v.addEventListener('play', () => { fetch('../assets/hw_palm.mp4', { cache: 'force-cache' }).catch(()=>{}); }, { once: true });
+  v.addEventListener('ended', () => {
+    if (v.dataset.part2) return;
+    v.dataset.part2 = '1';
+    v.src = '../assets/hw_palm.mp4';
+    v.poster = '../assets/hw_palm.jpg';
+    v.loop = true;
+    v.play().catch(()=>{});
+  });
+})();
 attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_bell.mp3', .22);  // 먼 풍경 레이어
 attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_hw_gate.mp3', .6);
 
@@ -2004,6 +2019,22 @@ function showAskStep(id){
   const step = document.getElementById(id);
   step.style.display = 'block';
   // 생년월일 단계부터: 장부에 붓글씨를 적어 내려가는 배경으로 전환
+  if (id === 'ask3b') {
+    // 돈 문답 — 스님이 주판을 놓는 컷으로 전환
+    const bg = document.getElementById('askBg');
+    if (bg && !bg.dataset.abacus) {
+      bg.dataset.abacus = '1';
+      bg.style.transition = 'opacity 1.2s ease';
+      bg.style.opacity = '0';
+      setTimeout(() => {
+        bg.src = '../assets/hw_abacus.mp4';
+        bg.poster = '../assets/hw_abacus.jpg';
+        if (askAmb){ askAmb.src = '../assets/sfx_hw_abacus.mp3'; }   // 주판알 소리
+        bg.play().catch(()=>{});
+        bg.style.opacity = '1';
+      }, 1200);
+    }
+  }
   if (id === 'ask2') {
     const bg = document.getElementById('askBg');
     if (bg && !bg.dataset.writing) {
