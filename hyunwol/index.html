@@ -1063,7 +1063,7 @@ footer b{color:#7a6f66}
 
 <!-- ═══════════ 로딩 오버레이 ═══════════ -->
 <div id="loading">
-  <video class="load-bg" src="../assets/hw_gate.mp4" muted loop playsinline preload="none" poster="../assets/hw_gate.jpg"></video>
+  <video class="load-bg" src="../assets/hw_doors.mp4" muted loop playsinline preload="none" poster="../assets/hw_doors.jpg"></video>
   <div class="load-veil"></div>
   <div class="load-ring">
     <div class="ring"></div>
@@ -1199,10 +1199,10 @@ footer b{color:#7a6f66}
       </div>
       <!-- step 4 : 반응 -->
       <div class="ask-step" id="ask4" style="display:none">
-        <p class="line whisper">스님이 낡은 장부를 넘긴다.<br>붓끝이— 한 자리에서 멈춘다.</p>
+        <p class="line whisper">주판알 소리가— 뚝, 멎는다.<br>스님의 손끝이 한 자리에 멈춰 있다.</p>
         <p class="line voice" id="reactLine1">"……"</p>
         <p class="line voice"><em>"그릇과 담긴 것이— 맞지 않는군."</em></p>
-        <p class="line whisper">처음으로, 스님이 붓을 내려놓고<br>당신을 똑바로 본다.</p>
+        <p class="line whisper">처음으로, 스님이 주판에서 손을 떼고<br>당신을 똑바로 본다.</p>
         <div class="choices">
           <button class="choice" data-next="3">"…뭐가, 맞지 않습니까?"</button>
         </div>
@@ -1840,7 +1840,7 @@ function loadProgress(){
 
 /* ───────── gate ───────── */
 /* 게이트 첫 터치 → 발소리+귀뚜라미+멀리 풍경 앰비언스 즉시 시작 (사전 로딩으로 지연 없음) */
-const gateAmbBells = new Audio('../assets/sfx_hw_road.mp3');   // 흙길 발소리 + 저녁 벌레 + 바람
+const gateAmbBells = new Audio('../assets/sfx_hw_road_dawn.mp3');   // 새벽 흙길 발소리 + 바람 (걷는 POV 영상에서 추출)
 gateAmbBells.loop = true; gateAmbBells.volume = 1; gateAmbBells.preload = 'auto';
 const gateAmbSteps = new Audio('../assets/sfx_hw_bell.mp3');   // 멀리서 우는 풍경(風磬)
 gateAmbSteps.loop = true; gateAmbSteps.volume = .6; gateAmbSteps.preload = 'auto';
@@ -1969,18 +1969,22 @@ attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_counti
   const v = document.getElementById('scene3Vid');
   if (!v) return;
   // 1편이 도는 동안 2편을 미리 내려받아 이음새 없이 넘어간다
-  v.addEventListener('play', () => { fetch('../assets/hw_palm.mp4', { cache: 'force-cache' }).catch(()=>{}); }, { once: true });
+  v.addEventListener('play', () => { fetch('../assets/hw_pour.mp4', { cache: 'force-cache' }).catch(()=>{}); }, { once: true });
   v.addEventListener('ended', () => {
     if (v.dataset.part2) return;
     v.dataset.part2 = '1';
-    v.src = '../assets/hw_palm.mp4';
-    v.poster = '../assets/hw_palm.jpg';
+    v.style.transition = 'opacity .35s ease';
+    v.style.opacity = '0';
+    v.poster = '../assets/hw_pour.jpg';
+    v.src = '../assets/hw_pour.mp4';
     v.loop = true;
-    v.play().catch(()=>{});
+    v.addEventListener('loadeddata', () => { v.style.opacity = '1'; }, { once: true });
+    v.load(); v.play().catch(()=>{});
+    setTimeout(() => { v.style.opacity = '1'; }, 2500);   // 안전망
   });
 })();
 attachAmbience(document.querySelector('#scene3 video'), '../assets/sfx_hw_bell.mp3', .22);  // 먼 풍경 레이어
-attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_hw_gate.mp3', .6);
+attachAmbience(document.querySelector('#loading .load-bg'), '../assets/sfx_hw_doors.mp3', .6);   // 문 열리는 소리
 
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.choice');
@@ -2027,11 +2031,13 @@ function showAskStep(id){
       bg.style.transition = 'opacity 1.2s ease';
       bg.style.opacity = '0';
       setTimeout(() => {
-        bg.src = '../assets/hw_abacus.mp4';
         bg.poster = '../assets/hw_abacus.jpg';
+        bg.src = '../assets/hw_abacus.mp4';
         if (askAmb){ askAmb.src = '../assets/sfx_hw_abacus.mp3'; }   // 주판알 소리
-        bg.play().catch(()=>{});
-        bg.style.opacity = '1';
+        // 새 영상 첫 프레임이 준비된 뒤에야 올린다 — 옛 프레임이 비치지 않게
+        bg.addEventListener('loadeddata', () => { bg.style.opacity = '1'; }, { once: true });
+        bg.load(); bg.play().catch(()=>{});
+        setTimeout(() => { bg.style.opacity = '1'; }, 2500);   // 안전망 (느린 회선)
       }, 1200);
     }
   }
@@ -2042,11 +2048,12 @@ function showAskStep(id){
       bg.style.transition = 'opacity 1.2s ease';
       bg.style.opacity = '0';
       setTimeout(() => {
-        bg.src = '../assets/hw_writing.mp4';
         bg.poster = '../assets/hw_writing.jpg';
+        bg.src = '../assets/hw_writing.mp4';
         if (askAmb){ askAmb.src = '../assets/sfx_hw_writing.mp3'; } // 붓글씨 사운드로 교체
-        bg.play().catch(()=>{});
-        bg.style.opacity = '1';
+        bg.addEventListener('loadeddata', () => { bg.style.opacity = '1'; }, { once: true });
+        bg.load(); bg.play().catch(()=>{});
+        setTimeout(() => { bg.style.opacity = '1'; }, 2500);   // 안전망
       }, 1200);
     }
   }

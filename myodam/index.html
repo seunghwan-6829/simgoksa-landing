@@ -1694,11 +1694,13 @@ function showAskStep(id){
       bg.style.transition = 'opacity 1.2s ease';
       bg.style.opacity = '0';
       setTimeout(() => {
-        bg.src = '../assets/writing.mp4';
         bg.poster = '../assets/writing.jpg';
+        bg.src = '../assets/writing.mp4';
         if (askAmb){ askAmb.src = '../assets/sfx_writing.mp3'; } // 붓글씨 사운드로 교체
-        bg.play().catch(()=>{});
-        bg.style.opacity = '1';
+        // 새 영상 첫 프레임이 준비된 뒤에야 올린다 — 이전 영상 마지막 프레임이 0.1초 비치는 문제 방지
+        bg.addEventListener('loadeddata', () => { bg.style.opacity = '1'; }, { once: true });
+        bg.load(); bg.play().catch(()=>{});
+        setTimeout(() => { bg.style.opacity = '1'; }, 2500);   // 안전망 (느린 회선)
       }, 1200);
     }
   }
