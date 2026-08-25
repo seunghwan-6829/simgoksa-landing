@@ -69,6 +69,16 @@ const PRODUCTS: Product[] = [
     reportPath: "/gyeong/",
     landingPath: "/hyunwol/",
   },
+  {
+    key: "hongdan",
+    label: "별당 아씨 홍단 · 붉은 실의 기록 일흔일곱 장",
+    contentIds: ["kAdXFx", "BGFtKG", "LFM8JS"],   // 전부 / 다섯 매듭 / 한 매듭
+    titleHints: ["홍단", "붉은 실", "연서"],
+    amount: 38900,
+    payUrl: "https://www.groble.im/payment/kAdXFx",
+    reportPath: "/yeon/",
+    landingPath: "/hongdan/",
+  },
 ];
 
 // 미식별 상품의 기본값. 기존 상품으로 폴백하지 않는다 —
@@ -80,6 +90,7 @@ const UNKNOWN_PRODUCT = "unknown";
 const TIER_BY_CONTENT: Record<string, string> = {
   xiXpcK: "one", e7Ntiv: "five", kAAJFx: "all",   // 묘담
   vuzWHN: "one", RpxRzG: "five", "5xeDtU": "all",  // 현월
+  LFM8JS: "one", BGFtKG: "five", kAdXFx: "all",    // 홍단
 };
 const TIER_LIMIT: Record<string, number> = { one: 1, five: 5, all: 10 };
 // picks 정규화: "2,5,7" → 1~10 사이 정수, 중복 제거, 등급 한도만큼만
@@ -415,6 +426,7 @@ Deno.serve(async (req) => {
   let leadUserAgent: string | null = null;
   let leadTier: string | null = null;
   let leadPicks: string | null = null;
+  let leadPath: string | null = null;   // 홍단 — 재회(jae)/연애(yeon) 갈래
 
   const sajuOf = (l: { name?: string | null; birth?: string | null; gender?: string | null }) => {
     if (!l.name || !l.birth) return null;
@@ -426,13 +438,14 @@ Deno.serve(async (req) => {
     try {
       const q = `${SUPA_URL}/rest/v1/leads?session_id=eq.${encodeURIComponent(sellerReference)}` +
         `&order=created_at.desc&limit=30` +
-        `&select=created_at,event,email,user_id,name,birth,gender,product,fbp,fbc,user_agent,tier,picks`;
+        `&select=created_at,event,email,user_id,name,birth,gender,product,fbp,fbc,user_agent,tier,picks,path`;
       const r = await fetch(q, { headers: H });
       if (r.ok) {
         const rows: Array<Record<string, string | null>> = await r.json();
         for (const l of rows) {
           if (!leadTier && l.tier) leadTier = l.tier;
           if (!leadPicks && l.picks) leadPicks = l.picks;
+          if (!leadPath && l.path) leadPath = l.path;
           if (!leadUserId && l.user_id) leadUserId = l.user_id;
           if (!leadEmail && l.email) leadEmail = l.email;
           if (!leadProductKey && l.product) leadProductKey = l.product;
@@ -455,13 +468,14 @@ Deno.serve(async (req) => {
       const q = `${SUPA_URL}/rest/v1/leads?event=eq.pay_intent&created_at=gte.${since}` +
         `&email=eq.${encodeURIComponent(buyerEmail)}` +
         `&order=created_at.desc&limit=5` +
-        `&select=created_at,email,user_id,name,birth,gender,product,fbp,fbc,user_agent,tier,picks`;
+        `&select=created_at,email,user_id,name,birth,gender,product,fbp,fbc,user_agent,tier,picks,path`;
       const r = await fetch(q, { headers: H });
       if (r.ok) {
         const rows: Array<Record<string, string | null>> = await r.json();
         if (rows.length) {
           leadTier = leadTier ?? rows[0].tier;
           leadPicks = leadPicks ?? rows[0].picks;
+          leadPath = leadPath ?? rows[0].path;
           // ⚠️ 이메일 폴백에서는 리드의 user_id / email 을 신뢰하지 않는다.
           //    leads 는 anon INSERT 가 열린 표라, 남의 결제 이메일을 적은 가짜 pay_intent 로
           //    타인의 주문을 자기 계정(서고)에 붙일 수 있기 때문이다. 서고 연결은
@@ -550,6 +564,7 @@ Deno.serve(async (req) => {
     saju_answer: saju,
     tier,
     picks,
+    path: leadPath === "jae" || leadPath === "yeon" ? leadPath : null,   // 홍단 갈래 — 그 외 값은 버린다
     tracking_code: str(obj, "trackingLink.code"),
     purchased_at: str(obj, "payment.purchasedAt"),
     status,

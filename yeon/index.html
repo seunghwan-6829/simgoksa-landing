@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ko" data-product="hongdan">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>붉은 실의 기록 — 深谷寺 별당</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0507">
+<!-- Meta 도메인 인증 — iOS 집계(AEM)에 필요.
+     ⚠️ 이 태그는 track.js 로 못 뺀다. 메타 크롤러는 JS 를 실행하지 않으므로
+     HTML 소스에 그대로 있어야 한다. (scripts/check_tracking.py 가 누락을 잡는다) -->
+<meta name="facebook-domain-verification" content="r86v232n14r3kyj3ma78sbca9zhxia" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<!-- Meta Pixel + 전환 추적 — 공개 페이지 공통 (관리자 페이지 제외) -->
+<script src="/assets/sgs-config.js"></script>
+<script src="/assets/sgs-saju.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js" integrity="sha384-l8ah+VgaWtk1mvOe9VC+OirC6qHFF4yH7l7mKRidV9MSti3E9F463bMp6ZVN4kuC" crossorigin="anonymous"></script>
+<script src="/assets/sgs-access.js"></script>
+<script src="/assets/track.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0508; --bg2:#150a10; --ink:#e6d6d2; --ink-dim:#a2888a; --dim2:#6f5158;
+  --brass:#d78d97; --brass-hi:#ec6a80; --loo:#d24a3e; --paper:#f0dee0;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{height:100%;overflow:hidden}
+body{background:#060305;color:var(--ink);font-family:'Noto Serif KR','Nanum Myeongjo',serif}
+.grain{
+  pointer-events:none;position:fixed;inset:-100%;width:300%;height:300%;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity:.06;z-index:90;
+}
+#frame{position:fixed;inset:0;max-width:480px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column}
+/* 끝장 — 메인으로 가는 상단 바 (마지막 장에서 내려온다) */
+#homeBar{position:fixed;left:0;right:0;top:0;z-index:70;transform:translateY(-110%);transition:transform .55s cubic-bezier(.2,.8,.3,1);
+  background:rgba(7,3,5,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(215,141,151,.35);
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#homeBar.on{transform:none}
+#homeBar .hb-t{font-family:'Nanum Myeongjo',serif;font-size:12.5px;letter-spacing:.2em;color:#d78d97;white-space:nowrap}
+#homeBar .hb-s{font-size:11.5px;color:#9a8a8f;letter-spacing:.06em;word-break:keep-all}
+#homeBar a{flex-shrink:0;background:linear-gradient(160deg,#c1121f,#780000);color:#fff;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:.12em;padding:10px 16px;border-radius:3px;border:1px solid rgba(255,255,255,.14);white-space:nowrap}
+body.preview #homeBar{display:none}
+/* 봉인(잠긴 매듭) · 미리 열람 */
+.toc-item.locked{opacity:.55}
+.toc-item.locked .x{text-decoration:line-through;text-decoration-color:rgba(215,141,151,.7)}
+.lock-seal{margin-top:26px;width:64px;height:64px;border:2px solid rgba(215,141,151,.85);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Nanum Myeongjo',serif;font-size:28px;color:var(--brass-hi);transform:rotate(-6deg);box-shadow:0 0 30px rgba(236,106,128,.25)}
+.lock-btn{margin-top:30px;appearance:none;cursor:pointer;font-family:inherit;background:#6e1626;color:#f7e6ea;border:1px solid rgba(236,106,128,.35);border-radius:6px;font-size:14px;font-weight:700;letter-spacing:.12em;padding:14px 26px}
+body.preview .page:not(.cover):not(.divider) .pg-body em,
+body.preview .page:not(.cover):not(.divider) .pg-body b,
+body.preview .page:not(.cover):not(.divider) .pg-quote,
+body.preview .page:not(.cover):not(.divider) .rowl .v,
+body.preview .page:not(.cover):not(.divider) .pg-body:last-of-type{filter:blur(4.5px);user-select:none}
+body.preview #topbar,body.preview #demoBar{display:none}
+#topbar{
+  flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 10px;
+  border-bottom:1px solid rgba(215,141,151,.16);background:rgba(11,5,8,.94);z-index:10;
+}
+#topbar .t-brand{font-family:'Nanum Myeongjo',serif;font-size:13px;letter-spacing:.25em;color:var(--brass)}
+#topbar .t-page{font-size:12px;letter-spacing:.15em;color:var(--ink-dim)}
+#topbar button{
+  appearance:none;background:none;border:1px solid rgba(215,141,151,.3);border-radius:999px;
+  color:var(--ink-dim);font-family:inherit;font-size:11.5px;letter-spacing:.1em;padding:6px 13px;cursor:pointer;
+}
+#progress{flex:none;height:2px;background:rgba(240,222,224,.08)}
+#progressBar{height:100%;width:0;background:linear-gradient(90deg,#6e1626,var(--brass-hi));transition:width .3s ease}
+#pager{flex:1;overflow:hidden;position:relative;touch-action:pan-y}
+#track{display:flex;height:100%;transition:transform .38s cubic-bezier(.22,.8,.3,1);will-change:transform}
+.page{flex:none;width:100%;height:100%;overflow-y:auto;scrollbar-width:none;padding:34px 28px 60px;position:relative}
+.page::-webkit-scrollbar{display:none}
+/* typography */
+.pg-no{font-family:'Nanum Myeongjo',serif;font-size:11px;letter-spacing:.3em;color:var(--dim2);text-align:center;margin-bottom:26px}
+.pg-label{font-size:12px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-bottom:14px}
+h2.pg-title{font-size:23px;font-weight:900;line-height:1.7;text-align:center;word-break:keep-all;margin-bottom:8px;color:var(--paper)}
+h2.pg-title .r{color:var(--brass-hi)}
+.pg-hanja{font-family:'Nanum Myeongjo',serif;font-size:46px;font-weight:800;color:var(--brass);text-align:center;margin:20px 0 6px;text-shadow:0 0 34px rgba(215,141,151,.3)}
+.pg-sub{font-size:13px;color:var(--ink-dim);text-align:center;letter-spacing:.12em;margin-bottom:26px}
+.pg-body{font-size:15.5px;line-height:2.15;word-break:keep-all;color:var(--ink)}
+.pg-body + .pg-body{margin-top:18px}
+.pg-body em{font-style:normal;color:var(--brass-hi);font-weight:700}
+.pg-body b{color:var(--paper)}
+.pg-quote{
+  margin:26px 0;padding:16px 20px;border-left:3px double rgba(215,141,151,.55);
+  background:rgba(215,141,151,.05);font-family:'Nanum Myeongjo',serif;
+  font-size:15.5px;line-height:2.05;word-break:keep-all;color:var(--paper);
+}
+.pg-quote em{font-style:normal;color:var(--brass-hi)}
+.pg-note{margin-top:26px;font-size:12px;color:var(--dim2);line-height:1.9;text-align:center;word-break:keep-all}
+.hr{width:44px;height:1px;background:rgba(215,141,151,.5);margin:26px auto}
+/* 장부 행 */
+.rows{margin:18px 0;border-top:1px solid rgba(215,141,151,.3)}
+.rowl{display:flex;gap:12px;align-items:baseline;padding:13px 2px;border-bottom:1px dashed rgba(240,222,224,.12);font-size:14px;text-align:left}
+.rowl .k{flex-shrink:0;width:86px;color:#8f7078;font-size:12.5px;letter-spacing:.06em}
+.rowl .v{flex:1;font-family:'Nanum Myeongjo',serif;color:var(--ink)}
+.rowl .v b{color:var(--paper);font-weight:800}
+.rowl .v em{font-style:normal;color:var(--brass-hi)}
+.rowl .v.sealed{filter:blur(4.5px);user-select:none}
+.rowl .m{flex-shrink:0;font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:13px}
+.rowl .m.good{color:var(--brass)} .rowl .m.bad{color:var(--loo)}
+/* 규(規) */
+.fix{margin:20px 0 0;padding:16px 18px;border:1px dashed rgba(215,141,151,.4);border-radius:3px;background:rgba(24,10,16,.5);text-align:left}
+.fix .ft{font-size:11.5px;letter-spacing:.26em;color:var(--brass);margin-bottom:10px;text-align:center}
+.fix li{display:flex;gap:9px;list-style:none;font-size:14px;line-height:2;color:var(--ink);word-break:keep-all;padding:4px 0}
+.fix li::before{content:"結";flex-shrink:0;font-size:11px;color:var(--dim2);padding-top:5px;font-family:'Nanum Myeongjo',serif}
+/* 도장류 */
+.stamp-sq{
+  display:flex;align-items:center;justify-content:center;margin:30px auto 0;
+  width:64px;height:84px;writing-mode:vertical-rl;text-orientation:upright;
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:24px;letter-spacing:5px;line-height:1;padding-top:4px;
+  color:var(--loo);border:3px solid rgba(210,74,62,.8);border-radius:5px;transform:rotate(-5deg);
+}
+/* 표지 */
+.cover{padding:0!important;display:flex;flex-direction:column}
+.cover .cv-img{position:absolute;inset:0;background:url('../assets/hd_knot.jpg') center/cover no-repeat;filter:brightness(.92)}
+.cover .cv-veil{position:absolute;inset:0;background:radial-gradient(95% 80% at 50% 42%,transparent 34%,rgba(4,2,3,.78) 100%),linear-gradient(180deg,rgba(0,0,0,.35),transparent 26%,transparent 60%,rgba(4,2,3,.9) 94%)}
+.cover .cv-inner{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 30px}
+.cover .cv-brand{margin-top:12vh;font-family:'Nanum Myeongjo',serif;font-size:12px;letter-spacing:.5em;color:var(--brass);text-shadow:0 2px 8px #000}
+.cover .cv-title{font-family:'Nanum Myeongjo',serif;font-size:52px;font-weight:800;color:#f4e2e4;margin:16px 0 4px;letter-spacing:.14em;text-shadow:0 2px 8px rgba(0,0,0,.95),0 0 44px rgba(236,106,128,.3)}
+.cover .cv-88{font-size:12.5px;letter-spacing:.34em;color:#d0b3b7;text-shadow:0 1px 6px #000}
+.cover .cv-label{
+  margin-top:26px;display:inline-block;background:linear-gradient(175deg,#e9d5d8,#d0aeb3);color:#2b0c13;
+  font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:14.5px;letter-spacing:.12em;
+  padding:9px 18px;border-radius:2px;box-shadow:0 5px 16px rgba(0,0,0,.65);transform:rotate(-.9deg);
+}
+.cover .cv-reg{margin-top:16px;font-size:11px;letter-spacing:.2em;color:#d0b3b7;text-shadow:0 1px 6px #000}
+.cover .cv-no{margin-top:7px;font-size:10px;letter-spacing:.24em;color:#8f7078;text-shadow:0 1px 6px #000}
+.cover .cv-seal{
+  margin-top:auto;margin-bottom:6vh;align-self:flex-end;margin-right:2px;
+  width:56px;height:56px;display:flex;align-items:center;justify-content:center;
+  font-family:'Nanum Myeongjo',serif;font-weight:800;font-size:28px;color:var(--loo);
+  border:3px solid rgba(210,74,62,.85);border-radius:5px;transform:rotate(-8deg);
+  text-shadow:0 0 16px rgba(210,74,62,.4);
+}
+.cover .cv-hint{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);font-size:10.5px;letter-spacing:.3em;color:#8f7078;animation:hint 2.4s ease-in-out infinite}
+@keyframes hint{50%{opacity:.35;transform:translateX(-6px)}}
+/* 간지 */
+.divider{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.divider .dv-hanja{font-family:'Nanum Myeongjo',serif;font-size:72px;font-weight:800;color:rgba(215,141,151,.85);text-shadow:0 0 50px rgba(236,106,128,.35)}
+.divider .dv-t{margin-top:18px;font-size:17px;font-weight:700;letter-spacing:.2em;color:var(--paper)}
+.divider .dv-s{margin-top:10px;font-size:12.5px;letter-spacing:.15em;color:var(--ink-dim);line-height:2.1}
+.divider .dv-line{width:1px;height:60px;background:linear-gradient(180deg,transparent,var(--brass),transparent);margin-top:26px}
+/* 목차 */
+.toc-list{margin-top:10px}
+.toc-item{display:flex;gap:12px;align-items:baseline;padding:11px 4px;border-bottom:1px dashed rgba(240,222,224,.08);cursor:pointer}
+.toc-item .n{font-family:'Nanum Myeongjo',serif;font-size:13px;color:var(--brass);white-space:nowrap}
+.toc-item .x{font-size:13.5px;color:var(--ink);line-height:1.6;word-break:keep-all}
+.toc-item .p{margin-left:auto;font-size:11px;color:var(--dim2);white-space:nowrap}
+#tapPrev,#tapNext{position:fixed;top:120px;bottom:60px;width:20%;z-index:5}
+#tapPrev{left:0}#tapNext{right:0}
+#tocOverlay{position:fixed;inset:0;z-index:120;display:none;background:rgba(6,3,5,.95);backdrop-filter:blur(8px);overflow-y:auto;padding:70px 28px 60px}
+#tocOverlay.on{display:block}
+#tocOverlay .close{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);right:18px;appearance:none;background:none;border:none;color:var(--ink-dim);font-size:22px;cursor:pointer}
+#tocOverlay h3{font-family:'Nanum Myeongjo',serif;font-size:15px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-bottom:20px}
+#demoBar{display:none;flex:none;text-align:center;font-size:11px;letter-spacing:.15em;color:#eccdd2;background:rgba(90,20,36,.4);padding:7px 10px}
+@media (min-width:768px){
+  body::before{content:"";position:fixed;inset:-40px;z-index:-1;background:url('../assets/hd_gate.jpg') center/cover no-repeat;filter:blur(46px) brightness(.2)}
+  #frame{border-left:1px solid rgba(240,222,224,.08);border-right:1px solid rgba(240,222,224,.08)}
+}
+@media print{.grain,#topbar,#progress,#tapPrev,#tapNext{display:none!important}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div id="frame">
+  <div id="topbar">
+    <a class="t-brand" href="../" style="text-decoration:none" title="심곡사 메인으로">⌂ 深谷寺</a>
+    <span class="t-page" id="pageNo">第 1 張 / 77</span>
+    <span style="display:flex;gap:8px">
+      <button onclick="saveReport()" title="PDF로 저장">갈무리</button>
+      <button onclick="openToc()">목차</button>
+    </span>
+  </div>
+  <div id="progress"><div id="progressBar"></div></div>
+  <div id="demoBar">미리보기 — 실제 구매 시 본인의 원국으로 풀이됩니다</div>
+  <div id="pager"></div>
+</div>
+<div id="tapPrev"></div>
+<div id="tapNext"></div>
+<div id="homeBar">
+  <div><div class="hb-t">深谷寺</div><div class="hb-s">다 읽었어요 — 다른 술사의 방도 열려 있어요.</div></div>
+  <a href="/">메인으로 →</a>
+</div>
+<div id="tocOverlay">
+  <button class="close" onclick="closeToc()">✕</button>
+  <h3>目 次 · 十結</h3>
+  <div class="toc-list" id="tocList"></div>
+</div>
+
+<script>
+/* ═══ 입력 (hongdan 랜딩과 동일 규약) ═══ */
+const qs = new URLSearchParams(location.search);
+if (window.SGS_HALT) throw new Error('sgs:halt');   // 접근 확인 중 — /assets/sgs-access.js 가 다시 연다
+let user = null;
+const ACC = window.SGS_ACCESS;   // 서버가 확인한 주문
+if (ACC){
+  user = { name: ACC.name, birth: {y:ACC.y, m:ACC.m, d:ACC.d}, gender: ACC.g };
+} else if (qs.get('name') || qs.get('demo')){
+  user = { name:(qs.get('name')||'김심곡').trim().slice(0, 40), birth:{y:+(qs.get('y')||1995), m:+(qs.get('m')||3), d:+(qs.get('d')||14)}, gender:(qs.get('g')||'여').trim() };
+  if (user.gender !== '남' && user.gender !== '여') user.gender = '여';
+  if (qs.get('demo')) document.getElementById('demoBar').style.display = 'block';
+}
+if (!user){ location.replace('../library/'); throw new Error('sgs:nouser'); }
+
+/* 갈림길 — 재회(jae) / 연애(yeon). 주문에 적힌 값이 우선, 없으면 주소, 그래도 없으면 연애 */
+const PATH = ((ACC && ACC.path) || qs.get('path')) === 'jae' ? 'jae' : 'yeon';
+const JAE = PATH === 'jae';
+
+/* ═══ 부분 구매(찢어가기) · 미리 열람 — 묘담·현월 결과지와 같은 규약 ═══ */
+const PICKS = [...new Set(String(ACC ? (ACC.picks || '') : (qs.get('picks') || '')).split(/[^0-9]+/).map(Number).filter(n => n >= 1 && n <= 10))].sort((a,b)=>a-b);
+const PARTIAL = PICKS.length > 0 && PICKS.length < 10;
+const PREVIEW = !!qs.get('preview');
+if (PREVIEW) document.body.classList.add('preview');
+const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+const nm = esc(user.name);
+
+/* ═══ 해시 — 랜딩과 완전 동일 (같은 사람 = 같은 연서) ═══ */
+const HASH_V = ACC ? ACC.hv : ((qs.get('hv') === '1') ? 1 : 2);
+function hashUser(){ return SGS.hashUser(user, HASH_V); }
+const H = hashUser();
+const y = user.birth.y, nowY = (ACC && ACC.yr) ? ACC.yr : new Date().getFullYear(), age = nowY - y + 1;
+const STEMS = SGS.STEMS, BRANCHES = SGS.BRANCHES;
+const sIdx = (y-4)%10, bIdx = (y-4)%12;
+const yearPillar = STEMS[sIdx] + BRANCHES[bIdx];
+
+/* 인연살 — 랜딩(hongdan)과 순서·개수 동일한 풀 + 동일 선택 로직 */
+const SAL_POOL = [
+  {h:'桃',name:'도화살',hanja:'桃花殺',lv:'양면',
+   root:'일지(日支) 곁에 도화(桃花)가 앉은 자리예요. 꽃이 핀 가지엔 벌이 꼬이는 법— 사람이 끊이지 않는 대신, 가벼운 마음까지 함께 날아들어요.',
+   shape:'다가오는 사람은 많은데 남는 사람이 없고, 호감은 쉽게 사는데 진심은 늦게 오고, 곁이 늘 조금 시끄럽죠. 꽃이 죄가 아니에요— 벌과 나비를 가리는 법을 몰랐을 뿐.',
+   fixes:['먼저 뜨거워지는 쪽이 지는 판이에요. 도화가 짙은 그대는 반 박자 늦게 답해요— 그 반 박자가 가벼운 마음을 걸러 줘요.','호감을 자주 확인받으려 하지 말아요. 도화의 빛은 아껴 쓸수록 짙어져요.','꽃을 꺾으려는 손과 물을 주는 손을 가려요— 만난 지 석 달 안에 셈부터 꺼내는 이는 꺾으려는 손이에요.']},
+  {h:'紅',name:'홍염살',hanja:'紅艶殺',lv:'짙음',
+   root:'홍염(紅艶)이 드러난 자리예요. 눈빛 한 번, 웃음 한 번에 사람을 붙드는 힘— 타고난 매혹이지만, 아닌 사람까지 붙들어요.',
+   shape:'마음 준 적 없는 이가 혼자 깊어지고, 오해가 잦고, 정작 그대가 원하는 사람 앞에선 그 빛이 엉뚱하게 새죠. 매혹은 칼과 같아서— 쥐는 법을 알아야 그대 것이 돼요.',
+   fixes:['친절과 여지를 가르세요. 홍염의 친절은 상대에겐 언약으로 들려요.','원하는 사람 앞에서는 오히려 꾸미지 말아요— 홍염은 민낯에서 가장 짙게 빛나요.','아닌 사람의 마음은 이르게, 짧게 끊어 줘요. 미지근한 거절이 구설을 만들어요.']},
+  {h:'怨',name:'원진살',hanja:'怨嗔殺',lv:'짙음',
+   root:'원진(怨嗔)이 연분 자리를 누르고 있어요. 좋다가도 까닭 없이 미워지고, 별일 아닌 데서 마음이 상하는— 그 어긋남의 뿌리예요.',
+   shape:'싸운 이유를 되짚으면 늘 사소하고, 그런데 꼭 같은 자리에서 틀어지고, 화해해도 응어리가 남죠. 마음이 모자란 게 아니라— 살이 눌리는 날이 있는 거예요.',
+   fixes:['원진이 눌리는 날엔 중요한 말을 꺼내지 말아요. 같은 말도 그날은 가시가 돼요.','서운함은 그날 안에, 짧게 말해요. 원진의 응어리는 하룻밤 재우면 두 배가 돼요.','상대의 잘못과 살의 장난을 가려요— 셋 중 하나는 사람 탓이 아니라 날 탓이에요.']},
+  {h:'寡',name:'과숙살',hanja:'寡宿殺',lv:'주의',
+   root:'과숙(寡宿)이 든 자리예요. 정이 깊어질수록 그대가 먼저 한 걸음 물러서게 만드는 살— 버림받기 전에 먼저 문을 닫아 온 건, 그대 탓이 아니었어요.',
+   shape:'좋아질수록 불안하고, 확신을 얻기 전엔 마음을 다 못 열고, 그래서 "차가운 사람"으로 오해받죠. 담이 높은 집일 뿐— 담 안의 뜰은 누구보다 따뜻해요.',
+   fixes:['마음을 열 땐 문지방 하나씩— 한꺼번에 다 열지 않아도 돼요. 대신 연 문은 도로 닫지 말아요.','불안이 올라오는 날, 상대를 시험하지 말아요. 과숙의 시험은 멀쩡한 인연을 밀어내요.','혼자 있는 힘은 그대의 병이 아니라 그릇이에요. 다만 그 그릇에 사람 한 자리는 비워 둬요.']},
+  {h:'驛',name:'역마살',hanja:'驛馬殺',lv:'주의',
+   root:'연분 자리에 역마(驛馬)가 걸쳐 있어요. 마음이 뿌리내리기 전에 몸이 먼저 떠나게 흔드는 살— 멀어져 간 인연들의 뿌리가 여기예요.',
+   shape:'거리·이사·이직이 꼭 인연의 고비와 겹치고, 오래 머무는 관계가 답답하게 느껴지고, 그리움은 늘 떠난 뒤에 오죠. 떠돎이 팔자가 아니라— 그대 연은 길 위에서 맺히는 연이에요.',
+   fixes:['멀어질 일이 생기거든 관계를 정리하지 말고 매듭을 지어 둬요. 역마의 연은 돌아오는 길이 있어요.','새 자리, 새 길에서 만나는 인연을 가볍게 보지 말아요— 그대 실은 길 위에서 이어져요.','답답함이 올라올 때 사람을 바꾸지 말고 풍경을 바꿔요. 여행 한 번이 이별 하나를 막아요.']},
+  {h:'貴',name:'천을귀인',hanja:'天乙貴人',lv:'귀함',
+   root:'천을귀인(天乙貴人)— 하늘이 사람 하나를 그대 곁에 심어 두는 자리예요. 위기마다 그대를 건져 온 손이 있었죠. 인연도, 이 손을 타고 와요.',
+   shape:'돌아보면 고비마다 꼭 누군가 있었고, 좋은 인연은 늘 사람을 거쳐서 왔고, 혼자 애쓸 때보다 곁이 열렸을 때 일이 풀렸죠. 그대 연분의 문은— 사람이 열어 줘요.',
+   fixes:['소개와 자리 권유를 귀찮다 말고 받아요. 귀인은 꼭 사람의 얼굴을 하고 와요.','오래된 인연 중 셈 없이 그대 편을 드는 이— 그가 귀인이에요. 그 곁을 지켜요.','귀인이 이어 준 연은 가볍게 끊지 말아요. 그 실엔 하늘의 매듭이 하나 더 묶여 있어요.']}
+];
+const sals = SGS.pickSals(SAL_POOL, H);   // 랜딩과 동일 선택
+const salCount = sals.length;
+
+/* 랜딩 가림값과 동일 공식 — 흐렸던 값이 여기서 열린다 */
+const DIRS  = ['동북','서남','정남','서북','정동','북서'];
+const dirMain = DIRS[H%6];
+const pastY = nowY - 2 - (H%3);                      // 실이 상한/스친 해 (랜딩과 동일)
+const meetY = nowY + 1 + ((H>>4)%2);                 // 물때/실이 당겨지는 해 (랜딩과 동일)
+const mGood = 1 + (H%12);                            // 당겨도 되는 달
+const mBad  = 1 + ((mGood + 4 + ((H>>5)%5)) % 12);   // 당기면 끊어지는 달
+const meetM = 1 + ((H>>6)%12);                       // 실이 당겨지는 달
+const marY  = meetY + 1 + ((H>>7)%3);                // 혼인의 판이 놓이는 해
+const bookNoS = (1201 + (H % 2799)).toLocaleString();
+
+/* 조합 풀 — 실의 성정 (천간) */
+const STEM_R = [
+ {n:'큰 나무의 실',t:'곧고 굵게 매이는 연이에요. 한 번 뿌리내리면 좀처럼 흔들리지 않지만, 곧은 만큼 굽힐 줄을 몰라— 먼저 손 내미는 법 하나만 배우면 돼요.'},
+ {n:'덩굴의 실',t:'천천히 감아 오르며 깊어지는 연이에요. 첫눈에 타오르는 판이 아니라, 곁에 오래 둔 사람과 매듭이 지어지는 판— 조급함만 내려놓으면 돼요.'},
+ {n:'큰 불의 실',t:'타오르듯 시작되는 연이에요. 뜨겁게 붙고 빠르게 식기 쉬우니— 불씨를 오래 가꾸는 법, 그게 이 실의 숙제예요.'},
+ {n:'등불의 실',t:'은은하게 오래 타는 연이에요. 화려한 시작은 없어도 좀처럼 꺼지지 않죠. 그대 등불을 알아보는 눈 밝은 이가— 그대 짝이에요.'},
+ {n:'큰 산의 실',t:'묵직하게 쌓이는 연이에요. 더디다고 조바심 내면 무너져요. 늦게 맺히는 대신, 한 번 맺히면 산처럼 든든한 매듭이 돼요.'},
+ {n:'밭흙의 실',t:'가꾼 만큼 거두는 연이에요. 운명 같은 벼락은 없어도, 정성이 고스란히 매듭이 되는 판— 그대가 물 준 자리에서 꽃이 펴요.'},
+ {n:'무쇠의 실',t:'끊고 맺음이 분명한 연이에요. 아닌 인연을 늦게 끊어 온 것이 그대 실의 상처— 벨 때를 알면, 남는 실이 단단해져요.'},
+ {n:'보석의 실',t:'다듬을수록 빛나는 연이에요. 그대 값을 스스로 낮춰 부르지 말아요— 제값을 알아보는 이만이 이 실의 끝을 쥘 자격이 있어요.'},
+ {n:'큰 물의 실',t:'흐름을 타는 연이에요. 억지로 막으면 넘치고, 물길을 알면 크게 흘러요. 때를 읽는 것— 그게 이 실의 전부예요.'},
+ {n:'이슬비의 실',t:'스미듯 깊어지는 연이에요. 요란하지 않아 놓치기 쉽지만, 어느새 옷이 다 젖듯— 곁에 스며 있는 사람을 살펴봐요.'}
+];
+/* 띠 — 연분의 물길 */
+const BRANCH_R = [
+ {a:'쥐',w:'밤에 흐르는 물길— 조용히 깊어지는 연이에요. 요란한 만남보다 소리 없이 스민 정이 오래가요.'},
+ {a:'소',w:'언 땅 밑의 물길— 남보다 늦게 트이지만, 한 번 트인 정은 좀처럼 마르지 않아요.'},
+ {a:'호랑이',w:'산에서 쏟아지는 물길— 젊은 날의 연은 사납고, 나이 든 뒤의 연은 넓고 깊어요.'},
+ {a:'토끼',w:'봄 도랑의 물길— 잔정이 끊이지 않는 연이에요. 다만 얕게 여러 번 흐르기 쉬우니, 고일 자리 하나를 정해요.'},
+ {a:'용',w:'저수지의 물길— 마음을 모아 두는 그릇이 커요. 쏟을 사람을 만나면 누구보다 크게 사랑하는 상이에요.'},
+ {a:'뱀',w:'온천의 물길— 겉은 서늘하고 속은 뜨거워요. 그 속을 알아봐 주는 이가 그대 실의 끝이에요.'},
+ {a:'말',w:'한낮의 여울— 마음이 훤히 드러나는 연이에요. 감추지 못하는 게 흠이 아니라 매력이 되는 상대를 골라요.'},
+ {a:'양',w:'풀뿌리를 적시는 물길— 곁을 먼저 살피고 제 마음을 뒤로 미루는 상이에요. 이번엔, 그대 논에 먼저 물을 대요.'},
+ {a:'원숭이',w:'바위틈의 샘— 재치가 물꼬인 연이에요. 웃음이 통하는 사람과 실이 매여요.'},
+ {a:'닭',w:'우물의 물길— 부지런히 길어 올리는 만큼 고이는 연이에요. 기다림보다 걸음이 인연을 데려와요.'},
+ {a:'개',w:'봇도랑의 물길— 지키는 정이 깊은 연이에요. 한 번 마음 준 사람을 좀처럼 놓지 못하죠. 지킬 가치가 있는 실인지만 가려요.'},
+ {a:'돼지',w:'큰 강의 하구— 만년에 물이 모이는 상이에요. 늦게 만난 연일수록 크고 오래가요.'}
+];
+/* 국(局) — 사람이 오는 판 */
+const GUK = [
+ {g:'水局',gn:'흐름의 국',in:'사람이 오가는 길목— 모임·소개·여럿이 섞이는 자리에서 연이 붙어요.',out:'집과 일터만 오가는 날들엔 물이 말라요. 흐르는 자리에 몸을 두세요.'},
+ {g:'金局',gn:'여묾의 국',in:'배우고 다듬는 자리— 일·공부·솜씨를 나누는 자리에서 연이 여물어요.',out:'놀이로만 스치는 만남에선 쇠가 무뎌져요. 진지한 자리가 그대 판이에요.'},
+ {g:'火局',gn:'빛의 국',in:'드러나는 자리— 그대가 보이고 알려지는 자리에서 연이 붙어요. 감추면 못 찾아와요.',out:'그늘에 숨은 날들엔 불이 죽어요. 얼굴을 드는 것이 곧 연을 부르는 일이에요.'},
+ {g:'木局',gn:'기름의 국',in:'키우고 돌보는 자리— 함께 무언가를 가꾸는 자리에서 연이 자라요.',out:'셈부터 앞서는 만남에선 숲이 마르죠. 정성이 오가는 자리를 골라요.'}
+];
+const gukOf = b => ( [8,0,4].includes(b) ? 0 : [5,9,1].includes(b) ? 1 : [2,6,10].includes(b) ? 2 : 3 );
+/* 올 사람의 얼굴 (연애 갈래) — 전부 원국 해시로 고정 */
+const FACE_IMP  = ['첫눈엔 차분해 보이나 웃으면 인상이 확 풀리는 얼굴','말수가 적고 눈빛이 깊은, 오래 봐야 잘생긴 얼굴','밝고 목소리가 또렷한, 자리의 공기를 데우는 얼굴','단정하고 손이 야무진, 어른스러운 얼굴','장난기가 돌지만 제 일 앞에선 눈빛이 바뀌는 얼굴','키보다 어깨선이 눈에 먼저 들어오는, 듬직한 얼굴'];
+const FACE_TALK = ['말을 아끼다 정곡을 짚는 말버릇','그대 말을 끝까지 듣고 되묻는 말버릇','농으로 시작해 진심으로 끝나는 말버릇','약속을 숫자로 말하는— 몇 시, 며칠— 말버릇','칭찬을 에두르지 않고 바로 하는 말버릇'];
+const FACE_GAP  = ['서너 해 연상','한두 해 연상','동갑내기','한두 해 연하'];
+const PLACES    = ['사람을 건너 오는 연— 소개의 자리','일터 언저리— 밥벌이가 겹치는 자리','오래 알던 무리 속— 익은 얼굴이 새로 보이는 자리','길 위— 여행이나 먼 걸음 끝의 자리','배움의 자리— 함께 익히고 나누는 자리','벗의 경조사— 웃고 우는 자리 곁'];
+/* 재회 갈래 — 자국·속사정·단언 */
+const DEPTH = [
+ '얕지 않아요. 그 사람 일지에 그대 글자가 아직 눌린 채예요— 지워진 게 아니라, 덮여 있을 뿐.',
+ '생각보다 깊어요. 무심한 척은 그 사람의 성정이지 마음의 깊이가 아니에요.',
+ '흐려지다 말고 멈춰 있어요. 새 사람이 들어설 자리가— 아직 나지 않았다는 뜻이에요.',
+ '깊이보다 무게가 남았어요. 그리움보다는 미안함이 큰 자국— 그래서 먼저 못 오는 거예요.'
+];
+const REASONS = [
+ {k:'때가 어긋났어요', t:'마음이 식은 게 아니라 두 실의 물때가 어긋났던 거예요. 한쪽이 당길 때 한쪽이 눌려 있었죠— 같은 마음도 때가 다르면 이별이 돼요.'},
+ {k:'살이 눌렸어요', t:'이별 무렵, 두 원국의 원진 자리가 함께 눌려 있었어요. 사소한 말이 가시가 되고, 별일이 큰일이 되던 때— 사람 탓이 아니라 날 탓이 컸어요.'},
+ {k:'말이 모자랐어요', t:'속마음의 반의반도 서로 못 꺼낸 채 끝났어요. 원국을 보면 두 사람 다 담아 두는 성정— 쌓인 말이 무게가 되어 실을 눌렀죠.'},
+ {k:'곁이 흔들었어요', t:'두 사람 사이가 아니라 바깥이 문제였어요. 곁의 말, 곁의 사정이 실을 흔들었고— 둘은 그걸 서로의 마음 탓으로 읽었죠.'},
+ {k:'겁이 앞섰어요', t:'깊어지는 게 무서워 한쪽이 먼저 물러섰어요. 마음이 없어서가 아니라 마음이 커서— 그 역설이 이 이별의 속사정이에요.'},
+ {k:'자리가 멀었어요', t:'역마가 낀 이별이에요. 거리, 형편, 자리— 몸의 사정이 마음보다 먼저 지쳤죠. 마음의 실은 그때도 끊기지 않았어요.'}
+];
+const VERDICT = [
+ {v:'잇는 실이에요', s:'當', t:'사천 갈래 장부에 비추어— 이 실은 미련이 아니라 명줄이에요. 다만 당기는 때를 틀리면 마지막 한 올까지 끊어져요. 다섯째 매듭의 물때를 그대로 따라요.'},
+ {v:'기다리는 실이에요', s:'待', t:'지금 당기면 끊어지고, 물때에 당기면 이어져요. 초조함이 이 실의 유일한 적— 연락하고 싶은 밤마다 이 장을 다시 펴요. 때는 이미 적어 두었어요.'},
+ {v:'놓아야 할 실이에요', s:'放', t:'아프겠지만— 이 실은 그대 손을 벨 실이에요. 붙잡은 손을 펴야 새 실이 감겨요. 일곱째· 여덟째 매듭이 그대 손을 잡아 줄 거예요. 이건 끝이 아니라 자리 비움이에요.'}
+];
+const verdictIdx = (H>>9)%3;
+/* 달 풀이 */
+const MONTH_T = [
+ '실이 순하게 흐르는 달— 미뤄 둔 연락과 걸음을 떼기 좋아요.',
+ '마음이 앞서는 달— 서두른 말이 매듭을 조여요. 반 박자만 늦춰요.',
+ '귀인의 발소리가 나는 달— 오는 자리, 오는 소개를 물리치지 말아요.',
+ '실이 엉키기 쉬운 달— 오해가 잦으니 중요한 말은 얼굴 보고 해요.',
+ '그리움이 짙어지는 달— 지난 실을 되감지 말고 이 장을 다시 펴요.',
+ '단장할 달— 그대를 가꾸는 데 쓰는 시간이 연을 부르는 달이에요.',
+ '말을 아껴야 하는 달— 곁의 말이 실을 흔들어요. 둘의 일은 둘이서만.',
+ '작은 매듭이 지어지는 달— 스치는 인연도 허투루 보내지 말아요.'
+];
+const MONTH_HJ = ['正月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','臘月'];
+const TEN_T = [
+ '실이 쉬는 해— 그대를 가꾸는 해예요. 이 해의 공부와 단장이 다음 연의 밑천이 돼요.',
+ '실이 자리를 잡는 해— 얕은 인연들이 정리되고 남을 실만 남아요.',
+ '잔정이 붇는 해— 곁의 오랜 얼굴을 다시 봐요. 익은 자리에서 연이 익어요.',
+ '실이 빨라지는 해— 만남이 잦아지니 눈을 밝혀요. 다 붙잡으려 하면 다 놓쳐요.',
+ '크게 매이는 해— 십 년에 몇 번 없는 물때예요. 이 해의 인연은 흘려보내지 말아요.'
+];
+const APHORISM = [
+ ['緣','연은 부르는 것이 아니라— 길목에서 맞이하는 것이다.'],
+ ['忍','참은 연락은 매듭이 되고, 참지 못한 연락은 가위가 된다.'],
+ ['時','물때를 아는 이는 빈손으로 돌아서지 않는다.'],
+ ['結','헐거운 매듭 열보다 단단한 매듭 하나가 낫다.'],
+ ['放','놓아야 감기는 실이 있다.'],
+ ['鏡','상대는 그대의 거울— 실 끝은 늘 마주 본다.'],
+ ['待','기다림은 멈춤이 아니라 실을 고르는 시간이다.'],
+ ['言','말 한마디가 실 한 올— 함부로 끊지도, 함부로 잇지도 마라.'],
+ ['情','정은 쏟는 것이 아니라 고이게 두는 것이다.'],
+ ['燈','제 등불을 밝힌 이에게 실은 절로 찾아온다.'],
+ ['絲','실은 가늘다고 끊기지 않고, 굵다고 이어지지 않는다.'],
+ ['心','제 마음을 모르는 이는 남의 마음을 붙들지 못한다.'],
+ ['花','꽃은 나비를 쫓지 않는다.'],
+ ['月','달이 차고 기울 듯— 연에도 차고 기우는 때가 있다.'],
+ ['戒','달콤한 말부터 꺼내는 이의 실 끝을 살펴라.'],
+ ['守','지킬 실을 아는 것이 연분 공부의 전부다.']
+];
+
+/* ═══ 페이지 조립 ═══ */
+const pages = [];
+const tocEntries = [];
+const addPage = (html, cls='') => pages.push({html, cls});
+const addToc = (label, title) => tocEntries.push({label, title, page: pages.length + 1});
+const pgHead = (label) => `<p class="pg-no">戀書 · 第 ${pages.length+1} 張</p>` + (label?`<p class="pg-label">${label}</p>`:'');
+
+const SR = STEM_R[sIdx], BR = BRANCH_R[bIdx], GU = GUK[gukOf(bIdx)];
+const FIMP = FACE_IMP[H%6], FTALK = FACE_TALK[(H>>3)%5], FGAP = FACE_GAP[(H>>5)%4], PLACE = PLACES[(H>>8)%6];
+const DEP = DEPTH[(H>>6)%4], RSN = REASONS[(H>>7)%6], VD = VERDICT[verdictIdx];
+const gGroup = [[8,0,4],[5,9,1],[2,6,10],[3,7,11]][gukOf(bIdx)].filter(x=>x!==bIdx);
+const gNames = gGroup.map(i=>BRANCH_R[i].a);
+document.title = user.name + '의 붉은 실의 기록 — 深谷寺';
+
+/* 1 · 표지 */
+addPage(`
+  <div class="cv-img"></div><div class="cv-veil"></div>
+  <div class="cv-inner">
+    <div class="cv-brand">深谷寺 別堂 · 檢證 筆寫本</div>
+    <div class="cv-title">戀書</div>
+    <div class="cv-88">붉은 실의 기록 · 일흔일곱 장 · 十結</div>
+    <div class="cv-label">${nm}의 연서</div>
+    <div class="cv-reg">${y}년 ${user.birth.m}월 ${user.birth.d}일생 · ${esc(user.gender)} · ${yearPillar}년주</div>
+    <div class="cv-no">제 ${bookNoS}호 — 홍단 이어 적다</div>
+    <div class="cv-seal">緣</div>
+    <p class="cv-hint">◀ 옆으로 넘겨, 첫 장을 펴요</p>
+  </div>`, 'cover');
+
+/* 2 · 개권 */
+addPage(`${pgHead('開卷')}
+  <h2 class="pg-title">일흔일곱 장으로 엮은<br><span class="r">단 한 사람의 연서</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">${nm}. 그대 실은 <em>${SR.n}</em>— ${SR.t}</p>
+  <p class="pg-body">이 연서는 세상에 단 한 통이에요. 그대 이름과 태어난 날로 셈하여, 열 매듭(十結) 일흔일곱 장으로 엮었어요.${PARTIAL ? ` 그중 그대가 급하다 한 <em>${['','한','두','세','네','다섯','여섯','일곱','여덟','아홉'][PICKS.length]} 매듭</em>만 먼저 찢어 왔죠— 나머지는 별당에 봉해 두었어요.` : ''}</p>
+  <p class="pg-body">차례대로 읽어도 좋고, 목차에서 급한 매듭부터 펴도 좋아요. 다만 <em>둘째 매듭— 인연살</em>만은 건너뛰지 말아요. 실이 왜 자꾸 엉켰는지, 그 답이 거기 있으니까요.</p>
+  <p class="pg-note">별당 검증 필사본 · 제 ${bookNoS}호<br>갈무리 단추로 평생 소장할 수 있어요</p>`);
+
+/* 3 · 序 */
+addPage(`${pgHead('序 · 鑑定所見')}
+  <h2 class="pg-title">감정 소견</h2>
+  <div class="hr"></div>
+  <div class="pg-quote">${JAE
+    ? `"${nm}.<br>끊어진 게 아니에요—<br><em>당겨 보는 사람이 없었을 뿐.</em>"`
+    : `"${nm}.<br>없는 게 아니에요—<br><em>여태, 스치고 있었을 뿐.</em>"`}</div>
+  <p class="pg-body">댓돌 위의 붉은 실은 내가 놓아둔 거였어요. 그대 실이 우는 소리가 별당까지 들리는데— 그냥 둘 수는 없잖아요.</p>
+  <p class="pg-body">사천 갈래 장부를 지켜 온 눈으로 셈했어요. 인연살은 <b>${sals.length}개</b>, 실의 성정은 <b>${SR.n}</b>, 연이 드는 방향은 <b>${dirMain} 방(方)</b>. 이제 한 장씩— 전부 펴 보일게요.</p>
+  <p class="pg-note">이어 적은 이 — 별당 아씨 홍단 (紅緞)</p>`);
+
+/* 斷 · 첫 답 — 이 연서를 편 진짜 이유부터 */
+addPage(`${pgHead(JAE ? '斷 · 첫 답' : '面 · 첫 얼굴')}
+  ${JAE ? `
+  <h2 class="pg-title">그대가 제일 급한 물음—<br><span class="r">먼저 답할게요</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">"이 실… 다시 이어져요?" — 그 물음 하나로 여기까지 왔죠. 까닭은 뒤의 매듭마다 길게 적었으니, 여기선 결론만 받아요.</p>
+  <div class="rowl" style="flex-direction:column;gap:6px;align-items:stretch"><span class="k" style="width:auto;white-space:nowrap">홍단의 단언 · 斷</span><span class="v${PARTIAL ? ' sealed' : ''}"><em>${VD.v}</em><br><span style="font-size:13px;color:var(--ink)">${VD.t}</span></span></div>
+  ${PARTIAL ? `<p class="pg-note" style="color:var(--brass-hi)">封 — 단언의 까닭과 물때는 매듭을 편 이에게만 열려요. 고른 매듭만 먼저 읽고, 애가 타거든 마저 찢어가요.</p>` : `<p class="pg-note">단언은 ${nowY}년 장부 기준이에요. 해가 바뀌면 아홉째 매듭을 다시 펴요.</p>`}`
+  : `
+  <h2 class="pg-title">그대가 제일 급한 물음—<br><span class="r">먼저 답할게요</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">"그 사람… 언제, 어디서 와요?" — 그 물음 하나로 여기까지 왔죠. 까닭은 뒤의 매듭마다 길게 적었으니, 여기선 결론만 받아요.</p>
+  <div class="rows">
+    <div class="rowl"><span class="k">오는 해</span><span class="v${PARTIAL ? ' sealed' : ''}"><b>${meetY}년</b> — 실이 당겨지는 해</span><span class="m good">時</span></div>
+    <div class="rowl"><span class="k">오는 길목</span><span class="v${PARTIAL ? ' sealed' : ''}">${PLACE}</span><span class="m good">路</span></div>
+    <div class="rowl"><span class="k">첫인상</span><span class="v${PARTIAL ? ' sealed' : ''}">${FIMP}</span><span class="m good">面</span></div>
+  </div>
+  ${PARTIAL ? `<p class="pg-note" style="color:var(--brass-hi)">封 — 달과 방향, 얼굴의 나머지는 매듭을 편 이에게만 열려요. 고른 매듭만 먼저 읽고, 궁금해지거든 마저 찢어가요.</p>` : `<p class="pg-note">얼굴의 나머지— 말버릇과 나이 차는 셋째 매듭에 적어 두었어요.</p>`}`}`);
+
+/* ═══ 結一 ═══ */
+addToc('結一', JAE ? '두 원국 — 그대와 그 사람, 타고난 판을 포갠다' : '연분의 판 — 그대가 타고난 인연의 그릇');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">${JAE?'幷':'盤'}</div><div class="dv-t">結一 · ${JAE?'두 원국':'연분의 판'}</div>
+  <div class="dv-s">${JAE?'실은 혼자 매이지 않아요.<br>두 판을 포개는 데서 시작해요.':'연에도 그릇이 있어요.<br>그대 것의 생김새부터 알아요.'}</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('結一 · 원국')}
+  <h2 class="pg-title">${yearPillar} —<br><span class="r">${SR.n}</span></h2>
+  <div class="pg-hanja">${yearPillar}</div>
+  <p class="pg-sub">하늘의 글자 ${STEMS[sIdx]} · 땅의 글자 ${BRANCHES[bIdx]}</p>
+  <div class="rows">
+    <div class="rowl"><span class="k">실의 성정</span><span class="v"><b>${SR.n}</b></span><span class="m good">記</span></div>
+    <div class="rowl"><span class="k">연분의 물길</span><span class="v">${BR.a}의 물길</span><span class="m good">記</span></div>
+    <div class="rowl"><span class="k">사람이 오는 판</span><span class="v">${GU.g} — ${GU.gn}</span><span class="m good">記</span></div>
+  </div>`);
+addPage(`${pgHead('結一 · 실의 성정')}
+  <h2 class="pg-title">${SR.n}</h2>
+  <div class="hr"></div>
+  <p class="pg-body">${SR.t}</p>
+  <div class="pg-quote">"제 실의 성정을 아는 것이<br>연분 공부의 <em>첫 장</em>이에요."</div>`);
+addPage(`${pgHead('結一 · 연분의 물길')}
+  <h2 class="pg-title">${BR.a}의 물길</h2>
+  <div class="hr"></div>
+  <p class="pg-body">${BR.w}</p>
+  <p class="pg-body">${JAE
+    ? `실의 성정(${SR.n})과 물길(${BR.a})— 이 둘이 그대 쪽 실의 바탕이에요. 그 사람 쪽 끝과 어떻게 얽혔는지는, 이제 매듭마다 하나씩 풀어 볼게요.`
+    : `실의 성정(${SR.n})과 물길(${BR.a})— 이 둘이 그대 연분의 바탕이에요. 같은 만남에도 사람마다 맺힘이 다른 이유가 여기 있어요.`}</p>`);
+
+/* ═══ 結二 · 인연살 ═══ */
+addToc('結二', JAE ? '얽힌 살(殺) — 좋다가도 어긋났던 이유' : '인연살 — 사람이 오고 가는 자리');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja" style="color:rgba(210,74,62,.85);text-shadow:0 0 50px rgba(210,74,62,.35)">殺</div>
+  <div class="dv-t">結二 · 인연살</div>
+  <div class="dv-s">이 매듭이 이 연서의 심장이에요.<br>실을 엉키게 한 살 ${sals.length}개— 전부 짚어요.</div><div class="dv-line"></div></div>`, 'divider');
+addPage(`${pgHead('結二 · 총론')}
+  <h2 class="pg-title">그대 실에 얽힌 살,<br><span class="r">${sals.length}개</span></h2>
+  <div class="hr"></div>
+  <p class="pg-body">${JAE
+    ? `두 사람이 좋다가도 같은 자리에서 어긋났던 건— 이 살들이 눌리는 날이 있었기 때문이에요. 하나씩, 뿌리부터 짚어요.`
+    : `사람이 오다가도 스쳐 갔던 건— 이 살들이 길목을 흔들었기 때문이에요. 하나씩, 뿌리부터 짚어요.`}</p>
+  <div class="rows">${sals.map((s,i)=>`<div class="rowl"><span class="k">其${'一二三'[i]}</span><span class="v"><b>${s.name}</b>(${s.hanja})</span><span class="m ${s.lv==='귀함'?'good':'bad'}">${s.h}</span></div>`).join('')}</div>
+  <p class="pg-note">해마다 ${mBad}월— 살이 가장 사납게 움직이는 달이에요.<br>이 달엔 큰 말(고백·담판·이별 통보)을 삼가요.</p>`);
+sals.forEach((s, i) => {
+  const num = '一二三'[i];
+  addPage(`${pgHead(`結二 · 其${num}`)}
+    <h2 class="pg-title">${s.name}<br><span class="r" style="font-size:15px;letter-spacing:.2em">${s.hanja} · ${s.lv}</span></h2>
+    <div class="pg-hanja" style="${s.lv==='귀함'?'':'color:var(--loo);text-shadow:0 0 34px rgba(210,74,62,.35)'}">${s.h}</div>
+    <p class="pg-body"><b>뿌리.</b> ${s.root}</p>`);
+  addPage(`${pgHead(`結二 · 其${num}`)}
+    <h2 class="pg-title">${s.name} —<br><span class="r">얽히는 모양</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">${s.shape}</p>`);
+  addPage(`${pgHead(`結二 · 其${num}`)}
+    <h2 class="pg-title">${s.name} —<br><span class="r">다스리는 법</span></h2>
+    <div class="fix"><div class="ft">三 結</div><ol>${s.fixes.map(f=>`<li>${f}</li>`).join('')}</ol></div>
+    <p class="pg-note">결(結)은 부적이 아니라 습관이에요.<br>한 달만 지켜 봐요— 실이 달라져요.</p>`);
+});
+
+/* ═══ 結三 ═══ */
+if (JAE){
+  addToc('結三','마음의 자국 — 그 사람에게 남은 그대의 깊이');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">痕</div><div class="dv-t">結三 · 마음의 자국</div>
+    <div class="dv-s">떠난 자리에도 자국은 남아요.<br>그 깊이를 재요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結三 · 깊이')}
+    <h2 class="pg-title">그 사람 마음의 자국 —<br><span class="r">지워지지 않았어요</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">${DEP}</p>
+    <div class="pg-quote">"연락이 없는 것과<br>마음이 없는 것은— <em>다른 얘기예요.</em>"</div>`);
+  addPage(`${pgHead('結三 · 읽는 법')}
+    <h2 class="pg-title">자국을 읽는 법</h2>
+    <div class="hr"></div>
+    <p class="pg-body">자국이 남았다는 건 문이 잠겼을 뿐 벽이 아니라는 뜻이에요. 다만 자국을 믿고 함부로 두드리면— 문이 벽이 돼요.</p>
+    <p class="pg-body">두드리는 때는 다섯째 매듭(물때)에, 두드리는 법은 여섯째 매듭에 적어 두었어요. <em>순서를 지켜요— 이 연서의 순서가 곧 그 사람 마음의 순서예요.</em></p>`);
+} else {
+  addToc('結三','올 사람의 얼굴 — 인상·분위기·말버릇');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">面</div><div class="dv-t">結三 · 올 사람의 얼굴</div>
+    <div class="dv-s">원국에는 윤곽이 남아요.<br>그 얼굴을 그려요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結三 · 얼굴')}
+    <h2 class="pg-title">그대 실 끝의 사람—<br><span class="r">이런 얼굴이에요</span></h2>
+    <div class="rows">
+      <div class="rowl"><span class="k">첫인상</span><span class="v">${FIMP}</span><span class="m good">面</span></div>
+      <div class="rowl"><span class="k">말버릇</span><span class="v">${FTALK}</span><span class="m good">言</span></div>
+      <div class="rowl"><span class="k">나이의 결</span><span class="v"><b>${FGAP}</b>의 기운이 짙어요</span><span class="m good">年</span></div>
+    </div>
+    <p class="pg-body" style="margin-top:20px">얼굴 윤곽은 관상이 아니라 <em>그대 원국의 배우자 자리</em>가 그리는 상(相)이에요. 스치는 얼굴이 이 장과 겹치거든— 그냥 보내지 말아요.</p>`);
+  addPage(`${pgHead('結三 · 속')}
+    <h2 class="pg-title">겉이 아니라<br><span class="r">속을 알아보는 법</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">그 사람은 첫 만남에 화려하지 않아요. ${FIMP.replace('얼굴','상')}이라, 두 번째 만남부터 진가가 보여요. <em>첫인상만으로 접지 말아요— 그대가 여태 놓친 실이 대개 여기서 끊겼어요.</em></p>
+    <div class="pg-quote">"눈이 아니라<br>귀로 알아보게 될 거예요.<br>${FTALK}— <em>그게 표식이에요.</em>"</div>`);
+}
+
+/* ═══ 結四 ═══ */
+if (JAE){
+  addToc('結四','이별의 속사정 — 원국이 말하는 진짜 이유');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">裏</div><div class="dv-t">結四 · 이별의 속사정</div>
+    <div class="dv-s">겉말은 잊어요.<br>원국이 말하는 이유를 들어요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結四 · 속사정')}
+    <h2 class="pg-title">진짜 이유 —<br><span class="r">${RSN.k}</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">${RSN.t}</p>`);
+  addPage(`${pgHead('結四 · 뜻')}
+    <h2 class="pg-title">이것이 뜻하는 것</h2>
+    <div class="hr"></div>
+    <p class="pg-body">속사정이 이것이라면— 이 이별은 <em>마음의 끝이 아니라 때의 어긋남</em>이에요. 그래서 자국이 남았고, 그래서 실 끝이 아직 묶여 있는 거예요.</p>
+    <p class="pg-body">같은 자리에서 다시 끊어지지 않으려면 이 속사정을 그대가 먼저 알고 있어야 해요. 일곱째 매듭에서 이 자리를 비켜 가는 법을 적을게요.</p>`);
+} else {
+  addToc('結四','오는 때 — 실이 당겨지는 해와 계절');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">時</div><div class="dv-t">結四 · 오는 때</div>
+    <div class="dv-s">연에는 물때가 있어요.<br>그대 실의 물때를 적어요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結四 · 지나온 물')}
+    <h2 class="pg-title">실이 스쳤던 해 —<br><span class="r">${pastY}년</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">그 언저리, 그대 곁을 스쳐 간 얼굴이 있어요. 놓친 게 아니에요— <em>그때는 그대 실이 아직 여물지 않았을 뿐.</em> 스친 실은 여섯째 매듭에서 되짚어요.</p>`);
+  addPage(`${pgHead('結四 · 다가올 물')}
+    <h2 class="pg-title">실이 당겨지는 —<br><span class="r">${meetY}년 ${meetM}월</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">이 무렵부터 저쪽 실 끝이 움직여요. 그 전까지는 <em>찾아다니는 때가 아니라 가꾸는 때</em>예요— 이 순서를 바꾸면, 물때가 와도 그대가 지쳐 있어요.</p>
+    <div class="rows"><div class="rowl"><span class="k">유심히 볼 철</span><span class="v"><b>${meetM}월</b> 언저리 — 새 얼굴을 허투루 보내지 말 것</span><span class="m good">時</span></div></div>`);
+}
+
+/* ═══ 結五 ═══ */
+if (JAE){
+  addToc('結五','물때 — 연락이 닿는 달, 끊어지는 달');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">時</div><div class="dv-t">結五 · 물때</div>
+    <div class="dv-s">당기면 끊어지는 달이 있고,<br>살짝만 당겨도 오는 달이 있어요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結五 · 삼가는 달')}
+    <h2 class="pg-title">당기면 끊어지는 —<br><span class="r">${mBad}월</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">해마다 ${mBad}월— 두 원국의 원진 자리가 함께 눌리는 달이에요. 이 달의 연락은 같은 말도 가시가 되어 닿아요. <em>그리움이 제일 짙어지는 달이 하필 이 달이라는 것</em>— 그게 이 실의 짓궂은 데예요. 참아요.</p>`);
+  addPage(`${pgHead('結五 · 닿는 물때')}
+    <h2 class="pg-title">살짝 당겨도 오는 —<br><span class="r">${meetY}년 ${mGood}월</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">이 물때에는 짧은 안부 하나로 족해요. 길게 적지 말고, 무겁게 적지 말고— <em>가장 가벼운 한 줄</em>이 가장 깊이 닿는 때예요.</p>
+    <div class="rows">
+      <div class="rowl"><span class="k">물때</span><span class="v"><b>${meetY}년 ${mGood}월</b> — 실이 순해지는 달</span><span class="m good">時</span></div>
+      <div class="rowl"><span class="k">피할 달</span><span class="v">해마다 <b>${mBad}월</b> — 당기면 끊어지는 달</span><span class="m bad">忌</span></div>
+    </div>
+    <p class="pg-note">물때 전에 저쪽에서 먼저 실이 오면— 받아도 돼요.<br>이 장은 그대가 당기는 때의 셈이에요.</p>`);
+} else {
+  addToc('結五','오는 길목 — 방향과 만나는 자리');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">路</div><div class="dv-t">結五 · 오는 길목</div>
+    <div class="dv-s">연은 길을 따라 와요.<br>그대 실이 걸리는 길목을 알아요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結五 · 방향')}
+    <h2 class="pg-title">오는 방향 —<br><span class="r">${dirMain} 방(方)</span></h2>
+    <div class="pg-hanja">${dirMain[0]}</div>
+    <p class="pg-body">그대 자리에서 <em>${dirMain}쪽</em>— 그 방향의 걸음, 그 방향에서 온 사람에게 실이 걸려요. 자리를 옮기라는 말이 아니라, 그쪽에서 오는 걸음을 무겁게 여기라는 뜻이에요.</p>`);
+  addPage(`${pgHead('結五 · 길목')}
+    <h2 class="pg-title">만나는 자리</h2>
+    <div class="rows">
+      <div class="rowl"><span class="k">길목</span><span class="v">${PLACE}</span><span class="m good">路</span></div>
+      <div class="rowl"><span class="k">트인 판</span><span class="v">${GU.in}</span><span class="m good">進</span></div>
+      <div class="rowl"><span class="k">마른 판</span><span class="v">${GU.out}</span><span class="m bad">閉</span></div>
+    </div>
+    <p class="pg-body" style="margin-top:20px">트인 판에 아홉을 쓰고, 마른 판에는 하나도 걸치지 말아요. <em>길목을 거스르는 만남이 가장 지치는 만남이에요.</em></p>`);
+}
+
+/* ═══ 結六 ═══ */
+if (JAE){
+  addToc('結六','다시 만나는 길목 — 어디서, 어떻게');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">路</div><div class="dv-t">結六 · 다시 만나는 길목</div>
+    <div class="dv-s">물때에 실을 당길 때—<br>그 걸음의 순서예요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結六 · 첫 걸음')}
+    <h2 class="pg-title">첫 연락의 법</h2>
+    <div class="fix"><div class="ft">三 結</div><ol>
+      <li>첫 줄은 안부 하나로 끝내요— 지난 얘기, 마음 얘기를 얹는 순간 실이 무거워져요.</li>
+      <li>답이 늦어도 두 번째 실은 던지지 말아요. 물때의 실은 한 올이면 족해요.</li>
+      <li>답이 오거든 반 박자 늦게, 짧게— 당기는 건 실이 아니라 궁금함이에요.</li>
+    </ol></div>
+    <p class="pg-note">이 세 줄이 다섯째 매듭의 물때와 한 몸이에요.<br>때 없이 쓰면— 약이 독이 돼요.</p>`);
+  addPage(`${pgHead('結六 · 마주칠 자리')}
+    <h2 class="pg-title">다시 마주치는 자리 —<br><span class="r">${dirMain} 방(方)</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">두 원국의 실이 다시 겹치는 방향이 <em>${dirMain}쪽</em>이에요. 그 사람과 익은 자리— 함께 걷던 길목이 그쪽이었다면, 우연을 가장한 재회는 그 언저리에서 일어나요.</p>
+    <p class="pg-body">다만 만들지는 말아요. <em>물때의 우연은 오지만, 억지 우연은 들켜요.</em></p>`);
+} else {
+  addToc('結六','스친 인연 — 이미 만난 적이 있는가');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">影</div><div class="dv-t">結六 · 스친 인연</div>
+    <div class="dv-s">장부를 되짚어요.<br>스쳐 간 실이 있는지.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結六 · 되짚기')}
+    <h2 class="pg-title">${pastY}년 언저리 —<br><span class="r">스친 실이 있어요</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">그 무렵 그대 곁을 지난 얼굴 중에, 실이 한 번 스친 이가 있어요. 그때는 두 실 다 여물지 않아 매이지 못했을 뿐이에요.</p>
+    <p class="pg-body">억지로 찾아 나서진 말아요. <em>다시 겹칠 실이면 ${meetY}년의 물때에 제 발로 와요</em>— 그때 알아보기만 하면 돼요. 알아보는 표식은 셋째 매듭에 적어 두었죠.</p>`);
+  addPage(`${pgHead('結六 · 새 실')}
+    <h2 class="pg-title">스친 실과 새 실</h2>
+    <div class="hr"></div>
+    <p class="pg-body">스친 실이 돌아오는 연도 있고, 아주 새 실이 오는 연도 있어요. 그대 원국은 <em>${(H>>10)%2 ? '익은 얼굴이 새로 보이는 쪽' : '낯선 얼굴이 단숨에 익는 쪽'}</em>에 가까워요.</p>
+    <div class="pg-quote">"어느 쪽이든—<br>길목과 물때는 같아요.<br><em>준비된 사람이 알아볼 뿐.</em>"</div>`);
+}
+
+/* ═══ 結七 ═══ */
+if (JAE){
+  addToc('結七','두 번째 매듭 — 같은 자리서 안 끊어지는 법');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">再</div><div class="dv-t">結七 · 두 번째 매듭</div>
+    <div class="dv-s">다시 잇는 것보다 중요한 건—<br>다시 끊기지 않는 거예요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結七 · 같은 자리')}
+    <h2 class="pg-title">같은 자리에서<br><span class="r">두 번 끊어지지 않는 법</span></h2>
+    <div class="hr"></div>
+    <p class="pg-body">첫 이별의 속사정은 <em>${RSN.k}</em>였죠. 다시 맺은 실이 같은 자리에서 눌리는 날은 반드시 와요— 그날을 위해 이 장을 적어요.</p>
+    <div class="fix"><div class="ft">三 結</div><ol>
+      <li>해마다 ${mBad}월— 살이 눌리는 달엔 큰 말을 미뤄요. 넘긴 다음 달에 하면 같은 말도 순하게 닿아요.</li>
+      <li>서운함은 그날 안에 짧게— 재운 서운함이 첫 이별을 만들었어요.</li>
+      <li>혼자 결론짓지 말아요. 이 실의 매듭은 늘 혼자 내린 결론에서 풀렸어요.</li>
+    </ol></div>`);
+  addPage(`${pgHead('結七 · 단언의 곁')}
+    <h2 class="pg-title">홍단의 단언, 다시</h2>
+    <div class="hr"></div>
+    <p class="pg-body"><em>${VD.v}</em> — 첫 장의 단언을 기억하죠. ${VD.t}</p>
+    <div class="pg-quote">"실을 잇는 건 하늘의 일이지만,<br>매듭을 지키는 건— <em>사람의 일이에요.</em>"</div>`);
+} else {
+  addToc('結七','걸러낼 얼굴 — 붙으면 안 되는 인연의 낌새');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja" style="color:rgba(210,74,62,.85);text-shadow:0 0 50px rgba(210,74,62,.35)">戒</div>
+    <div class="dv-t">結七 · 걸러낼 얼굴</div>
+    <div class="dv-s">오는 실이 다 연분은 아니에요.<br>그대 살을 노리는 낌새를 적어요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結七 · 낌새')}
+    <h2 class="pg-title">붙으면 안 되는<br><span class="r">세 가지 낌새</span></h2>
+    <div class="fix" style="border-color:rgba(210,74,62,.45)"><div class="ft" style="color:var(--loo)">三 戒</div><ol>
+      <li>처음부터 그대의 ${sals[0].name} 기운— 매력의 자리만 칭찬하는 이. 꽃을 꺾으려는 손이에요.</li>
+      <li>만남의 속도를 그대가 정하지 못하게 하는 이. 급한 실은 대개 남의 실이에요.</li>
+      <li>제 지난 실 얘기를 감추거나, 셈부터 먼저 꺼내는 이. 실 끝이 딴 데 묶여 있어요.</li>
+    </ol></div>
+    <p class="pg-note">세 낌새 중 둘이 겹치면— 얼굴이 아무리 이 연서와 닮아도 아니에요.</p>`);
+  addPage(`${pgHead('結七 · 가리는 눈')}
+    <h2 class="pg-title">가리는 눈</h2>
+    <div class="hr"></div>
+    <p class="pg-body">그대의 ${sals[0].name}(${sals[0].hanja})은 사람을 끌어요— 좋은 실도, 나쁜 실도요. 끌리는 건 죄가 아니에요. <em>가리지 않는 것만이 죄예요.</em></p>
+    <div class="pg-quote">"석 달을 두고 봐요.<br>진짜 실은 석 달 뒤에 더 팽팽하고,<br>가짜 실은— <em>석 달을 못 버텨요.</em>"</div>`);
+}
+
+/* ═══ 結八 ═══ */
+if (JAE){
+  addToc('結八','홍단의 단언 — 잇는 실인가, 놓는 실인가');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">斷</div><div class="dv-t">結八 · 홍단의 단언</div>
+    <div class="dv-s">사천 갈래 장부에 비추어—<br>마지막 답을 적어요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結八 · 단언')}
+    <h2 class="pg-title">이 실은 —<br><span class="r">${VD.v}</span></h2>
+    <div class="pg-hanja">${VD.s}</div>
+    <p class="pg-body">${VD.t}</p>`);
+  addPage(`${pgHead('結八 · 곁말')}
+    <h2 class="pg-title">곁말 하나</h2>
+    <div class="hr"></div>
+    <p class="pg-body">단언은 장부의 셈이지, 그대 마음의 주인이 아니에요. 다만 사천 갈래를 이어 본 손으로 말하자면— <em>셈을 거스른 실은 열에 아홉, 같은 자리에서 다시 울어요.</em></p>
+    <div class="pg-quote">"묻고 싶던 말의 답은<br>이제 다 적었어요.<br>남은 매듭은— <em>그대가 지어요.</em>"</div>`);
+} else {
+  addToc('結八','붙잡는 법 — 그 사람 앞에서의 그대');
+  addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja">執</div><div class="dv-t">結八 · 붙잡는 법</div>
+    <div class="dv-s">길목에서 만나는 것까지가 하늘 일—<br>붙잡는 건 그대 일이에요.</div><div class="dv-line"></div></div>`, 'divider');
+  addPage(`${pgHead('結八 · 밀당의 물때')}
+    <h2 class="pg-title">그 사람 앞에서의<br><span class="r">그대</span></h2>
+    <div class="fix"><div class="ft">三 結</div><ol>
+      <li>${sals[0].name}의 빛은 처음 석 달간 반만 보여요— 그대 매력은 아껴 쓸수록 짙어져요.</li>
+      <li>마음이 확실해지기 전에 실을 다 감지 말아요. 헐거운 듯 감은 실이 오래가요.</li>
+      <li>그 사람의 ${FTALK.replace('말버릇','말')}이 잦아지거든— 그때가 그대가 한 걸음 다가설 때예요.</li>
+    </ol></div>`);
+  addPage(`${pgHead('結八 · 곁말')}
+    <h2 class="pg-title">곁말 하나</h2>
+    <div class="hr"></div>
+    <p class="pg-body">붙잡는 법의 절반은 그대를 지키는 법이에요. 연이 왔다고 그대 걸음을 다 바꾸면— <em>그 사람이 반한 그대가 사라져요.</em></p>
+    <div class="pg-quote">"실은 두 사람이 마주 당겨야 매듭이 돼요.<br>혼자 당기는 실은— <em>언젠가 손을 베요.</em>"</div>`);
+}
+
+/* 今年 · 올해 할 일 셋 · 삼갈 일 셋 — 찢어 두고 보는 한 장 */
+const DO_J = ['물때 아닌 달의 그리움은 이 연서를 다시 펴는 걸로 달래요.','그 사람 곁 소식을 캐지 말아요— 실은 조용할 때 아물어요.','그대를 가꾸는 일 하나를 정해 물때까지 이어가요. 재회의 첫인상은 "달라진 그대"예요.'];
+const DONT_J = [`해마다 ${mBad}월의 연락— 그 달만은 참아요.`,'술기운의 실은 던지지 말아요. 물때의 셈이 다 무너져요.','곁에 이 실 얘기를 널리 하지 말아요— 말이 많아지면 실이 흔들려요.'];
+const DO_Y = [`${meetM}월 언저리의 새 자리, 새 소개는 물리치지 말아요.`,`${dirMain}쪽에서 오는 걸음을 무겁게 여겨요.`,'그대 등불을 밝혀요— 사람들 앞에 그대가 보여야 실이 찾아와요.'];
+const DONT_Y = ['외로움이 짙은 밤의 답장은 아침에 해요— 밤의 실은 헐거워요.','아닌 줄 아는 실을 심심풀이로 쥐지 말아요. 새 실이 감길 자리를 막아요.','세 낌새(結七)가 겹치는 이에게 두 번째 자리를 주지 말아요.'];
+addPage(`${pgHead('今年 · 올해')}
+  <h2 class="pg-title">올해 할 일 셋,<br><span class="r">삼갈 일 셋</span></h2>
+  <div class="hr"></div>
+  <div class="fix"><div class="ft">할 일 · 行</div><ul>${(JAE?DO_J:DO_Y).map(t => `<li>${t}</li>`).join('')}</ul></div>
+  <div class="fix" style="border-color:rgba(210,74,62,.45)"><div class="ft" style="color:var(--loo)">삼갈 일 · 戒</div><ul>${(JAE?DONT_J:DONT_Y).map(t => `<li>${t}</li>`).join('')}</ul></div>
+  <p class="pg-note">이 한 장은 찢어 두고 봐요. 여섯 줄이 한 해의 실을 지켜요.</p>`);
+
+/* ═══ 結九 — 열두 달, 한 달 한 장 ═══ */
+addToc('結九','열두 달 — 연분 달력');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">曆</div><div class="dv-t">結九 · 열두 달</div>
+  <div class="dv-s">다가올 한 해를<br>한 달에 한 장씩 적어요.<br><br>해가 바뀌면 이 매듭을 다시 펴요.</div><div class="dv-line"></div></div>`, 'divider');
+for (let m = 1; m <= 12; m++){
+  const isG = m === (JAE ? mGood : meetM), isL = m === mBad;
+  const t = isG ? (JAE ? '실이 순해지는 달— 물때예요. 가장 가벼운 한 줄이 가장 깊이 닿아요.' : '실이 당겨지는 달— 새 얼굴, 새 자리를 허투루 보내지 말아요.')
+        : isL ? (JAE ? '당기면 끊어지는 달— 그리움이 짙어도 이 달만은 실을 쥐고만 있어요.' : '실이 엉키는 달— 시작도 끝맺음도 이 달은 피해요.')
+        : MONTH_T[(H + m*5) % 8];
+  const markHj = isG ? '結' : isL ? '忌' : MONTH_HJ[m-1][0];
+  addPage(`${pgHead('結九 · 연분 달력')}
+    <h2 class="pg-title">${m}월 <span class="r" style="font-size:14px;letter-spacing:.2em">${MONTH_HJ[m-1]}</span></h2>
+    <div class="pg-hanja" style="${isL?'color:var(--loo);text-shadow:0 0 34px rgba(210,74,62,.3)':''}">${markHj}</div>
+    <p class="pg-sub">${isG?'맺히는 달':isL?'삼가는 달':'여상한 달'}</p>
+    <p class="pg-body" style="text-align:center">${t}</p>`);
+}
+
+/* ═══ 結十 — 십 년 / 혼인의 판 ═══ */
+addToc('結十', JAE ? '십 년의 실 — 두 실이 가는 능선' : '혼인의 자리 — 백년의 판');
+addPage(`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div class="dv-hanja">${JAE?'嶺':'百'}</div><div class="dv-t">結十 · ${JAE?'십 년의 실':'혼인의 자리'}</div>
+  <div class="dv-s">${JAE?'십 년의 능선을<br>일 년에 한 장씩 그려요.':'십 년의 실을 일 년에 한 장씩—<br>혼인이 놓이는 해까지 그려요.'}</div><div class="dv-line"></div></div>`, 'divider');
+for (let i = 0; i < 10; i++){
+  const yy = nowY + i;
+  let lvl = (H >> (i+2)) % 4;
+  if (yy === meetY) lvl = 4;
+  if (yy === marY && !JAE) lvl = 4;
+  if (yy === pastY) lvl = 0;
+  const isMeet = yy === meetY, isMar = yy === marY && !JAE;
+  addPage(`${pgHead('結十 · 능선')}
+    <h2 class="pg-title">${yy}년${yy===nowY?' <span class="r" style="font-size:14px">(올해)</span>':''}</h2>
+    <div class="pg-hanja" style="${lvl===4?'':lvl===0?'color:var(--loo);text-shadow:0 0 34px rgba(210,74,62,.3);':'opacity:.55;'}">${lvl===4?'結':lvl===0?'散':'絲'}</div>
+    <p class="pg-sub">${['실이 쉬는 해','고르는 해','잔정이 붇는 해','실이 빨라지는 해','크게 매이는 해'][lvl]}</p>
+    <p class="pg-body" style="text-align:center">${isMar ? '혼인의 판이 놓이는 해예요— 백년의 매듭이 이 언저리에 있어요. 이 해를 위해 앞의 모든 매듭이 있었어요.' : isMeet ? (JAE ? '물때의 해— 이 해를 위해 앞의 모든 매듭이 있었어요.' : '실이 당겨지는 해— 이 해를 위해 앞의 모든 매듭이 있었어요.') : TEN_T[lvl]}</p>
+    ${isMeet?`<p class="pg-note">${JAE?mGood:meetM}월— 실이 움직이는 달이에요.</p>`:''}`);
+}
+
+const END_IDX = pages.length;   // 여기서부터 맺음 (매듭 경계 계산용)
+/* 맺음 */
+addPage(`${pgHead('終')}
+  <h2 class="pg-title">맺으며</h2>
+  <div class="hr"></div>
+  <p class="pg-body">${nm}. ${JAE
+    ? `단언은 <em>${VD.v.replace('예요','')}</em>— 물때는 ${meetY}년 ${mGood}월. 이제 셈은 끝났고, 매듭은 그대 손에 있어요.`
+    : `실이 당겨지는 해는 <em>${meetY}년</em>, 길목은 ${dirMain} 방(方)— 이제 셈은 끝났고, 걸음은 그대 몫이에요.`}</p>
+  <p class="pg-body">이 연서는 그대 서고에 평생 머물러요. 해가 바뀌거든 아홉째 매듭을 다시 펴고, 마음이 급해지는 밤엔 ${JAE ? '다섯째' : '넷째'} 매듭을 다시 펴요.</p>
+  <div class="pg-quote" style="text-align:center">"연은 오는 것이 아니라,<br><em>알아보는 것이에요.</em>"</div>
+  <p class="pg-note">이어 적다 — 별당 아씨 홍단</p>
+  <p style="margin-top:26px;text-align:center"><a href="../" style="color:var(--brass);font-size:13.5px;letter-spacing:.15em;text-decoration:none;border-bottom:1px solid rgba(215,141,151,.4);padding-bottom:3px">深谷寺 메인으로 돌아가기 →</a></p>`);
+addPage(`
+  <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <div class="dv-hanja" style="font-size:54px">深谷寺</div>
+    <div class="dv-t" style="margin-top:22px">별당 · 홍단</div>
+    <div class="dv-s" style="margin-top:14px">${nm}의 「붉은 실의 기록」<br>${nowY}년, 별당에서 이어 적음<br>일흔일곱 장 · 十結 · 제 ${bookNoS}호</div>
+    <div class="stamp-sq">紅緞</div>
+  </div>`, 'divider');
+
+/* ═══ 77장 맞추기 — 홍단 어록 간지 삽입/트림 (사람마다 다른 어록이 다른 자리에) ═══ */
+function fitTo77(){
+  let fi = H % APHORISM.length;
+  while (pages.length < 77){
+    const [hj, tx] = APHORISM[fi % APHORISM.length]; fi++;
+    pages.splice(pages.length - 2, 0, {cls:'divider', html:`
+      <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+        <div class="dv-hanja" style="opacity:.8">${hj}</div>
+        <div class="dv-s" style="margin-top:20px;font-size:14px">${tx}</div>
+        <div class="dv-s" style="margin-top:26px;font-size:10.5px;opacity:.6">— 홍단의 장부 귀퉁이에서</div>
+      </div>`});
+  }
+  while (pages.length > 77){ pages.splice(pages.length - 3, 1); }
+}
+
+/* ═══ 매듭(結) 경계 — tocEntries 의 結一~結十 사이가 한 매듭 ═══ */
+const KNOT = ['結一','結二','結三','結四','結五','結六','結七','結八','結九','結十'];
+function partRanges(){
+  const parts = tocEntries.filter(t => KNOT.includes(t.label));
+  return parts.map((t, i) => ({ no: i + 1, hj: t.label, title: t.title, start: t.page - 1, end: (i + 1 < parts.length ? parts[i + 1].page - 1 : END_IDX) }));
+}
+function lockPage(r, sub, cta){
+  return {cls:'divider', html:`
+    <div style="min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 26px">
+      <div class="dv-hanja" style="opacity:.55;font-size:60px">${r.hj}</div>
+      <div class="dv-t" style="opacity:.6;word-break:keep-all">${r.title}</div>
+      <div class="lock-seal">封</div>
+      <div class="dv-s" style="margin-top:18px;font-size:14px;line-height:1.9;word-break:keep-all">${sub}</div>
+      <button class="lock-btn" onclick="unlockMore()">${cta}</button>
+    </div>`};
+}
+function applyPicks(){
+  const ranges = partRanges();
+  const front = pages.slice(0, ranges[0].start);
+  const tail  = pages.slice(END_IDX);
+  const out = [...front];
+  const newToc = tocEntries.filter(t => !KNOT.includes(t.label));
+  ranges.forEach(r => {
+    if (PICKS.includes(r.no)){ newToc.push({label:r.hj, title:r.title, page: out.length + 1}); out.push(...pages.slice(r.start, r.end)); }
+    else { newToc.push({label:r.hj, title:r.title, page: out.length + 1, locked:true}); out.push(lockPage(r, `셈은 끝나 있어요— 그대 이름으로 적힌 <b>${r.end - r.start}장</b>이<br>여기 봉해져 있어요.<br>인연살 ${sals.length}개가 이 매듭에서 어떻게 움직이는지—<br>마저 찢으면 보여요.`, '이 매듭 마저 풀기 →')); }
+  });
+  out.push(...tail);
+  pages.length = 0; pages.push(...out);
+  tocEntries.length = 0; tocEntries.push(...newToc);
+}
+function applyPreview(){
+  const ranges = partRanges();
+  const out = pages.slice(0, ranges[0].start);
+  out.push(...pages.slice(ranges[0].start, Math.min(ranges[0].start + 3, ranges[0].end)));
+  if (ranges[1]) out.push(...pages.slice(ranges[1].start, Math.min(ranges[1].start + 2, ranges[1].end)));
+  // 맛보기 — 제일 궁금한 "언제"를 연도만 열어 보인다 (달·방향·얼굴은 본편에)
+  out.push({cls:'divider', html:`
+    <div style="min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 26px">
+      <div class="dv-hanja" style="font-size:60px">時</div>
+      <div class="dv-t">${JAE ? '結五 · 물때 — 한 줄만 먼저' : '結四 · 오는 때 — 한 줄만 먼저'}</div>
+      <div class="dv-s" style="margin-top:22px;font-size:15px;line-height:2;color:var(--paper);word-break:keep-all">${nm}. ${JAE ? '그대 실을 <em style="font-style:normal;color:var(--brass-hi);font-weight:700">당겨도 되는 물때</em>는—' : '그대 실이 <em style="font-style:normal;color:var(--brass-hi);font-weight:700">당겨지는 해</em>는—'}<br><span style="font-family:'Noto Sans KR',sans-serif;font-size:34px;font-weight:900;color:var(--brass-hi)">${meetY}년</span></div>
+      <div class="dv-s" style="margin-top:16px;font-size:13px;line-height:1.9;word-break:keep-all">${JAE ? '몇 월인지, 해마다 <b>당기면 끊어지는 달</b>이 언제인지,<br>첫 연락을 어떻게 적어야 하는지— 결五·結六에 적어 두었어요.' : '어느 철, 어느 방향에서 오는지— 얼굴의 생김까지,<br>結三·結四·結五에 적어 두었어요.'}</div>
+    </div>`});
+  out.push(lockPage({hj:'封', title:'여기부턴, 찢어가야 읽어요'}, `남은 ${77 - out.length}장— 인연살 ${sals.length}개의 뿌리와 다스리는 법, ${JAE ? '마음의 자국, 이별의 속사정, 물때와 단언' : '올 사람의 얼굴, 오는 때와 길목, 걸러낼 낌새'}, 열두 달과 십 년.<br>급한 매듭만 골라 찢어갈 수도 있어요.`, '찢어가러 가기 →'));
+  pages.length = 0; pages.push(...out);
+  tocEntries.length = 0;
+}
+function unlockMore(){
+  try{ if (window.parent !== window){ window.parent.postMessage({sgs:'closePreview'}, location.origin); return; } }catch(e){}
+  location.href = '../hongdan/#tear';
+}
+if (PREVIEW) applyPreview();
+else if (PARTIAL) applyPicks();
+else fitTo77();
+/* 장 번호 다시 매기기 — 간지 삽입/봉인으로 순서가 바뀌므로 최종 순서로 */
+pages.forEach((p, i) => { p.html = p.html.replace(/戀書 · 第 \d+ 張/, `戀書 · 第 ${i + 1} 張`); });
+
+/* ═══ 렌더 + 페이저 (스와이프당 무조건 1장) ═══ */
+const pager = document.getElementById('pager');
+pager.innerHTML = `<div id="track">${pages.map((p,i)=>`<div class="page ${p.cls}" data-i="${i}">${p.html}</div>`).join('')}</div>`;
+const track = document.getElementById('track');
+const total = pages.length;
+let cur = 0;
+function updateBar(){
+  document.getElementById('pageNo').textContent = `第 ${cur+1} 張 / ${total}`;
+  document.getElementById('progressBar').style.width = ((cur+1)/total*100) + '%';
+  // 마지막 장에 닿으면 메인으로 가는 바가 내려온다
+  const hb = document.getElementById('homeBar'); if (hb) hb.classList.toggle('on', cur >= total - 1);
+  if (PREVIEW){ try{ window.parent.postMessage({sgs:'page', cur: cur + 1, total}, location.origin); }catch(e){} }
+}
+function goPage(i){
+  cur = Math.max(0, Math.min(total-1, i));
+  track.style.transition = '';
+  track.style.transform = `translateX(${-cur*100}%)`;
+  const pg = track.children[cur]; if (pg) pg.scrollTop = 0;
+  updateBar();
+}
+updateBar();
+(function(){
+  let startX=0, startY=0, mode=null, dx=0;
+  const W = () => pager.clientWidth;
+  pager.addEventListener('pointerdown', e => { startX=e.clientX; startY=e.clientY; mode=null; dx=0; }, {passive:true});
+  pager.addEventListener('pointermove', e => {
+    if (e.pressure === 0 && e.pointerType === 'mouse') return;
+    const mx=e.clientX-startX, my=e.clientY-startY;
+    if (mode===null){
+      if (Math.abs(mx)>10 && Math.abs(mx)>Math.abs(my)*1.2) mode='h';
+      else if (Math.abs(my)>10) mode='v';
+    }
+    if (mode==='h'){
+      dx=mx;
+      if ((cur===0&&dx>0)||(cur===total-1&&dx<0)) dx=dx*.3;
+      track.style.transition='none';
+      track.style.transform=`translateX(calc(${-cur*100}% + ${dx}px))`;
+    }
+  }, {passive:true});
+  const finish = () => {
+    if (mode!=='h'){ mode=null; return; }
+    const TH = Math.min(70, W()*.18);
+    if (dx<-TH) goPage(cur+1);
+    else if (dx>TH) goPage(cur-1);
+    else goPage(cur);
+    mode=null; dx=0;
+  };
+  pager.addEventListener('pointerup', finish, {passive:true});
+  pager.addEventListener('pointercancel', finish, {passive:true});
+})();
+document.getElementById('tapPrev').addEventListener('click', ()=>goPage(cur-1));
+document.getElementById('tapNext').addEventListener('click', ()=>goPage(cur+1));
+
+/* 목차 */
+document.getElementById('tocList').innerHTML = tocEntries.map(t =>
+  `<div class="toc-item${t.locked ? ' locked' : ''}" onclick="jumpTo(${t.page-1})"><span class="n">${t.label}</span><span class="x">${t.title}</span><span class="p">${t.locked ? '封 · 잠김' : t.page + '장'}</span></div>`).join('');
+function openToc(){ document.getElementById('tocOverlay').classList.add('on'); }
+function closeToc(){ document.getElementById('tocOverlay').classList.remove('on'); }
+function jumpTo(i){ closeToc(); goPage(i); }
+
+/* 열람/갈무리 기록 (IP는 서버에서 캡처) */
+function trackReport(event){
+  try{
+    fetch('https://lpjuanegereuzufjzgbq.supabase.co/functions/v1/track-view', {
+      method:'POST', keepalive:true,
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        event, name:user.name,
+        birth:`${user.birth.y}-${String(user.birth.m).padStart(2,'0')}-${String(user.birth.d).padStart(2,'0')}`,
+        gender:user.gender, product:'hongdan', is_demo:!!(qs.get('demo') || qs.get('preview'))
+      })
+    }).catch(()=>{});
+  }catch(e){}
+}
+trackReport('view');
+function saveReport(){ trackReport('download'); window.print(); }
+</script>
+</body>
+</html>

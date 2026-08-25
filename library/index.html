@@ -351,8 +351,10 @@ async function loadBooks(quiet){
       }
       const ownerEsc = owner ? owner.replace(/</g,'&lt;') : null;
       // 찢어간 장 표시
-      const HJ = p.product === 'hyunwol' ? ['','卷一','卷二','卷三','卷四','卷五','卷六','卷七','卷八','卷九','卷十'] : ['','壹','貳','參','肆','伍','陸','柒','捌','玖','拾'];
-      const unitL = p.product === 'hyunwol' ? '편' : '대목';
+      const HJ = p.product === 'hyunwol' ? ['','卷一','卷二','卷三','卷四','卷五','卷六','卷七','卷八','卷九','卷十']
+        : p.product === 'hongdan' ? ['','結一','結二','結三','結四','結五','結六','結七','結八','結九','結十']
+        : ['','壹','貳','參','肆','伍','陸','柒','捌','玖','拾'];
+      const unitL = p.product === 'hyunwol' ? '편' : p.product === 'hongdan' ? '매듭' : '대목';
       const tierLabel = p.tier && p.tier !== 'all'
         ? (p.picks ? `찢어간 ${unitL} · ${String(p.picks).split(',').map(n => HJ[+n] || '').filter(Boolean).join(' ')}` : `찢어간 ${unitL} · 확인 중`)
         : null;
@@ -374,9 +376,8 @@ async function loadBooks(quiet){
             : `<span class="b-wait">${ch.label}이 적는 중이다 — 곧 꽂힌다</span>`}
         </div>`;
       // 부분 구매자 — 남은 대목을 마저 찢어가는 길 (이미 산 대목은 랜딩에서 잠긴다)
-      const unit = p.product === 'hyunwol' ? '편' : '대목';
       const more = (href && ch.landing && p.tier && p.tier !== 'all' && p.picks)
-        ? `<a class="b-more" href="${ch.landing}?owned=${encodeURIComponent(p.picks)}#tear">${p.product === 'hyunwol' ? '셈이 끝나지 않았다 — 남은 편 마저 셈하기 →' : '남은 대목, 마저 찢어가기 →'}</a>` : '';
+        ? `<a class="b-more" href="${ch.landing}?owned=${encodeURIComponent(p.picks)}#tear">${p.product === 'hyunwol' ? '셈이 끝나지 않았다 — 남은 편 마저 셈하기 →' : p.product === 'hongdan' ? '실이 남았어요 — 남은 매듭 마저 풀기 →' : '남은 대목, 마저 찢어가기 →'}</a>` : '';
       return (href
         ? `<a class="book" href="${href}">${inner}</a>`
         : `<div class="book">${inner}</div>`) + more;

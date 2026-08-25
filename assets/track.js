@@ -47,6 +47,12 @@
         one:  { id: 'vuzWHN', name: '스님 현월 · 재물의 경 한 편 찢어가기',   value: 6900 },
         five: { id: 'RpxRzG', name: '스님 현월 · 재물의 경 다섯 편 찢어가기', value: 24900 },
         all:  { id: '5xeDtU', name: '스님 현월 · 재물의 경 여든여덟 장',       value: 49000 }
+      } },
+    hongdan: { id: 'kAdXFx', name: '별당 아씨 홍단 · 붉은 실의 기록 일흔일곱 장', value: 38900,
+      tiers: {
+        one:  { id: 'LFM8JS', name: '별당 아씨 홍단 · 연서 한 매듭 찢어가기',   value: 3900 },
+        five: { id: 'BGFtKG', name: '별당 아씨 홍단 · 연서 다섯 매듭 찢어가기', value: 14900 },
+        all:  { id: 'kAdXFx', name: '별당 아씨 홍단 · 붉은 실의 기록 일흔일곱 장', value: 38900 }
       } }
   };
   /* 결제창 코드 → 상품/등급 역조회 (서고의 Purchase 처럼 결제 코드만 아는 곳에서 쓴다) */
@@ -66,6 +72,7 @@
     var p = location.pathname;
     if (p.indexOf('/myodam') === 0 || p.indexOf('/report') === 0) return 'myodam';
     if (p.indexOf('/hyunwol') === 0 || p.indexOf('/gyeong') === 0) return 'hyunwol';
+    if (p.indexOf('/hongdan') === 0 || p.indexOf('/yeon') === 0) return 'hongdan';
     return null;
   }
 

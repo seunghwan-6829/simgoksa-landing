@@ -33,7 +33,15 @@
         all:  { n: 10, price: 49000, code: '5xeDtU', head: '현월의 셈 · 재물의 경 여든여덟 장', name: '전부' }
       }
     },
-    hongdan: { name: '아씨 홍단', book: '붉은 실의 기록', report: null, landing: '/hongdan/', img: '/assets/hongdan.jpg', label: '홍단', tiers: {} }
+    hongdan: {
+      name: '별당 아씨 홍단', book: '붉은 실의 기록 · 일흔일곱 장', report: '/yeon/', landing: '/hongdan/',
+      img: '/assets/hongdan.jpg', label: '홍단', store: 'sgs_hongdan',
+      tiers: {
+        one:  { n: 1,  price: 3900,  code: 'LFM8JS', head: '홍단의 연서 · 고른 한 매듭',   name: '한 매듭' },
+        five: { n: 5,  price: 14900, code: 'BGFtKG', head: '홍단의 연서 · 고른 다섯 매듭', name: '다섯 매듭' },
+        all:  { n: 10, price: 38900, code: 'kAdXFx', head: '홍단의 연서 · 붉은 실의 기록 일흔일곱 장', name: '전부' }
+      }
+    }
   };
   SGS.payUrl = function (code) { return 'https://www.groble.im/payment/' + code; };
   SGS.isAdmin = function (email) { return !!email && SGS.ADMIN_EMAILS.indexOf(String(email).toLowerCase()) !== -1; };

@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return json({ ok: false, error: "bad_id" }, 400);
 
   const r = await fetch(
-    `${url}/rest/v1/purchases?id=eq.${id}&select=id,created_at,product,status,user_id,buyer_email,site_email,saju_answer,tier,picks&limit=1`,
+    `${url}/rest/v1/purchases?id=eq.${id}&select=id,created_at,product,status,user_id,buyer_email,site_email,saju_answer,tier,picks,path&limit=1`,
     { headers: S },
   );
   if (!r.ok) return json({ ok: false, error: "db" }, 500);
@@ -71,6 +71,8 @@ Deno.serve(async (req) => {
     y: Number(m[2]), m: Number(m[3]), d: Number(m[4]), g: m[5],
     tier: p.tier || "all",
     picks: p.tier && p.tier !== "all" ? (p.picks || null) : null,
+    path: p.path || null,   // 홍단 — 재회(jae)/연애(yeon) 갈래
+
     hv: Number.isFinite(createdMs) && createdMs < HASH_V2_SINCE ? 1 : 2,   // 구형 해시 호환
     yr: Number.isFinite(createdMs) ? new Date(createdMs).getFullYear() : new Date().getFullYear(),   // 결과지의 "올해" 고정
   });
