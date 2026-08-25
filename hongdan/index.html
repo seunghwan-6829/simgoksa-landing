@@ -810,10 +810,10 @@ footer b{color:#7a6f66}
   <div class="gate-inner">
     <div class="gate-brand">
       <div class="gate-hanja">深谷寺</div>
-      <div class="gate-sub">심곡사 뒤뜰 — 달 밝은 별당(別堂)</div>
+      <div class="gate-sub">심곡사 뒤뜰 — 불이 꺼지지 않는 별당(別堂)</div>
     </div>
-    <p class="gate-warn">붉은 실 한 가닥이<br><b>당신 발치까지 이어져 있습니다</b></p>
-    <button class="gate-btn" id="enterBtn">실을 따라간다</button>
+    <p class="gate-warn">새벽 별당 창에 불이 켜져 있고—<br><b>「거기, 지나가는 그대. 잠깐만요.」</b></p>
+    <button class="gate-btn" id="enterBtn">돌아본다</button>
     <p class="gate-note">· 소리와 함께 입장하시길 바랍니다 ·</p>
   </div>
 </div>
@@ -843,11 +843,11 @@ footer b{color:#7a6f66}
       <div class="title-glow"></div>
     </div>
     <div class="dialog" data-scene="0">
-      <p class="line whisper">— 심곡사 뒤뜰, 별당 앞마당 —</p>
-      <p class="line">달빛 아래, 댓돌 위로<br><em>붉은 실 한 가닥</em>이 놓여 있다.</p>
-      <p class="line">실은— 문틈의 촛불을 지나<br>당신 발치까지 이어져 있다.</p>
+      <p class="line whisper">— 심곡사 뒤뜰, 별당 앞 —</p>
+      <p class="line">반쯤 열린 문 안—<br>붉은 실을 감던 여인이, 이쪽을 보고 있다.</p>
+      <p class="line voice">"이 새벽에 여길 지나는 사람은<br>둘 중 하나예요.<br><em>못 잊었거나, 못 만났거나.</em>"</p>
       <div class="choices">
-        <button class="choice" data-next="1">실을 따라 별당으로 간다</button>
+        <button class="choice" data-next="1">"…나를 불렀어요?"</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -859,13 +859,13 @@ footer b{color:#7a6f66}
     <div class="veil"></div>
     <span class="scene-tag">壹</span>
     <div class="dialog" data-scene="1">
-      <p class="line voice">"…왔네요."</p>
-      <p class="line">문 안— 붉은 비단의 여인이<br>손가락에 실을 감으며, 고개를 든다.</p>
-      <p class="line voice">"놀라지 말아요. 그 실,<br><em>내가 그대 쪽으로 놓아둔 거예요.</em>"</p>
-      <p class="line voice">"이리 와 앉아요.<br>그대 실이 어찌 됐는지— 내가 봐 줄 테니."</p>
+      <p class="line voice">"불렀죠. 그대 실이<br>하도 시끄러워서."</p>
+      <p class="line">여인이 실 끝 하나를 들어 보인다.<br>— 어둠 속, 그대 쪽으로 길게 늘어진 붉은 실.</p>
+      <p class="line voice">"난 홍단.<br>이 별당에서 <em>인연 실만 사천 번</em> 이었어요."</p>
+      <p class="line voice">"그대 얼굴에 다 쓰여 있어요.<br><em>…마음에 걸린 사람, 있죠?</em>"</p>
       <div class="choices">
-        <button class="choice" data-next="2">방으로 들어가 앉는다</button>
-        <button class="choice" data-next="2" data-hesitate="1">(문가에서 잠시 머뭇거린다)</button>
+        <button class="choice" data-next="2">"…어떻게 알았어요?"</button>
+        <button class="choice" data-next="2" data-hesitate="1">(말없이 고개를 끄덕인다)</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -877,13 +877,12 @@ footer b{color:#7a6f66}
     <div class="veil"></div>
     <span class="scene-tag">貳</span>
     <div class="dialog" data-scene="2">
-      <p class="line whisper" data-hesitate-line style="display:none">…머뭇거리는 사이, 여인이 먼저<br>방석 하나를 촛불 곁으로 밀어 놓았다.</p>
-      <p class="line">여인이 서안 위에<br>붉은 실 <em>두 가닥</em>을 나란히 놓는다.</p>
-      <p class="line">하나는— 중간이 끊겨 있고,<br>하나는— 끝이 어둠 속에 잠겨 있다.</p>
-      <p class="line voice">"묻겠어요. 그대의 실은— <em>어느 쪽이에요?</em>"</p>
+      <p class="line whisper" data-hesitate-line style="display:none">…끄덕이는 그대를 보고,<br>여인이 피식 웃는다. "다 보여요, 그런 거."</p>
+      <p class="line">여인이 방석 하나를 밀어 주고—<br>눈을 똑바로 맞춘다.</p>
+      <p class="line voice">"돌려 말 안 할게요.<br>그대 고민— <em>어느 쪽이에요?</em>"</p>
       <div class="choices">
-        <button class="choice" data-ask="start" data-path="jae">"…끊어졌어요. 다시 잇고 싶어요."</button>
-        <button class="choice" data-ask="start" data-path="yeon">"아직… 못 찾았어요. 어디 있나요."</button>
+        <button class="choice" data-ask="start" data-path="jae">재회 — "헤어진 그 사람, 다시 만나고 싶어요"</button>
+        <button class="choice" data-ask="start" data-path="yeon">연애 — "내 인연이 어디 있는지 궁금해요"</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -898,7 +897,7 @@ footer b{color:#7a6f66}
     <div class="dialog" data-scene="ask">
       <!-- step 1 : 이름 -->
       <div class="ask-step" id="ask1">
-        <p class="line voice">"실은 이름을 따라 흘러요.<br><em>그대 손으로 적어야</em> 움직이고요."</p>
+        <p class="line voice">"좋아요, 그럼 봐 줄게요.<br>실은 <em>이름을 따라</em> 찾거든요."</p>
         <p class="line voice" style="margin-top:12px">"그대 이름이 뭐예요?"</p>
         <div class="ask-wrap on">
           <div class="ask-field">
@@ -936,7 +935,7 @@ footer b{color:#7a6f66}
       <!-- step 3b : 분기 질문 (재회/연애) -->
       <div class="ask-step" id="ask3b" style="display:none">
         <div id="askJae" style="display:none">
-          <p class="line voice">"끊어진 지는— <em>얼마나 됐어요?</em>"</p>
+          <p class="line voice">"그 사람이랑— <em>헤어진 지 얼마나 됐어요?</em>"</p>
           <div class="ask-wrap on">
             <div class="ask-row money-row">
               <button class="ask-opt" onclick="askSub1(1,this)">한 달 안</button>
@@ -944,7 +943,7 @@ footer b{color:#7a6f66}
               <button class="ask-opt" onclick="askSub1(3,this)">해를 넘겼어요</button>
             </div>
             <div id="sub2Jae" style="display:none">
-              <p class="line voice" style="margin-top:18px">"지금, 연락은 닿아요?"</p>
+              <p class="line voice" style="margin-top:18px">"지금, 연락은 해요?"</p>
               <div class="ask-row money-row">
                 <button class="ask-opt" onclick="askSub2(1,this)">닿아요</button>
                 <button class="ask-opt" onclick="askSub2(2,this)">끊겼어요</button>
@@ -961,7 +960,7 @@ footer b{color:#7a6f66}
               <button class="ask-opt" onclick="askSub1(3,this)">기억도 안 나요</button>
             </div>
             <div id="sub2Yeon" style="display:none">
-              <p class="line voice" style="margin-top:18px">"곁에, 마음이 가는 사람은요?"</p>
+              <p class="line voice" style="margin-top:18px">"혹시… 눈에 밟히는 사람 있어요?"</p>
               <div class="ask-row money-row">
                 <button class="ask-opt" onclick="askSub2(1,this)">…있어요</button>
                 <button class="ask-opt" onclick="askSub2(2,this)">없어요</button>
@@ -969,7 +968,7 @@ footer b{color:#7a6f66}
             </div>
           </div>
         </div>
-        <p style="font-size:11px;color:#5c534c;letter-spacing:.06em;line-height:1.8;text-align:center;margin-top:6px">대략이면 돼요 — 실을 짚는 기준으로만 써요.</p>
+        <p style="font-size:11px;color:#5c534c;letter-spacing:.06em;line-height:1.8;text-align:center;margin-top:6px">대충이면 돼요 — 실 짚는 기준으로만 써요.</p>
       </div>
       <!-- step 4 : 반응 -->
       <div class="ask-step" id="ask4" style="display:none">
@@ -990,15 +989,15 @@ footer b{color:#7a6f66}
     <div class="veil"></div>
     <span class="scene-tag">參</span>
     <div class="dialog" data-scene="3">
-      <p class="line voice" id="sorryLine">"셈이 나왔어요…"</p>
-      <p class="line voice" id="s3a">"<em>끊어진 게 아니에요. 당겨 보는 사람이 없었을 뿐.</em>"</p>
-      <p class="line" style="margin-top:8px">여인이 붉은 실 매듭을<br>그대 앞으로— 천천히 밀어 놓는다.</p>
-      <p class="line voice" data-quake id="s3b">"그 사람 쪽 실 끝— <em>아직 묶여 있어요.</em>"</p>
-      <p class="line">촛불이 흔들리고,<br>매듭 위의 가락지 두 개가 맞닿는다.</p>
-      <p class="line voice" id="s3c">"허나 잇는 데는 <em>물때</em>가 있어요.<br>당기면 끊어지는 달이 있고—<br>살짝만 당겨도 오는 달이 있지요."</p>
-      <p class="line voice" id="showLine">"연서(戀書)로 적어 줄게요.<br>그 사람 마음의 물때와— <em>다시 닿는 법.</em>"</p>
+      <p class="line voice" id="sorryLine">"…나왔어요."</p>
+      <p class="line voice" id="s3a">"나 이런 말 함부로 안 하는데—<br><em>그 사람, 그대 생각 해요.</em>"</p>
+      <p class="line" style="margin-top:8px">여인이 붉은 실 매듭을<br>그대 앞으로 살며시 밀어 놓는다.</p>
+      <p class="line voice" data-quake id="s3b">"안 하는 척할 뿐이에요.<br><em>실 끝이 아직 그대를 잡고 있거든요.</em>"</p>
+      <p class="line">촛불이 흔들리고,<br>매듭 위 가락지 두 개가 맞닿는다.</p>
+      <p class="line voice" id="s3c">"근데— 연락은 아직 하지 마요.<br><em>지금 하면, 끊어져요.</em>"</p>
+      <p class="line voice" id="showLine">"언제 하면 되는지, 왜 끊어졌는지,<br>지금 그 사람 속마음까지—<br><em>연서(戀書)로 다 적어 줄게요.</em>"</p>
       <div class="choices">
-        <button class="choice" data-next="sales" id="s3Btn">"…언제예요, 그 때가."</button>
+        <button class="choice" data-next="sales" id="s3Btn">"…언제 하면 되는데요?"</button>
       </div>
     </div>
     <button class="skip" onclick="skipStory()">스토리 건너뛰기 &gt;</button>
@@ -1017,7 +1016,7 @@ footer b{color:#7a6f66}
       <video class="bg" src="../assets/hd_hero.mp4" muted loop playsinline preload="none" poster="../assets/hd_hero.jpg"></video>
       <div class="veil2"></div>
       <div class="inner">
-        <p class="h-red rv" id="pTag" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 8px #000">— 별당 · 연분(緣分) 감정 —</p>
+        <p class="h-red rv" id="pTag" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 8px #000">— 별당 · 인연 감정 —</p>
         <h2 class="h-big rv" id="pHead" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 12px rgba(0,0,0,.96),0 6px 26px #000,0 0 44px #000">그대 실 끝—<br><span class="r">비어 있지 않아요</span></h2>
         <p class="p-body rv" id="pSub" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">"별당 아씨로서 말할게요.<br>지금부터— <em>그대의 원국(原局)</em>이에요."</p>
       </div>
@@ -1072,10 +1071,10 @@ footer b{color:#7a6f66}
 
     <!-- 후크 (분기) -->
     <section class="sec only-jae">
-      <p class="h-red rv">"왜 자꾸,</p>
-      <h2 class="h-big rv">그 사람이 <span class="r">떠오르지?"</span></h2>
-      <div class="h-hanja rv">未練</div>
-      <p class="p-body rv">미련이 아니에요.<br><em>덜 풀린 실</em>이 당기는 거예요.</p>
+      <p class="h-red rv">"그 사람도</p>
+      <h2 class="h-big rv">내 생각 <span class="r">할까?"</span></h2>
+      <div class="h-hanja rv">心</div>
+      <p class="p-body rv">해요.<br>실을 보면— <em>다 보여요.</em></p>
       <ul class="chk">
         <li class="rv" style="transition-delay:.05s">"자니…?" 한 글자, 썼다 지웠다— 새벽 세 시</li>
         <li class="rv" style="transition-delay:.25s">프로필 사진만 하루에도 몇 번씩 들여다보고</li>
@@ -1083,13 +1082,13 @@ footer b{color:#7a6f66}
         <li class="rv" style="transition-delay:.65s">새 사람을 만나 봐도— 자꾸 그 사람과 비교하고</li>
         <li class="rv" style="transition-delay:.85s">"잘 지내?" 한마디가 목 끝까지 차오르고</li>
       </ul>
-      <p class="p-dim rv">미련이라 부르며 자책해 왔죠.<br>아니에요.<br><b style="color:var(--ink)">실이 덜 풀렸을 뿐이에요.</b></p>
+      <p class="p-dim rv">미련이라고 자책하지 마요.<br><b style="color:var(--ink)">덜 끝난 인연은— 원래 이래요.</b></p>
     </section>
     <section class="sec only-yeon">
       <p class="h-red rv">"내 인연은</p>
       <h2 class="h-big rv">대체 <span class="r">어디 있는 거야?"</span></h2>
       <div class="h-hanja rv">緣分</div>
-      <p class="p-body rv">없는 게 아니에요.<br><em>오는 길목</em>을 몰랐을 뿐이에요.</p>
+      <p class="p-body rv">있어요.<br>그것도— <em>생각보다 가까이.</em></p>
       <ul class="chk">
         <li class="rv" style="transition-delay:.05s">소개는 들어오는데, 설레는 사람이 없고</li>
         <li class="rv" style="transition-delay:.25s">친구들 청첩장만 자꾸 쌓여 가고</li>
@@ -1106,10 +1105,10 @@ footer b{color:#7a6f66}
       <div class="veil2"></div>
       <div class="inner">
         <div class="hr-knife rv"></div>
-        <p class="p-body rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">연(緣)은—</p>
-        <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">억지로 당기면<br>손끝에서 끊어지는 <em>실</em>이지만,</p>
-        <p class="p-body rv" style="margin-top:44px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">물때를 알고 당기면—<br>평생 풀리지 않는 <em>매듭</em>이 돼요.</p>
-        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">그대가 여태 몰랐던,<br>실의 방향과 물때.<br><br>이제— 제대로 짚어 봐요.</p>
+        <p class="p-body rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">인연이 안 풀린 건—</p>
+        <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">그대가 부족해서가<br><em>아니에요.</em></p>
+        <p class="p-body rv" style="margin-top:44px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">때를 몰랐고,<br>길목을 몰랐을 뿐이에요.</p>
+        <p class="p-dim rv" style="margin-top:60px;text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.96),0 5px 22px #000,0 0 36px #000">그리고 그건—<br>알려주면 되는 거예요.<br><br>지금부터, 내가요.</p>
       </div>
     </section>
 
@@ -1119,10 +1118,10 @@ footer b{color:#7a6f66}
       <div class="veil2"></div>
       <div class="inner">
         <p class="h-red rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 2px 10px #000">심곡사 뒤뜰, 달 밝은 별당</p>
-        <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">붉은 실의 장부를 지키는<br>별당 아씨, <span class="r">홍단</span></h2>
+        <h2 class="h-big rv" style="text-shadow:0 2px 4px rgba(0,0,0,.98),0 4px 14px rgba(0,0,0,.95),0 6px 28px #000">인연 실 사천 번을 이은<br>별당 아씨, <span class="r">홍단</span></h2>
         <p class="p-body rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">
-          심곡사가 산을 지켜 온 여든세 대(代),<br>별당은 <em>연(緣)의 장부</em>만 지켜 왔어요.<br><br>
-          이 손으로 이어 온 실이<br><em>사천(四千) 갈래</em>— 끊긴 실도, 오는 실도요.
+          심곡사 뒤뜰 별당에서<br><em>인연 실만 사천(四千) 번</em>—<br>맺고, 잇고, 걸러 왔어요.<br><br>
+          누가 언제 누구를 만나는지,<br>왜 헤어졌는지— 실만 보면 보여요.
         </p>
         <p class="p-dim rv" style="text-shadow:0 1px 3px rgba(0,0,0,.98),0 3px 10px rgba(0,0,0,.95),0 5px 24px #000">
           신점(神占)이 아니에요.<br>정통 명리학 · 궁합과 신살(神殺) 기반의 인연 풀이예요.
@@ -1173,8 +1172,8 @@ footer b{color:#7a6f66}
       <p class="p-dim rv">그대 원국을 보고 전부 적어 뒀어요.<br>열람만 잠겨 있을 뿐.</p>
       <div class="locklist only-jae">
         <div class="lockitem rv">
-          <div class="li-head"><span class="li-no">其一</span><span class="li-title">그 사람 마음에 남은<br>내 자국의 깊이</span></div>
-          <div class="li-body"><p>두 원국을 포개면 그 사람 일지(日支)에 그대 흔적이 어느 깊이로 박혀 있는지 보이는데, 그 자리는 생각보다…</p><div class="li-veil">🔒 연서에서 공개</div></div>
+          <div class="li-head"><span class="li-no">其一</span><span class="li-title">그 사람 속마음 —<br>지금 나를 어떻게 생각하는지</span></div>
+          <div class="li-body"><p>겉으론 아무렇지 않은 척해도 두 원국을 포개면 속이 보이는데, 그 사람 요즘 밤마다…</p><div class="li-veil">🔒 연서에서 공개</div></div>
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其二</span><span class="li-title">이별의 진짜 이유 —<br>겉말 말고, 원국이 말하는 속사정</span></div>
@@ -1190,7 +1189,7 @@ footer b{color:#7a6f66}
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其五</span><span class="li-title">잇는 실인가, 놓는 실인가 —<br>홍단의 단언</span></div>
-          <div class="li-body"><p>사천 갈래 장부에 비추어 이 실이 명줄인지 미련인지— 마지막 장에 적은 결론은…</p><div class="li-veil">🔒 연서에서 공개</div></div>
+          <div class="li-body"><p>사천 번 이어 본 눈으로 보면 이 실이 인연인지 미련인지 답이 나오는데, 마지막 장에 적은 결론은…</p><div class="li-veil">🔒 연서에서 공개</div></div>
         </div>
       </div>
       <div class="locklist only-yeon">
@@ -1208,7 +1207,7 @@ footer b{color:#7a6f66}
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其四</span><span class="li-title">스쳐 보낸 인연 —<br>이미 만난 적이 있는가</span></div>
-          <div class="li-body"><p>지나간 얼굴 중에 실이 스친 이가 있는지, 있었다면 언제 어디서였는지— 장부를 되짚으면…</p><div class="li-veil">🔒 연서에서 공개</div></div>
+          <div class="li-body"><p>지나간 얼굴 중에 실이 스친 이가 있는지, 있었다면 언제 어디서였는지— 되짚어 보면…</p><div class="li-veil">🔒 연서에서 공개</div></div>
         </div>
         <div class="lockitem rv">
           <div class="li-head"><span class="li-no">其五</span><span class="li-title">걸러야 할 얼굴 —<br>내 도화를 노리고 붙는 인연의 낌새</span></div>
@@ -1220,7 +1219,7 @@ footer b{color:#7a6f66}
     <!-- 세 매듭 셈법 -->
     <section class="sec">
       <p class="h-red rv">홍단의</p>
-      <h2 class="h-big rv">세 매듭 <span class="r">셈법</span></h2>
+      <h2 class="h-big rv">세 가지 <span class="r">답</span></h2>
 
       <div style="margin-top:70px">
         <div class="stepnum rv">壹</div>
@@ -1234,7 +1233,7 @@ footer b{color:#7a6f66}
       <div style="margin-top:80px">
         <div class="stepnum rv">貳</div>
         <div class="stepline"></div>
-        <h3 class="h-big rv" style="font-size:20px">얽힌 자리, 푸는 법까지</h3>
+        <h3 class="h-big rv" style="font-size:20px">왜 그랬는지, 어떻게 풀지</h3>
         <div class="card rv" id="salDeepCard"></div>
       </div>
 
@@ -1864,12 +1863,12 @@ function fillReact(){
   const r1 = document.getElementById('reactLine1');
   const r2 = document.getElementById('reactLine2');
   if (user.path === 'jae'){
-    r1.innerHTML = '"…' + nm + '.<br>' + (user.sub1 === 3 ? '해를 넘겼는데도— 실이 이 모양이라니." ' : '그새 실이 이렇게 상했다니."');
-    r2.innerHTML = '<em>"…아직 매어 있네요, 저쪽 끝이."</em>';
+    r1.innerHTML = '"…' + nm + '.<br>' + (user.sub1 === 3 ? '해를 넘겼는데 실이 아직 이래요?"' : '그새 실이 많이 상했네요."');
+    r2.innerHTML = '<em>"…근데 이상하다. 그 사람 쪽 끝이— 아직 그대를 잡고 있어요."</em>';
     document.getElementById('ask4Btn').textContent = '"…정말이에요?"';
   } else {
-    r1.innerHTML = '"…' + nm + '.<br>' + (user.sub2 === 1 ? '곁에 있다는 그 사람— 실이 스치긴 했네요."' : '그대 실, 혼자 늘어져 있던 게 아니에요."');
-    r2.innerHTML = '<em>"…이상하네요. 실 끝이— 생각보다 가까이 있어요."</em>';
+    r1.innerHTML = '"…' + nm + '.<br>' + (user.sub2 === 1 ? '눈에 밟힌다는 그 사람— 실이 스치긴 했네요."' : '그대 실, 혼자 늘어져 있던 게 아니에요."');
+    r2.innerHTML = '<em>"…어라. 그대 실 끝— 생각보다 가까이 있는데요?"</em>';
     document.getElementById('ask4Btn').textContent = '"…가깝다니, 어디에요?"';
   }
 }
@@ -1885,14 +1884,14 @@ function esc(s){ const d = document.createElement('div'); d.textContent = s; ret
 /* ───────── scene3 개인화 ───────── */
 function prepScene3(){
   if (user.name) {
-    document.getElementById('sorryLine').innerHTML = '"셈이 나왔어요… ' + esc(user.name) + '."';
+    document.getElementById('sorryLine').innerHTML = '"…나왔어요, ' + esc(user.name) + '."';
   }
   if (user.path === 'yeon'){   // 기본 대사는 재회(jae) — 연애 분기만 갈아끼운다
-    document.getElementById('s3a').innerHTML = '"<em>없는 게 아니에요. 여태— 스치고 있었을 뿐.</em>"';
-    document.getElementById('s3b').innerHTML = '"그대 실 끝— <em>생각보다 가까이 있어요.</em>"';
-    document.getElementById('s3c').innerHTML = '"허나 연이 닿는 데는 <em>길목</em>이 있어요.<br>스쳐 지나가는 해가 있고—<br>실이 저절로 당겨지는 해가 있지요."';
-    document.getElementById('showLine').innerHTML = '"연서(戀書)로 적어 줄게요.<br>오는 해와 방향— <em>얼굴의 생김까지.</em>"';
-    document.getElementById('s3Btn').textContent = '"…어디예요, 그 사람."';
+    document.getElementById('s3a').innerHTML = '"나 이런 말 함부로 안 하는데—<br><em>그대 인연, 이미 정해져 있어요.</em>"';
+    document.getElementById('s3b').innerHTML = '"없는 게 아니라—<br><em>오고 있는 중이에요.</em>"';
+    document.getElementById('s3c').innerHTML = '"근데— 아무나 잡으면 안 돼요.<br><em>엉뚱한 실을 잡으면, 진짜가 늦어요.</em>"';
+    document.getElementById('showLine').innerHTML = '"언제 어디서 오는지, 어떤 얼굴인지,<br>누굴 걸러야 하는지—<br><em>연서(戀書)로 다 적어 줄게요.</em>"';
+    document.getElementById('s3Btn').textContent = '"…어떤 사람인데요?"';
   }
 }
 
@@ -1913,7 +1912,7 @@ const HD_KNOTS = {
   jae: [
     {t:'두 원국', s:'그대와 그 사람— 타고난 판을 포개 봐요. 어디가 맞고, 어디서 어긋났는지.', x:'그대와 그 사람, 타고난 판을 포갠다'},
     {t:'얽힌 살(殺)', s:'좋다가도 틀어지게 만든 살의 이름과 짙기.', x:'좋다가도 틀어지게 만든 것들의 정체'},
-    {t:'마음의 자국', s:'그 사람 마음에 남은 그대 흔적— 그 깊이까지.', x:'그 사람 마음에 남은 그대의 깊이'},
+    {t:'그 사람 속마음', s:'지금 나를 어떻게 생각하는지— 실이 다 일러줬어요.', x:'그 사람, 지금 무슨 생각 할까'},
     {t:'이별의 속사정', s:'겉말 말고— 원국이 가리키는 진짜 이유.', x:'원국이 말하는, 끊어진 진짜 이유'},
     {t:'물때', s:'연락이 닿는 달과, 닿아도 안 되는 달.', x:'연락이 닿는 달, 끊어지는 달'},
     {t:'다시 만나는 길목', s:'어디서, 어떤 얼굴로 다시 마주치는지.', x:'다시 마주치는 자리와 낌새'},
@@ -1928,7 +1927,7 @@ const HD_KNOTS = {
     {t:'올 사람의 얼굴', s:'인상, 분위기, 말버릇까지— 윤곽을 그려요.', x:'인상·분위기·말버릇— 윤곽을 그린다'},
     {t:'오는 때', s:'실이 당겨지는 해와 계절.', x:'실이 당겨지는 해와 계절'},
     {t:'오는 길목', s:'방향과 자리— 소개인지, 우연인지, 일터인지.', x:'오는 방향과 만나는 자리'},
-    {t:'스친 인연', s:'이미 만난 적 있는지— 장부를 되짚어요.', x:'이미 스쳐 간 얼굴이 있는가'},
+    {t:'스친 인연', s:'이미 만난 적 있는지— 되짚어 봐요.', x:'이미 스쳐 간 얼굴이 있는가'},
     {t:'걸러낼 얼굴', s:'그대 도화를 노리고 붙는 낌새.', x:'붙으면 안 되는 인연의 낌새'},
     {t:'붙잡는 법', s:'그 사람 앞에서의 그대— 밀고 당기는 물때.', x:'그 사람 앞에서 밀고 당기는 법'},
     {t:'열두 달', s:'다가올 한 해— 연이 짙어지는 달을 짚어요.', x:'다가올 한 해, 달마다 짚는다'},
@@ -1944,11 +1943,11 @@ function fillSales(){
   const nm = user.name ? esc(user.name) : '';
   // 선고 — 분기별
   if (path === 'jae'){
-    document.getElementById('pHead').innerHTML = (nm ? nm + '.<br>' : '끝난 게 아니에요.<br>') + '<span class="r">끝난 실이 아니에요</span>';
-    document.getElementById('pSub').innerHTML = '"별당 아씨로서 말할게요.<br><em>그 사람 쪽 실 끝— 아직 묶여 있어요.</em>"';
+    document.getElementById('pHead').innerHTML = (nm ? nm + '.<br>' : '') + '<span class="r">그 사람, 그대 생각 해요</span>';
+    document.getElementById('pSub').innerHTML = '"안 하는 척할 뿐이에요.<br><em>실 끝이 아직 그대를 잡고 있거든요.</em>"';
   } else {
-    document.getElementById('pHead').innerHTML = (nm ? nm + '.<br>' : '그대 실 끝—<br>') + '<span class="r">비어 있지 않아요</span>';
-    document.getElementById('pSub').innerHTML = '"별당 아씨로서 말할게요.<br><em>저쪽 끝에서— 누가 실을 쥐고 있어요.</em>"';
+    document.getElementById('pHead').innerHTML = (nm ? nm + '.<br>' : '') + '<span class="r">그대 인연, 정해져 있어요</span>';
+    document.getElementById('pSub').innerHTML = '"어디쯤 오고 있는지—<br><em>실이 벌써 당겨지고 있거든요.</em>"';
   }
   if (nm){
     document.getElementById('chartOwner').textContent = user.name + ' — 四柱原局';
@@ -2001,7 +2000,7 @@ function fillSales(){
   lastSals = picks.map(s => s.name);
   const t = path === 'jae' ? [
     {yr: pastY, head: `${picks[0].name}(${picks[0].hanja}) — 실이 처음 상한 해`, tx:'같은 자리가 눌리며 어긋남이 시작'},
-    {yr: nowY, head: '<b>지금 — 저쪽 실이 흔들리는 중</b>', tx:'그 사람이 되돌아보는 달, ■월과 ■월'},
+    {yr: nowY, head: '<b>지금 — 그 사람이 그대를 떠올리는 중</b>', tx:'마음이 흔들리는 달, ■월과 ■월'},
     {yr: futureY, head: '매듭을 고쳐 묶을 물때', tx:'당겨도 끊어지지 않는 달— ■월'}
   ] : [
     {yr: pastY, head: `${picks[0].name}(${picks[0].hanja}) — 실이 스쳤던 해`, tx:'이미 지나친 얼굴 하나— ■월'},
@@ -2031,7 +2030,7 @@ function enterLoading(){
   ld.classList.add('on');
   const lbg = ld.querySelector('.load-bg');
   if (lbg) { lbg.preload='auto'; lbg.play().catch(()=>{}); }
-  const third = user.path === 'jae' ? '그 사람 쪽 실 끝을 짚는다…' : '실이 오는 길목을 짚는다…';
+  const third = user.path === 'jae' ? '그 사람 속마음을 들여다본다…' : '그대 인연의 얼굴을 그려 본다…';
   const msgs = user.name ? [
     '붉은 실을 사린다…',
     '<b>' + esc(user.name) + '</b>… 그대 원국을 세운다…',
