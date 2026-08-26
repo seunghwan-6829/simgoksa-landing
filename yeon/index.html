@@ -69,9 +69,12 @@ body.preview #topbar,body.preview #demoBar{display:none}
 #progress{flex:none;height:2px;background:rgba(240,222,224,.08)}
 #progressBar{height:100%;width:0;background:linear-gradient(90deg,#6e1626,var(--brass-hi));transition:width .3s ease}
 #pager{flex:1;overflow:hidden;position:relative;touch-action:pan-y}
-#track{display:flex;height:100%;transition:transform .38s cubic-bezier(.22,.8,.3,1);will-change:transform}
+#track{display:flex;height:100%;transition:transform .38s cubic-bezier(.22,.8,.3,1)}
 .page{flex:none;width:100%;height:100%;overflow-y:auto;scrollbar-width:none;padding:34px 28px 60px;position:relative}
 .page::-webkit-scrollbar{display:none}
+/* 인앱 브라우저(인스타·카톡 WKWebView) 화이트스크린 방지 — 현재 장 주변만 그린다 */
+.page.far{visibility:hidden}
+@media print{.page.far{visibility:visible!important}}
 /* typography */
 .pg-no{font-family:'Nanum Myeongjo',serif;font-size:11px;letter-spacing:.3em;color:var(--dim2);text-align:center;margin-bottom:26px}
 .pg-label{font-size:12px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-bottom:14px}
@@ -855,6 +858,9 @@ const track = document.getElementById('track');
 const total = pages.length;
 let cur = 0;
 function updateBar(){
+  // 현재 장 ±2 밖은 그리지 않는다 — 수십 장을 한 줄로 이어붙인 초광폭 레이어를
+  // 인앱 브라우저(WKWebView)가 래스터하지 못해 흰 화면이 되는 문제 회피
+  for (let i = 0; i < total; i++){ const el = track.children[i]; if (el) el.classList.toggle('far', Math.abs(i - cur) > 2); }
   document.getElementById('pageNo').textContent = `第 ${cur+1} 張 / ${total}`;
   document.getElementById('progressBar').style.width = ((cur+1)/total*100) + '%';
   // 마지막 장에 닿으면 메인으로 가는 바가 내려온다
