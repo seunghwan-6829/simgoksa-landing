@@ -98,8 +98,22 @@ Deno.serve(async (req) => {
       const uses = Math.max(1, Math.min(20, Number(body.uses) || 2));
       const note = String(body.note || "").slice(0, 100) || null;
       if (!/.+@.+\..+/.test(gEmail)) return new Response(JSON.stringify({ error: "bad_email" }), { status: 400, headers: cors });
-      // 계정 보장 — 받은 사람이 서고에서 OTP(이메일로 열쇠 받기)로 바로 로그인되도록
-      try { await ensureAuthUser(url, S, gEmail); } catch (e) { console.error("ensureAuthUser", String(e)); }
+      const pw = typeof body.password === "string" ? String(body.password) : "";
+      if (pw && (pw.length < 6 || pw.length > 72)) return new Response(JSON.stringify({ error: "bad_password" }), { status: 400, headers: cors });
+      // 계정 보장 + (비밀번호가 오면) 설정 — 받은 사람이 이메일+비밀번호로 어느 기기에서든 로그인되도록
+      let passwordSet = false;
+      try {
+        const uid2 = await ensureAuthUser(url, S, gEmail);
+        if (pw && uid2) {
+          const pr = await fetch(`${url}/auth/v1/admin/users/${uid2}`, {
+            method: "PUT",
+            headers: { ...S, "Content-Type": "application/json" },
+            body: JSON.stringify({ password: pw }),
+          });
+          passwordSet = pr.ok;
+          if (!pr.ok) console.error("set password failed", pr.status, await pr.text());
+        }
+      } catch (e) { console.error("ensureAuthUser", String(e)); }
       // 이미 발급된 이메일이면 횟수를 더한다
       const ex = await fetch(`${url}/rest/v1/trial_credits?email=eq.${encodeURIComponent(gEmail)}&select=id,total,used,note`, { headers: S }).then(j);
       let r: Response;
@@ -117,7 +131,24 @@ Deno.serve(async (req) => {
         });
       }
       if (!r.ok) console.error("trial_grant failed", r.status, await r.text());
-      return new Response(JSON.stringify({ ok: r.ok }), { status: r.ok ? 200 : 500, headers: cors });
+      return new Response(JSON.stringify({ ok: r.ok, password_set: passwordSet }), { status: r.ok ? 200 : 500, headers: cors });
+    }
+
+    if (action === "trial_password") {
+      // 비밀번호만 재설정 — 체험 계정이든 구매자 CS든, 어드민이 정한 값으로
+      const gEmail = String(body.email || "").trim().toLowerCase();
+      const pw = String(body.password || "");
+      if (!/.+@.+\..+/.test(gEmail)) return new Response(JSON.stringify({ error: "bad_email" }), { status: 400, headers: cors });
+      if (pw.length < 6 || pw.length > 72) return new Response(JSON.stringify({ error: "bad_password" }), { status: 400, headers: cors });
+      const uid3 = await ensureAuthUser(url, S, gEmail);
+      if (!uid3) return new Response(JSON.stringify({ ok: false, error: "user_failed" }), { status: 500, headers: cors });
+      const pr = await fetch(`${url}/auth/v1/admin/users/${uid3}`, {
+        method: "PUT",
+        headers: { ...S, "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pw }),
+      });
+      if (!pr.ok) console.error("trial_password failed", pr.status, await pr.text());
+      return new Response(JSON.stringify({ ok: pr.ok }), { status: pr.ok ? 200 : 500, headers: cors });
     }
 
     if (action === "trial_link") {
