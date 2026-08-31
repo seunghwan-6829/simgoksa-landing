@@ -392,6 +392,7 @@ async function loadBooks(quiet){
 /* ── 결제 직후 자동 입장 ──
    랜딩이 결제 직전 localStorage 에 남긴 sid 로 서버(claim-session)에 "방금 결제한 기기"임을 증명하면
    서버가 결제 이메일 계정(자동 생성)의 1회용 토큰을 주고, 여기서 세션을 연다. 메일도 회원가입도 없다. */
+let inviteExpired = false;   // 초대 열쇠가 낡았으면 로그인 화면에 안내
 function pendingSid(){
   try{ const d = JSON.parse(localStorage.getItem('sgs_sid') || 'null'); if (d && d.sid && Date.now() - d.t < 24*3600e3) return d.sid; }catch(e){}
   return null;
@@ -436,11 +437,25 @@ async function claimSession(sid){
 }
 async function init(){
   if (!sb) { show(false); return; }
+  // 초대 열쇠(?tk=) — 어드민이 만들어 준 1회용 링크. 메일 없이 바로 연다.
+  const tk = new URLSearchParams(location.search).get('tk');
+  if (tk){
+    history.replaceState(null, '', location.pathname);   // 주소에서 열쇠 제거
+    try{
+      const v = await sb.auth.verifyOtp({ token_hash: tk, type: 'magiclink' });
+      if (v && v.data && v.data.session){ show(true, v.data.session.user.email); return; }
+    }catch(e){ /* 만료·재사용 — 아래 일반 흐름으로 */ }
+    inviteExpired = true;
+  }
   const { data } = await sb.auth.getSession();
   if (data && data.session){ show(true, data.session.user.email); return; }
   const sid = pendingSid();
   if (sid){ await claimSession(sid); return; }
   show(false);
+  if (inviteExpired){
+    const m = document.getElementById('oMsg');
+    if (m){ m.textContent = '초대 열쇠가 낡았다 — 보낸 이에게 새 열쇠를 청하라.'; m.style.display = 'block'; }
+  }
 }
 /* 다른 기기: 결제 이메일로 매직링크 */
 async function sendOtp(){

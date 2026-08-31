@@ -1,5 +1,5 @@
 // 어드민 API — 지정된 관리자 계정(Supabase Auth) 토큰으로만 접근
-import { ensureAuthUser } from "../_shared/auth.ts";
+import { ensureAuthUser, generateMagic } from "../_shared/auth.ts";
 
 const ADMIN_EMAILS = ["motiol_6829@naver.com"];
 
@@ -118,6 +118,16 @@ Deno.serve(async (req) => {
       }
       if (!r.ok) console.error("trial_grant failed", r.status, await r.text());
       return new Response(JSON.stringify({ ok: r.ok }), { status: r.ok ? 200 : 500, headers: cors });
+    }
+
+    if (action === "trial_link") {
+      // 초대 링크 — 메일 없이 서고에 로그인되는 1회용 열쇠 (기본 메일이 외부 주소로 못 나가는 한계 우회)
+      const gEmail = String(body.email || "").trim().toLowerCase();
+      if (!/.+@.+\..+/.test(gEmail)) return new Response(JSON.stringify({ error: "bad_email" }), { status: 400, headers: cors });
+      try { await ensureAuthUser(url, S, gEmail); } catch (e) { console.error("ensureAuthUser", String(e)); }
+      const g = await generateMagic(url, S, gEmail);
+      if (!g || !g.tokenHash) return new Response(JSON.stringify({ ok: false, error: "link_failed" }), { status: 500, headers: cors });
+      return new Response(JSON.stringify({ ok: true, link: `https://simgoksa.com/library/?tk=${encodeURIComponent(g.tokenHash)}` }), { headers: cors });
     }
 
     if (action === "trial_remove") {

@@ -200,7 +200,7 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
       <p class="sub">블로거 등에게 결제 없이 열람권을 줍니다 · 어떤 상품이든 <b>「전부」 등급</b>으로 열리며, 발급 횟수만큼 사용할 수 있습니다</p>
       <div class="panel" style="margin-top:20px">
         <h2>체험권 발급</h2>
-        <p class="p-sub">계정이 없으면 자동 생성됩니다. 받은 분 안내: ① <b>simgoksa.com/library</b> 에서 「이메일로 열쇠 받기」로 로그인 → ② 원하는 캐릭터 랜딩에서 사주 입력 → ③ 결제창에 뜨는 <b>「체험권으로 전부 열람」</b> 버튼 클릭</p>
+        <p class="p-sub">계정이 없으면 자동 생성됩니다. 발급 후 아래 내역의 <b>「🔗 초대 링크」</b>를 눌러 복사한 링크를 블로거에게 보내 주세요 (메일 인증 불필요 · 클릭 즉시 로그인). 받은 분은 ① 링크로 서고 접속 → ② 원하는 캐릭터 랜딩에서 사주 입력 → ③ 결제창의 <b>「체험권으로 전부 열람」</b> 클릭. 링크는 시간이 지나면 만료되니, 만료됐다고 하면 같은 버튼으로 새로 만들어 보내면 됩니다.</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <input id="tEmail" type="email" placeholder="이메일" style="flex:1;min-width:200px;border:1px solid #d6dce8;border-radius:7px;padding:9px 12px;font-family:inherit;font-size:13px">
           <input id="tUses" type="number" min="1" max="20" value="2" title="횟수" style="width:64px;border:1px solid #d6dce8;border-radius:7px;padding:9px 8px;font-family:inherit;font-size:13px;text-align:center">
@@ -268,6 +268,7 @@ async function loadTrial(){
         <td>${esc(t.note || '')}</td>
         <td class="muted">${dt(t.created_at)}</td>
         <td style="white-space:nowrap">
+          <button class="mini" data-email="${esc(t.email)}" onclick="trialLink(this.dataset.email)" style="color:#2b5fd9;border-color:#9db9f0">🔗 초대 링크</button>
           <button class="mini" data-email="${esc(t.email)}" onclick="trialAdd(this.dataset.email)">+횟수</button>
           <button class="mini" data-email="${esc(t.email)}" onclick="trialRemove(this.dataset.email)" style="color:#c53030">회수</button>
         </td></tr>`;
@@ -302,6 +303,17 @@ async function grantTrial(){
     loadTrial();
   }catch(e){ tMsg('발급 실패 — 잠시 후 다시 시도해 주세요.', false); }
   btn.disabled = false; btn.textContent = '발급';
+}
+async function trialLink(email){
+  tMsg('초대 링크 만드는 중…', true);
+  try{
+    const r = await api('trial_link', { email });
+    if (!r.ok || !r.link) throw 0;
+    let copied = false;
+    try{ await navigator.clipboard.writeText(r.link); copied = true; }catch(e){}
+    if (copied) tMsg(email + ' 초대 링크가 복사되었습니다 — 카톡·DM 으로 붙여넣어 보내세요. (시간 경과 시 만료 · 다시 누르면 새 링크)', true);
+    else prompt(email + ' 초대 링크 — 복사해서 보내세요', r.link);
+  }catch(e){ tMsg('초대 링크 생성 실패 — 잠시 후 다시 시도해 주세요.', false); }
 }
 async function trialAdd(email){
   const uses = Math.max(1, Math.min(20, Number(document.getElementById('tUses').value) || 2));
