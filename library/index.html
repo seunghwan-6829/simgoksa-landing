@@ -187,19 +187,14 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
   <!-- 로그인 폼 -->
   <div class="auth" id="authBox">
     <h3 id="aTitle">서고 열기</h3>
-    <p class="sub" id="aSub"><b style="color:var(--paper)">결제한 이메일</b>이 곧 열쇠다.<br>다른 기기라면 이메일로 열쇠를 받아라.</p>
-    <div class="otp-row">
-      <input type="email" id="oEmail" placeholder="결제한 이메일" autocomplete="email">
-      <button class="go" id="oGo" onclick="sendOtp()">이메일로 열쇠 받기</button>
-      <p class="err" id="oMsg"></p>
-    </div>
-    <p class="or"><span>또는 비밀번호로</span></p>
+    <p class="sub" id="aSub"><b style="color:var(--paper)">결제한 기기</b>에서는 문이 절로 열린다.<br>다른 기기라면 비밀번호로 열어라.</p>
+    <p class="err" id="oMsg"></p>
     <input type="email" id="aEmail" placeholder="이메일" autocomplete="email">
     <input type="password" id="aPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password">
     <input type="password" id="aPw2" placeholder="비밀번호 다시 한 번" autocomplete="new-password" style="display:none">
     <p class="err" id="aErr"></p>
     <button class="go" id="aGo" onclick="doAuth()">서고 열기 · 로그인</button>
-    <p class="switch" id="aSwitch">비밀번호를 아직 안 만들었다면 — 위의 「이메일로 열쇠 받기」</p>
+    <p class="switch" id="aSwitch">비밀번호를 아직 안 만들었다면 —<br>결제했던 기기로 들어와 「비밀번호 만들기」를 먼저 눌러라.</p>
   </div>
 
   <!-- 서고 -->
@@ -432,7 +427,7 @@ async function claimSession(sid){
   box.style.display = 'none';
   show(false);
   const m = document.getElementById('oMsg');
-  m.textContent = '결제 확인이 늦어진다. 결제한 이메일을 적고 「이메일로 열쇠 받기」를 눌러라.'; m.style.display = 'block';
+  m.textContent = '결제 확인이 조금 늦어진다 — 1분쯤 뒤 이 페이지를 새로고침해 보아라.'; m.style.display = 'block';
   return false;
 }
 async function init(){
@@ -456,20 +451,6 @@ async function init(){
     const m = document.getElementById('oMsg');
     if (m){ m.textContent = '초대 열쇠가 낡았다 — 보낸 이에게 새 열쇠를 청하라.'; m.style.display = 'block'; }
   }
-}
-/* 다른 기기: 결제 이메일로 매직링크 */
-async function sendOtp(){
-  const email = document.getElementById('oEmail').value.trim();
-  const m = document.getElementById('oMsg'); const btn = document.getElementById('oGo');
-  if (!/.+@.+\..+/.test(email)){ m.textContent = '이메일이 온전치 않다.'; m.style.display = 'block'; return; }
-  btn.disabled = true;
-  try{
-    const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + '/library/' } });
-    if (error){
-      m.textContent = /signups not allowed|not found|Signups/i.test(error.message) ? '그 이메일로 결제한 기록이 없다. 결제 때 적은 이메일을 확인하라.' : '메일을 보내지 못했다. 잠시 후 다시 시도하라.';
-    } else m.textContent = '메일을 보냈다 — 메일의 「열쇠」를 누르면 이 서고가 열린다.';
-  }catch(e){ m.textContent = '메일을 보내지 못했다. 잠시 후 다시 시도하라.'; }
-  m.style.display = 'block'; btn.disabled = false;
 }
 /* 자동 생성 계정에 비밀번호 달기 */
 async function setPassword(){
