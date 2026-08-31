@@ -1,4 +1,6 @@
 // 어드민 API — 지정된 관리자 계정(Supabase Auth) 토큰으로만 접근
+import { ensureAuthUser } from "../_shared/auth.ts";
+
 const ADMIN_EMAILS = ["motiol_6829@naver.com"];
 
 Deno.serve(async (req) => {
@@ -79,6 +81,49 @@ Deno.serve(async (req) => {
         headers: { ...S, "Content-Type": "application/json", Prefer: "return=minimal" },
         body: JSON.stringify({ status }),
       });
+      return new Response(JSON.stringify({ ok: r.ok }), { status: r.ok ? 200 : 500, headers: cors });
+    }
+
+    // ── 체험 계정 (블로거 열람권) ──────────────────────────────────────────
+    if (action === "trial_list") {
+      const [grants, uses] = await Promise.all([
+        fetch(`${url}/rest/v1/trial_credits?select=*&order=created_at.desc&limit=200`, { headers: S }).then(j),
+        fetch(`${url}/rest/v1/purchases?select=created_at,buyer_email,product,saju_answer,path&groble_purchase_id=like.TRIAL-*&order=created_at.desc&limit=200`, { headers: S }).then(j),
+      ]);
+      return new Response(JSON.stringify({ grants, uses }), { headers: cors });
+    }
+
+    if (action === "trial_grant") {
+      const gEmail = String(body.email || "").trim().toLowerCase();
+      const uses = Math.max(1, Math.min(20, Number(body.uses) || 2));
+      const note = String(body.note || "").slice(0, 100) || null;
+      if (!/.+@.+\..+/.test(gEmail)) return new Response(JSON.stringify({ error: "bad_email" }), { status: 400, headers: cors });
+      // 계정 보장 — 받은 사람이 서고에서 OTP(이메일로 열쇠 받기)로 바로 로그인되도록
+      try { await ensureAuthUser(url, S, gEmail); } catch (e) { console.error("ensureAuthUser", String(e)); }
+      // 이미 발급된 이메일이면 횟수를 더한다
+      const ex = await fetch(`${url}/rest/v1/trial_credits?email=eq.${encodeURIComponent(gEmail)}&select=id,total,used,note`, { headers: S }).then(j);
+      let r: Response;
+      if (Array.isArray(ex) && ex.length) {
+        r = await fetch(`${url}/rest/v1/trial_credits?id=eq.${ex[0].id}`, {
+          method: "PATCH",
+          headers: { ...S, "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({ total: Math.min(100, Number(ex[0].total) + uses), note: note ?? ex[0].note, updated_at: new Date().toISOString() }),
+        });
+      } else {
+        r = await fetch(`${url}/rest/v1/trial_credits`, {
+          method: "POST",
+          headers: { ...S, "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({ email: gEmail, total: uses, used: 0, note }),
+        });
+      }
+      if (!r.ok) console.error("trial_grant failed", r.status, await r.text());
+      return new Response(JSON.stringify({ ok: r.ok }), { status: r.ok ? 200 : 500, headers: cors });
+    }
+
+    if (action === "trial_remove") {
+      const gEmail = String(body.email || "").trim().toLowerCase();
+      if (!/.+@.+\..+/.test(gEmail)) return new Response(JSON.stringify({ error: "bad_email" }), { status: 400, headers: cors });
+      const r = await fetch(`${url}/rest/v1/trial_credits?email=eq.${encodeURIComponent(gEmail)}`, { method: "DELETE", headers: { ...S, Prefer: "return=minimal" } });
       return new Response(JSON.stringify({ ok: r.ok }), { status: r.ok ? 200 : 500, headers: cors });
     }
 

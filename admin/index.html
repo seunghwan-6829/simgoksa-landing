@@ -115,6 +115,7 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
       <button data-v="inputs" onclick="switchView('inputs',this)">📝 <em>입력</em></button>
       <button data-v="orders" onclick="switchView('orders',this)">🧾 <em>주문 관리</em></button>
       <button data-v="members" onclick="switchView('members',this)">👥 <em>회원</em></button>
+      <button data-v="trial" onclick="switchView('trial',this)">🎁 <em>체험 계정</em></button>
     </nav>
     <div class="foot">
       <button onclick="loadAll()">↻ <span class="txt">새로고침</span></button>
@@ -192,6 +193,39 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
         </table>
       </div>
     </section>
+
+    <!-- 체험 계정 (블로거 열람권) -->
+    <section class="view" id="v-trial">
+      <h1>체험 계정</h1>
+      <p class="sub">블로거 등에게 결제 없이 열람권을 줍니다 · 어떤 상품이든 <b>「전부」 등급</b>으로 열리며, 발급 횟수만큼 사용할 수 있습니다</p>
+      <div class="panel" style="margin-top:20px">
+        <h2>체험권 발급</h2>
+        <p class="p-sub">계정이 없으면 자동 생성됩니다. 받은 분 안내: ① <b>simgoksa.com/library</b> 에서 「이메일로 열쇠 받기」로 로그인 → ② 원하는 캐릭터 랜딩에서 사주 입력 → ③ 결제창에 뜨는 <b>「체험권으로 전부 열람」</b> 버튼 클릭</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input id="tEmail" type="email" placeholder="이메일" style="flex:1;min-width:200px;border:1px solid #d6dce8;border-radius:7px;padding:9px 12px;font-family:inherit;font-size:13px">
+          <input id="tUses" type="number" min="1" max="20" value="2" title="횟수" style="width:64px;border:1px solid #d6dce8;border-radius:7px;padding:9px 8px;font-family:inherit;font-size:13px;text-align:center">
+          <span class="muted">회</span>
+          <input id="tNote" placeholder="메모 (블로거명 등)" style="flex:1;min-width:140px;border:1px solid #d6dce8;border-radius:7px;padding:9px 12px;font-family:inherit;font-size:13px">
+          <button class="mini" id="tGo" style="background:#2b5fd9;color:#fff;border-color:#2b5fd9;padding:9px 18px" onclick="grantTrial()">발급</button>
+        </div>
+        <p id="tMsg" class="p-sub" style="display:none;margin:10px 0 0"></p>
+      </div>
+      <div class="panel">
+        <h2>발급 내역</h2>
+        <p class="p-sub">「+n회」는 발급 화면의 횟수만큼 더합니다 · 「회수」는 남은 횟수를 없앱니다 (이미 열람한 결과지는 그대로 남습니다)</p>
+        <table>
+          <thead><tr><th>이메일</th><th>남음 / 전체</th><th>메모</th><th>발급일</th><th></th></tr></thead>
+          <tbody id="trialRows"><tr><td colspan="5" class="loading">불러오는 중…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h2>체험권으로 열람된 결과지</h2>
+        <table>
+          <thead><tr><th>일시</th><th>이메일</th><th>상품</th><th>사주</th></tr></thead>
+          <tbody id="trialUseRows"><tr><td colspan="4" class="loading">불러오는 중…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -217,6 +251,67 @@ async function api(action, params){
   if (r.status === 403) throw new Error('forbidden');
   if (!r.ok) throw new Error('api ' + r.status);
   return r.json();
+}
+
+/* ── 체험 계정 (블로거 열람권) ── */
+const PROD_KO = { myodam: '묘담', hyunwol: '현월', hongdan: '홍단' };
+async function loadTrial(){
+  const tb = document.getElementById('trialRows');
+  const ub = document.getElementById('trialUseRows');
+  try{
+    const { grants, uses } = await api('trial_list');
+    tb.innerHTML = (grants && grants.length) ? grants.map(t => {
+      const left = Math.max(0, (t.total|0) - (t.used|0));
+      return `<tr>
+        <td>${esc(t.email)}</td>
+        <td><b style="color:${left ? '#188b4e' : '#c53030'}">${left}</b> / ${t.total|0}</td>
+        <td>${esc(t.note || '')}</td>
+        <td class="muted">${dt(t.created_at)}</td>
+        <td style="white-space:nowrap">
+          <button class="mini" data-email="${esc(t.email)}" onclick="trialAdd(this.dataset.email)">+횟수</button>
+          <button class="mini" data-email="${esc(t.email)}" onclick="trialRemove(this.dataset.email)" style="color:#c53030">회수</button>
+        </td></tr>`;
+    }).join('') : '<tr><td colspan="5" class="loading">발급된 체험권이 없습니다.</td></tr>';
+    ub.innerHTML = (uses && uses.length) ? uses.map(x => `<tr>
+      <td class="muted">${dt(x.created_at)}</td>
+      <td>${esc(x.buyer_email || '')}</td>
+      <td>${esc(PROD_KO[x.product] || x.product)}${x.path ? ` · ${x.path === 'jae' ? '재회' : '연애'}` : ''}</td>
+      <td>${esc(x.saju_answer || '')}</td></tr>`).join('')
+      : '<tr><td colspan="4" class="loading">아직 체험권으로 열람한 기록이 없습니다.</td></tr>';
+  }catch(e){
+    tb.innerHTML = '<tr><td colspan="5" class="loading">불러오기 실패 — 새로고침 해 보세요.</td></tr>';
+    ub.innerHTML = '<tr><td colspan="4" class="loading">불러오기 실패</td></tr>';
+  }
+}
+function tMsg(text, ok){
+  const el = document.getElementById('tMsg');
+  el.textContent = text; el.style.display = 'block'; el.style.color = ok ? '#188b4e' : '#c53030';
+}
+async function grantTrial(){
+  const email = document.getElementById('tEmail').value.trim().toLowerCase();
+  const uses = Math.max(1, Math.min(20, Number(document.getElementById('tUses').value) || 2));
+  const note = document.getElementById('tNote').value.trim();
+  if (!/.+@.+\..+/.test(email)){ tMsg('이메일을 확인해 주세요.', false); return; }
+  const btn = document.getElementById('tGo');
+  btn.disabled = true; btn.textContent = '발급 중…';
+  try{
+    const r = await api('trial_grant', { email, uses, note });
+    if (!r.ok) throw new Error('fail');
+    tMsg(`${email} 에게 ${uses}회 발급 완료 — 계정도 준비되었습니다.`, true);
+    document.getElementById('tEmail').value = ''; document.getElementById('tNote').value = '';
+    loadTrial();
+  }catch(e){ tMsg('발급 실패 — 잠시 후 다시 시도해 주세요.', false); }
+  btn.disabled = false; btn.textContent = '발급';
+}
+async function trialAdd(email){
+  const uses = Math.max(1, Math.min(20, Number(document.getElementById('tUses').value) || 2));
+  try{ const r = await api('trial_grant', { email, uses, note: '' }); if (!r.ok) throw 0; tMsg(`${email} 에 ${uses}회 추가.`, true); loadTrial(); }
+  catch(e){ tMsg('추가 실패', false); }
+}
+async function trialRemove(email){
+  if (!confirm(email + ' 의 체험권을 회수할까요?\n(이미 열람한 결과지는 그대로 남습니다)')) return;
+  try{ const r = await api('trial_remove', { email }); if (!r.ok) throw 0; tMsg(`${email} 체험권 회수 완료.`, true); loadTrial(); }
+  catch(e){ tMsg('회수 실패', false); }
 }
 
 /* 로그인 */
@@ -258,7 +353,7 @@ function switchView(v, btn){
   btn.classList.add('sel');
 }
 
-function loadAll(){ loadDash(); loadInputs(); loadOrders(); loadMembers(); }
+function loadAll(){ loadDash(); loadInputs(); loadOrders(); loadMembers(); loadTrial(); }
 
 /* ── 입력 (input_complete 리드) ── */
 async function loadInputs(){
