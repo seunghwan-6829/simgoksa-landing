@@ -131,7 +131,13 @@ Deno.serve(async (req) => {
         });
       }
       if (!r.ok) console.error("trial_grant failed", r.status, await r.text());
-      return new Response(JSON.stringify({ ok: r.ok, password_set: passwordSet }), { status: r.ok ? 200 : 500, headers: cors });
+      // 영구 초대 링크 — 발급 직후 안내문에 실어 보낼 수 있게 함께 돌려준다
+      let inviteLink: string | null = null;
+      try {
+        const tokRows = await fetch(`${url}/rest/v1/trial_credits?email=eq.${encodeURIComponent(gEmail)}&select=invite_token&limit=1`, { headers: S }).then(j);
+        if (Array.isArray(tokRows) && tokRows[0]?.invite_token) inviteLink = `https://simgoksa.com/library/?iv=${tokRows[0].invite_token}`;
+      } catch (e) { console.error("invite link fetch", String(e)); }
+      return new Response(JSON.stringify({ ok: r.ok, password_set: passwordSet, link: inviteLink }), { status: r.ok ? 200 : 500, headers: cors });
     }
 
     if (action === "trial_password") {
@@ -152,13 +158,13 @@ Deno.serve(async (req) => {
     }
 
     if (action === "trial_link") {
-      // 초대 링크 — 메일 없이 서고에 로그인되는 1회용 열쇠 (기본 메일이 외부 주소로 못 나가는 한계 우회)
+      // 영구 초대 링크 — 몇 번이든 재사용, 체험권 회수 시 무효
       const gEmail = String(body.email || "").trim().toLowerCase();
       if (!/.+@.+\..+/.test(gEmail)) return new Response(JSON.stringify({ error: "bad_email" }), { status: 400, headers: cors });
-      try { await ensureAuthUser(url, S, gEmail); } catch (e) { console.error("ensureAuthUser", String(e)); }
-      const g = await generateMagic(url, S, gEmail);
-      if (!g || !g.tokenHash) return new Response(JSON.stringify({ ok: false, error: "link_failed" }), { status: 500, headers: cors });
-      return new Response(JSON.stringify({ ok: true, link: `https://simgoksa.com/library/?tk=${encodeURIComponent(g.tokenHash)}` }), { headers: cors });
+      const tokRows = await fetch(`${url}/rest/v1/trial_credits?email=eq.${encodeURIComponent(gEmail)}&select=invite_token&limit=1`, { headers: S }).then(j);
+      const tok = Array.isArray(tokRows) && tokRows[0]?.invite_token;
+      if (!tok) return new Response(JSON.stringify({ ok: false, error: "no_trial" }), { status: 404, headers: cors });
+      return new Response(JSON.stringify({ ok: true, link: `https://simgoksa.com/library/?iv=${tok}` }), { headers: cors });
     }
 
     if (action === "trial_remove") {

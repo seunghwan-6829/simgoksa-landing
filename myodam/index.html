@@ -2124,11 +2124,11 @@ function renderTrialButton(){
   b.style.background = 'linear-gradient(160deg,#1f5c33,#123d20)';
   b.textContent = '체험권으로 전부 열람 \u00b7 남은 ' + trialLeft + '회';
   b.onclick = redeemTrial;
-  go.insertAdjacentElement('afterend', b);
+  go.insertAdjacentElement('beforebegin', b);   // 체험 계정에겐 체험권이 기본 동선 — 결제 버튼 위에
   const n = document.createElement('p');
   n.className = 'm-note'; n.id = 'trialNote';
   n.textContent = '체험권은 등급 선택과 무관하게 전체를 열어 드립니다.';
-  b.insertAdjacentElement('afterend', n);
+  go.insertAdjacentElement('afterend', n);
 }
 async function redeemTrial(){
   if (trialBusy) return;

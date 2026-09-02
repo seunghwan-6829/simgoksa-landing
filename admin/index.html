@@ -200,7 +200,7 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
       <p class="sub">블로거 등에게 결제 없이 열람권을 줍니다 · 어떤 상품이든 <b>「전부」 등급</b>으로 열리며, 발급 횟수만큼 사용할 수 있습니다</p>
       <div class="panel" style="margin-top:20px">
         <h2>체험권 발급</h2>
-        <p class="p-sub">발급하면 계정이 만들어지고 <b>비밀번호까지 설정</b>됩니다 (비우면 자동 생성). 발급 즉시 <b>보낼 안내문(접속법+이메일+비밀번호)이 복사</b>되니 블로거에게 그대로 붙여넣어 보내세요. 받은 분은 ① simgoksa.com/library 에서 이메일+비밀번호로 로그인 → ② 원하는 캐릭터 랜딩에서 사주 입력 → ③ 결제창의 <b>「체험권으로 전부 열람」</b> 클릭. ⚠️ 이미 쓰던 계정(구매자 등)에 발급하면 비밀번호가 새로 바뀝니다 — 그 경우 비밀번호 칸을 비우지 말고 상황에 맞게 쓰세요. 🔗 초대 링크는 보조 수단(1회용·시간 만료)입니다.</p>
+        <p class="p-sub">발급하면 계정·비밀번호·<b>재사용 초대 링크</b>가 한 번에 만들어지고, <b>보낼 안내문(링크+이메일+비밀번호)이 복사</b>됩니다 — 블로거에게 그대로 붙여넣어 보내세요. 링크는 <b>몇 번을 눌러도 로그인</b>되고(만료 없음), 「회수」하면 무효가 됩니다. 받은 분은 ① 링크 클릭(자동 로그인) → ② 원하는 캐릭터 랜딩에서 사주 입력 → ③ 결제창의 <b>「체험권으로 전부 열람」</b> 클릭. ⚠️ 이미 쓰던 계정(구매자 등)에 발급하면 비밀번호가 새로 바뀝니다.</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <input id="tEmail" type="email" placeholder="이메일" style="flex:1;min-width:200px;border:1px solid #d6dce8;border-radius:7px;padding:9px 12px;font-family:inherit;font-size:13px">
           <input id="tUses" type="number" min="1" max="20" value="2" title="횟수" style="width:64px;border:1px solid #d6dce8;border-radius:7px;padding:9px 8px;font-family:inherit;font-size:13px;text-align:center">
@@ -293,16 +293,16 @@ function genPw(){
   let out = ''; for (let i = 0; i < 8; i++) out += chars[arr[i] % chars.length];
   return out;
 }
-function inviteText(email, pw, uses){
+function inviteText(email, pw, uses, link){
   return `深谷寺 심곡사 · 체험 초대장
 
-① 접속: https://simgoksa.com/library
-② 로그인 — 이메일: ${email}
-   비밀번호: ${pw}
-③ 원하는 술사 페이지에서 사주를 입력하면
+① 아래 링크를 누르면 바로 로그인돼요 (몇 번이든 재사용 가능)
+${link || 'https://simgoksa.com/library'}
+② 원하는 술사 페이지로 들어가 사주를 입력하면
    결제창에 「체험권으로 전부 열람」 버튼이 떠요 (${uses}회 제공)
 
-어느 기기에서든 위 이메일+비밀번호로 다시 열람할 수 있어요.`;
+다른 기기에서는 https://simgoksa.com/library 에서
+이메일 ${email} / 비밀번호 ${pw} 로도 열 수 있어요.`;
 }
 async function copyText(t){ try{ await navigator.clipboard.writeText(t); return true; }catch(e){ return false; } }
 function tMsg(text, ok){
@@ -322,7 +322,7 @@ async function grantTrial(){
   try{
     const r = await api('trial_grant', { email, uses, note, password: pw });
     if (!r.ok) throw new Error('fail');
-    const msg = inviteText(email, pw, uses);
+    const msg = inviteText(email, pw, uses, r.link);
     const copied = await copyText(msg);
     if (!r.password_set){
       tMsg(`발급은 됐지만 비밀번호 설정에 실패했습니다 — 「🔑 비번 재설정」으로 다시 시도해 주세요.`, false);
@@ -350,15 +350,14 @@ async function trialPw(email){
   }catch(e){ tMsg('비밀번호 재설정 실패', false); }
 }
 async function trialLink(email){
-  tMsg('초대 링크 만드는 중…', true);
   try{
     const r = await api('trial_link', { email });
     if (!r.ok || !r.link) throw 0;
     let copied = false;
     try{ await navigator.clipboard.writeText(r.link); copied = true; }catch(e){}
-    if (copied) tMsg(email + ' 초대 링크가 복사되었습니다 — 카톡·DM 으로 붙여넣어 보내세요. (1회용 — 직접 눌러보면 소모됩니다 · 다시 누르면 새 링크)', true);
-    else prompt(email + ' 초대 링크 — 복사해서 보내세요', r.link);
-  }catch(e){ tMsg('초대 링크 생성 실패 — 잠시 후 다시 시도해 주세요.', false); }
+    if (copied) tMsg(email + ' 초대 링크가 복사되었습니다 — 몇 번이든 재사용되는 링크예요. (체험권을 회수하면 무효)', true);
+    else prompt(email + ' 초대 링크 — 복사해서 보내세요 (재사용 가능)', r.link);
+  }catch(e){ tMsg('초대 링크를 찾지 못했습니다 — 먼저 발급해 주세요.', false); }
 }
 async function trialAdd(email){
   const uses = Math.max(1, Math.min(20, Number(document.getElementById('tUses').value) || 2));

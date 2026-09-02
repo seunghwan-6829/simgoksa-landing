@@ -201,6 +201,15 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
   <div class="shelf" id="shelf">
     <h2>꽂혀 있는 풀이</h2>
     <p class="loading-books" id="booksLoading">서가를 살피는 중…</p>
+    <div id="trialNotice" style="display:none;margin:0 0 18px;padding:16px 18px;border:1px dashed rgba(208,140,58,.5);border-radius:6px;background:rgba(208,140,58,.06);font-size:13.5px;line-height:2;word-break:keep-all">
+      🎁 체험 열람권 <b id="trialNoticeN" style="color:var(--ember,#d08c3a)">—</b>회가 남아 있다.<br>
+      아래 술사의 문으로 들어가 사주를 넣으면—<br>결제창에서 <b>「체험권으로 전부 열람」</b> 단추가 열린다.
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <a href="../myodam/" style="border:1px solid rgba(208,140,58,.45);border-radius:999px;padding:7px 14px;font-size:12.5px;color:var(--paper,#e8ddc7);text-decoration:none">巫 무녀 묘담 — 살풀이</a>
+        <a href="../hyunwol/" style="border:1px solid rgba(208,140,58,.45);border-radius:999px;padding:7px 14px;font-size:12.5px;color:var(--paper,#e8ddc7);text-decoration:none">財 스님 현월 — 재물</a>
+        <a href="../hongdan/" style="border:1px solid rgba(208,140,58,.45);border-radius:999px;padding:7px 14px;font-size:12.5px;color:var(--paper,#e8ddc7);text-decoration:none">緣 아씨 홍단 — 인연</a>
+      </div>
+    </div>
     <div id="books"></div>
     <div class="empty" id="emptyBox" style="display:none">
       <div class="e-hanja">空</div>
@@ -230,6 +239,7 @@ let mode = 'login';
 
 function show(logged, email){
   document.getElementById('authBox').style.display = logged ? 'none' : 'block';
+  if (logged) loadTrialNotice();
   document.getElementById('claimBox').style.display = 'none';
   document.getElementById('pwLink').style.display = logged ? 'block' : 'none';
   document.getElementById('shelf').style.display = logged ? 'block' : 'none';
@@ -302,6 +312,16 @@ function reportPurchases(rows){
 }
 
 let lastBookCount = -1;
+async function loadTrialNotice(){
+  // 체험 계정이면 남은 열람권을 서가 위에 알려 준다 (RLS: 본인 행만 보인다)
+  try{
+    const { data } = await sb.from('trial_credits').select('total,used');
+    const left = Array.isArray(data) ? data.reduce((n, r) => n + Math.max(0, (r.total|0) - (r.used|0)), 0) : 0;
+    const box = document.getElementById('trialNotice');
+    if (box && left > 0){ document.getElementById('trialNoticeN').textContent = left; box.style.display = 'block'; }
+    else if (box){ box.style.display = 'none'; }
+  }catch(e){}
+}
 async function loadBooks(quiet){
   const loading = document.getElementById('booksLoading');
   const booksEl = document.getElementById('books');
@@ -432,7 +452,21 @@ async function claimSession(sid){
 }
 async function init(){
   if (!sb) { show(false); return; }
-  // 초대 열쇠(?tk=) — 어드민이 만들어 준 1회용 링크. 메일 없이 바로 연다.
+  // 영구 초대 링크(?iv=) — 누를 때마다 서버가 새 열쇠를 발급하므로 몇 번이든 재사용된다.
+  const iv = new URLSearchParams(location.search).get('iv');
+  if (iv){
+    history.replaceState(null, '', location.pathname);
+    try{
+      const r = await fetch(SGS.FN_URL + '/trial-login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ iv }) });
+      const j = await r.json();
+      if (j && j.ok && j.token_hash){
+        const v = await sb.auth.verifyOtp({ token_hash: j.token_hash, type: 'magiclink' });
+        if (v && v.data && v.data.session){ show(true, v.data.session.user.email); return; }
+      }
+    }catch(e){ /* 아래 폴백 */ }
+    inviteExpired = true;
+  }
+  // 초대 열쇠(?tk=) — 구형 1회용 링크 호환
   const tk = new URLSearchParams(location.search).get('tk');
   if (tk){
     history.replaceState(null, '', location.pathname);   // 주소에서 열쇠 제거
@@ -449,7 +483,7 @@ async function init(){
   show(false);
   if (inviteExpired){
     const m = document.getElementById('oMsg');
-    if (m){ m.textContent = '초대 열쇠가 낡았다 — 보낸 이에게 새 열쇠를 청하라.'; m.style.display = 'block'; }
+    if (m){ m.textContent = '초대 링크가 유효하지 않다 — 보낸 이에게 확인을 청하라.'; m.style.display = 'block'; }
   }
 }
 /* 자동 생성 계정에 비밀번호 달기 */
