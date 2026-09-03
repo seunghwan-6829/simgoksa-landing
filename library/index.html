@@ -532,8 +532,8 @@ async function finishReg(){
 }
 async function submitReg(){
   document.getElementById('regErr').style.display = 'none';
-  const pw = document.getElementById('regPw').value;
-  const pw2 = document.getElementById('regPw2').value;
+  const pw = document.getElementById('regPw').value.trim();   // 붙여넣기 공백 방지
+  const pw2 = document.getElementById('regPw2').value.trim();
   if (pw.length < 6){ regErr('비밀번호는 여섯 자 이상이어야 한다.'); return; }
   if (pw !== pw2){ regErr('두 번 적은 비밀번호가 서로 다르다.'); return; }
   const btn = document.getElementById('regGo');
@@ -578,7 +578,7 @@ function err(m){ const el = document.getElementById('aErr'); el.textContent = m;
 async function doAuth(){
   if (!sb) { err('연결에 문제가 생겼다. 잠시 후 다시 시도하라.'); return; }
   const email = document.getElementById('aEmail').value.trim();
-  const pw = document.getElementById('aPw').value;
+  const pw = document.getElementById('aPw').value.trim();   // 붙여넣기 공백 방지
   if (!/.+@.+\..+/.test(email)) { err('이메일이 온전치 않다.'); return; }
   if (pw.length < 6) { err('비밀번호는 여섯 자 이상이어야 한다.'); return; }
   if (mode === 'signup' && pw !== document.getElementById('aPw2').value){
