@@ -201,6 +201,16 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
   <div class="shelf" id="shelf">
     <h2>꽂혀 있는 풀이</h2>
     <p class="loading-books" id="booksLoading">서가를 살피는 중…</p>
+    <div id="pwCard" style="display:none;margin:0 0 18px;padding:18px;border:1px solid rgba(229,56,59,.4);border-radius:6px;background:rgba(164,22,26,.08);font-size:13.5px;line-height:1.9;word-break:keep-all">
+      🔑 <b style="color:var(--paper)">비밀번호를 만들어 두세요 (30초)</b><br>
+      <span style="color:var(--ink-dim)">인스타그램·카카오톡 안에서 열었다면, 이 화면을 벗어나면 다시 들어오기 어렵습니다.<br>비밀번호를 만들면 <b style="color:var(--ink)">어느 기기·브라우저에서든</b> 이메일+비밀번호로 언제든 다시 볼 수 있어요.</span>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input type="password" id="pwNew" placeholder="비밀번호 (6자 이상)" autocomplete="new-password" style="flex:1;appearance:none;border:1px solid rgba(232,224,216,.25);border-radius:3px;background:rgba(5,4,4,.7);color:var(--paper);font-family:inherit;font-size:15px;padding:12px 13px;outline:none">
+        <button onclick="savePassword()" id="pwSaveBtn" style="appearance:none;cursor:pointer;background:linear-gradient(160deg,#c1121f,#780000);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:3px;font-family:inherit;font-size:13.5px;font-weight:700;letter-spacing:.05em;padding:12px 16px;white-space:nowrap">만들기</button>
+      </div>
+      <p id="pwCardMsg" style="display:none;margin-top:8px;font-size:12.5px;color:var(--blood-bright)"></p>
+      <p style="margin-top:10px;font-size:11.5px"><a onclick="dismissPwCard()" style="color:#6b5f57;cursor:pointer;text-decoration:underline">이미 만들었어요 · 닫기</a></p>
+    </div>
     <div id="trialNotice" style="display:none;margin:0 0 18px;padding:16px 18px;border:1px dashed rgba(208,140,58,.5);border-radius:6px;background:rgba(208,140,58,.06);font-size:13.5px;line-height:2;word-break:keep-all">
       🎁 체험 열람권 <b id="trialNoticeN" style="color:var(--ember,#d08c3a)">—</b>회가 남아 있다.<br>
       아래 술사의 문으로 들어가 사주를 넣으면—<br>결제창에서 <b>「체험권으로 전부 열람」</b> 단추가 열린다.
@@ -239,7 +249,7 @@ let mode = 'login';
 
 function show(logged, email){
   document.getElementById('authBox').style.display = logged ? 'none' : 'block';
-  if (logged) loadTrialNotice();
+  if (logged){ loadTrialNotice(); maybeShowPwCard(); }
   document.getElementById('claimBox').style.display = 'none';
   document.getElementById('pwLink').style.display = logged ? 'block' : 'none';
   document.getElementById('shelf').style.display = logged ? 'block' : 'none';
@@ -251,7 +261,7 @@ function show(logged, email){
     // 결과지에서 "로그인 먼저" 로 보내진 경우 — 로그인 뒤 그 결과지로 되돌린다 (같은 사이트 경로만)
     try{
       const next = new URLSearchParams(location.search).get('next');
-      if (next && /^\/(report|gyeong)\/\?p=[0-9a-f-]{36}$/i.test(next)){ location.replace(next); return; }
+      if (next && /^\/(report|gyeong|yeon)\/\?p=[0-9a-f-]{36}$/i.test(next)){ location.replace(next); return; }
     }catch(e){}
     loadBooks();
     // 결제 직후 도착 대기: 웹훅이 몇 초 늦을 수 있어 45초간 5초 간격으로 조용히 재확인
@@ -409,7 +419,7 @@ async function loadBooks(quiet){
    서버가 결제 이메일 계정(자동 생성)의 1회용 토큰을 주고, 여기서 세션을 연다. 메일도 회원가입도 없다. */
 let inviteExpired = false;   // 초대 열쇠가 낡았으면 로그인 화면에 안내
 function pendingSid(){
-  try{ const d = JSON.parse(localStorage.getItem('sgs_sid') || 'null'); if (d && d.sid && Date.now() - d.t < 24*3600e3) return d.sid; }catch(e){}
+  try{ const d = JSON.parse(localStorage.getItem('sgs_sid') || 'null'); if (d && d.sid && Date.now() - d.t < 30*24*3600e3) return d.sid; }catch(e){}
   return null;
 }
 async function claimSession(sid){
@@ -486,12 +496,43 @@ async function init(){
     if (m){ m.textContent = '초대 링크가 유효하지 않다 — 보낸 이에게 확인을 청하라.'; m.style.display = 'block'; }
   }
 }
-/* 자동 생성 계정에 비밀번호 달기 */
-async function setPassword(){
-  const pw = prompt('새 비밀번호 (6자 이상)'); if (!pw) return;
-  if (pw.length < 6){ alert('여섯 자 이상이어야 한다.'); return; }
-  const { error } = await sb.auth.updateUser({ password: pw });
-  alert(error ? '바꾸지 못했다. 잠시 후 다시 시도하라.' : '비밀번호를 걸었다. 이제 어느 기기에서든 이메일+비밀번호로 열린다.');
+/* 자동 생성 계정에 비밀번호 달기 — 카드 UI (인앱 브라우저에서 prompt 는 잘 안 보인다) */
+function setPassword(){
+  const card = document.getElementById('pwCard');
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => document.getElementById('pwNew').focus(), 400);
+}
+async function maybeShowPwCard(){
+  // 비밀번호를 아직 안 만든 계정에게만 (표식: user_metadata.pw_set / 닫기 기록)
+  try{
+    if (localStorage.getItem('sgs_pw_ok')) return;
+    const { data } = await sb.auth.getSession();
+    const meta = data && data.session && data.session.user ? (data.session.user.user_metadata || {}) : {};
+    if (!meta.pw_set) document.getElementById('pwCard').style.display = 'block';
+  }catch(e){}
+}
+async function savePassword(){
+  const inp = document.getElementById('pwNew');
+  const msg = document.getElementById('pwCardMsg');
+  const btn = document.getElementById('pwSaveBtn');
+  const pw = inp.value;
+  if (pw.length < 6){ msg.textContent = '여섯 자 이상이어야 한다.'; msg.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = '거는 중…';
+  const { error } = await sb.auth.updateUser({ password: pw, data: { pw_set: true } });
+  btn.disabled = false; btn.textContent = '만들기';
+  if (error){
+    msg.textContent = '걸지 못했다 — 잠시 후 다시 시도하라.'; msg.style.display = 'block';
+    return;
+  }
+  try{ localStorage.setItem('sgs_pw_ok', '1'); }catch(e){}
+  const card = document.getElementById('pwCard');
+  card.innerHTML = '<b style="color:var(--ember)">🔑 비밀번호를 걸었다.</b><br><span style="color:var(--ink-dim)">이제 어느 기기에서든 <b>simgoksa.com/library</b> 에서<br>지금 이메일 + 방금 만든 비밀번호로 서고가 열린다.</span>';
+  setTimeout(() => { card.style.display = 'none'; }, 6000);
+}
+function dismissPwCard(){
+  try{ localStorage.setItem('sgs_pw_ok', '1'); }catch(e){}
+  document.getElementById('pwCard').style.display = 'none';
 }
 function toggleMode(){
   mode = mode === 'login' ? 'signup' : 'login';

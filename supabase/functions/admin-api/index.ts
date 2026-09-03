@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
           const pr = await fetch(`${url}/auth/v1/admin/users/${uid2}`, {
             method: "PUT",
             headers: { ...S, "Content-Type": "application/json" },
-            body: JSON.stringify({ password: pw }),
+            body: JSON.stringify({ password: pw, user_metadata: { pw_set: true } }),
           });
           passwordSet = pr.ok;
           if (!pr.ok) console.error("set password failed", pr.status, await pr.text());
@@ -151,7 +151,7 @@ Deno.serve(async (req) => {
       const pr = await fetch(`${url}/auth/v1/admin/users/${uid3}`, {
         method: "PUT",
         headers: { ...S, "Content-Type": "application/json" },
-        body: JSON.stringify({ password: pw }),
+        body: JSON.stringify({ password: pw, user_metadata: { pw_set: true } }),
       });
       if (!pr.ok) console.error("trial_password failed", pr.status, await pr.text());
       return new Response(JSON.stringify({ ok: pr.ok }), { status: pr.ok ? 200 : 500, headers: cors });

@@ -2,7 +2,7 @@
 //  결제 직후 서고 자동 입장 — 회원가입 없이 산 사람을 같은 기기에서 바로 로그인시킨다.
 //
 //  POST { sid: <랜딩이 결제 직전 localStorage 에 남긴 session_id> }
-//   → 그 sid 가 sellerReference 로 붙은 최근(24h) 주문을 찾는다
+//   → 그 sid 가 sellerReference 로 붙은 최근(30일) 주문을 찾는다 — 인앱 브라우저에서 며칠 뒤 다시 열어도 자동 입장
 //   → 주문의 구매자 이메일로 계정을 보장하고, 메일 없이 1회용 토큰(hashed_token)을 만든다
 //   → { ok, token_hash, email }  — 클라이언트는 supabase.auth.verifyOtp({ token_hash, type:'magiclink' })
 //   → 주문이 아직 안 들어왔으면 { ok:false, error:'pending' } (서고가 잠시 뒤 다시 묻는다)
@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
   const sid = String(body.sid || "");
   if (!/^[0-9a-f-]{36}$/i.test(sid)) return json({ ok: false, error: "bad_sid" }, 400);
 
-  const since = new Date(Date.now() - 24 * 3600e3).toISOString();
+  const since = new Date(Date.now() - 30 * 24 * 3600e3).toISOString();
   const r = await fetch(
     `${url}/rest/v1/purchases?seller_reference=eq.${encodeURIComponent(sid)}&created_at=gte.${since}&select=id,buyer_email,user_id,status,product&order=created_at.desc&limit=1`,
     { headers: H },

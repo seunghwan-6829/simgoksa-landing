@@ -188,8 +188,8 @@ button.mini:hover{border-color:#3b6fea;color:#2b5fd9}
       <p class="sub">가입 계정 전체 · 결제 여부는 결제 시 입력한 이메일과 대조</p>
       <div class="panel" style="margin-top:20px">
         <table>
-          <thead><tr><th>이메일</th><th>가입일</th><th>최근 로그인</th><th>결제</th><th>주문 수</th><th>결제 금액 합계</th></tr></thead>
-          <tbody id="memberRows"><tr><td colspan="6" class="loading">불러오는 중…</td></tr></tbody>
+          <thead><tr><th>이메일</th><th>가입일</th><th>최근 로그인</th><th>결제</th><th>주문 수</th><th>결제 금액 합계</th><th></th></tr></thead>
+          <tbody id="memberRows"><tr><td colspan="7" class="loading">불러오는 중…</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -548,6 +548,29 @@ async function toggleViews(btn, name){
 }
 
 /* ── 회원 ── */
+async function memberPw(email){
+  // 구매자 CS — 인앱 브라우저에서 결제해 비밀번호가 없는 손님에게 열쇠를 만들어 보낸다
+  let pw = prompt(email + ' 의 새 비밀번호 (비우면 자동 생성)');
+  if (pw === null) return;
+  pw = pw.trim() || genPw();
+  if (pw.length < 6){ alert('비밀번호는 6자 이상으로 해주세요.'); return; }
+  try{
+    const r = await api('trial_password', { email, password: pw });
+    if (!r.ok) throw 0;
+    const msg = `深谷寺 심곡사 · 서고 열쇠
+
+① https://simgoksa.com/library 접속
+② 이메일: ${email}
+   비밀번호: ${pw}
+   → 「서고 열기 · 로그인」
+
+구매하신 풀이가 서고에 그대로 보관되어 있습니다.
+어느 기기·브라우저에서든 위 정보로 다시 보실 수 있어요.`;
+    const copied = await copyText(msg);
+    alert(copied ? '재설정 완료 — 고객에게 보낼 안내문이 복사되었습니다.' : '재설정 완료 — 비밀번호: ' + pw);
+    if (!copied) prompt('고객에게 보낼 안내문', msg);
+  }catch(e){ alert('재설정 실패 — 잠시 후 다시 시도해 주세요.'); }
+}
 async function loadMembers(){
   try{
     const { users, purchases } = await api('members');
@@ -558,7 +581,7 @@ async function loadMembers(){
       (byEmail[k] = byEmail[k] || []).push(p);
     });
     const tb = document.getElementById('memberRows');
-    if (!users.length){ tb.innerHTML = '<tr><td colspan="6" class="loading">회원이 없습니다.</td></tr>'; return; }
+    if (!users.length){ tb.innerHTML = '<tr><td colspan="7" class="loading">회원이 없습니다.</td></tr>'; return; }
     tb.innerHTML = users
       .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
       .map(u => {
@@ -571,6 +594,7 @@ async function loadMembers(){
           <td><span class="badge ${paidPs.length ? 'yes' : 'no'}">${paidPs.length ? '결제' : '미결제'}</span></td>
           <td>${ps.length}</td>
           <td>${won(paidPs.reduce((s,p)=>s+(p.amount||0),0))}</td>
+          <td><button class="mini" data-email="${esc(u.email)}" onclick="memberPw(this.dataset.email)">🔑 비번 재설정</button></td>
         </tr>`;
       }).join('');
   }catch(e){ console.error(e); }
