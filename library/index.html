@@ -197,20 +197,21 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
     <p class="switch" id="aSwitch">비밀번호를 아직 안 만들었다면 —<br>결제했던 기기로 들어와 「비밀번호 만들기」를 먼저 눌러라.</p>
   </div>
 
+  <!-- 서고 등록 (결제 이메일 = 아이디 · 비밀번호만 만들면 가입 완료) -->
+  <div class="auth" id="regBox">
+    <h3>서고 등록 — 마지막 한 걸음</h3>
+    <p class="sub">그대의 열쇠(아이디)는<br><b id="regEmail" style="color:var(--ember)">—</b><br>비밀번호만 정하면, 어느 기기·브라우저에서든<br>이 서고를 <b style="color:var(--paper)">언제든 다시</b> 열 수 있다.</p>
+    <input type="password" id="regPw" placeholder="비밀번호 (6자 이상)" autocomplete="new-password">
+    <input type="password" id="regPw2" placeholder="비밀번호 다시 한 번" autocomplete="new-password">
+    <p class="err" id="regErr"></p>
+    <button class="go" id="regGo" onclick="submitReg()">열쇠 만들기</button>
+    <p class="switch"><a onclick="skipReg()">이미 비밀번호가 있어요</a></p>
+  </div>
+
   <!-- 서고 -->
   <div class="shelf" id="shelf">
     <h2>꽂혀 있는 풀이</h2>
     <p class="loading-books" id="booksLoading">서가를 살피는 중…</p>
-    <div id="pwCard" style="display:none;margin:0 0 18px;padding:18px;border:1px solid rgba(229,56,59,.4);border-radius:6px;background:rgba(164,22,26,.08);font-size:13.5px;line-height:1.9;word-break:keep-all">
-      🔑 <b style="color:var(--paper)">비밀번호를 만들어 두세요 (30초)</b><br>
-      <span style="color:var(--ink-dim)">인스타그램·카카오톡 안에서 열었다면, 이 화면을 벗어나면 다시 들어오기 어렵습니다.<br>비밀번호를 만들면 <b style="color:var(--ink)">어느 기기·브라우저에서든</b> 이메일+비밀번호로 언제든 다시 볼 수 있어요.</span>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input type="password" id="pwNew" placeholder="비밀번호 (6자 이상)" autocomplete="new-password" style="flex:1;appearance:none;border:1px solid rgba(232,224,216,.25);border-radius:3px;background:rgba(5,4,4,.7);color:var(--paper);font-family:inherit;font-size:15px;padding:12px 13px;outline:none">
-        <button onclick="savePassword()" id="pwSaveBtn" style="appearance:none;cursor:pointer;background:linear-gradient(160deg,#c1121f,#780000);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:3px;font-family:inherit;font-size:13.5px;font-weight:700;letter-spacing:.05em;padding:12px 16px;white-space:nowrap">만들기</button>
-      </div>
-      <p id="pwCardMsg" style="display:none;margin-top:8px;font-size:12.5px;color:var(--blood-bright)"></p>
-      <p style="margin-top:10px;font-size:11.5px"><a onclick="dismissPwCard()" style="color:#6b5f57;cursor:pointer;text-decoration:underline">이미 만들었어요 · 닫기</a></p>
-    </div>
     <div id="trialNotice" style="display:none;margin:0 0 18px;padding:16px 18px;border:1px dashed rgba(208,140,58,.5);border-radius:6px;background:rgba(208,140,58,.06);font-size:13.5px;line-height:2;word-break:keep-all">
       🎁 체험 열람권 <b id="trialNoticeN" style="color:var(--ember,#d08c3a)">—</b>회가 남아 있다.<br>
       아래 술사의 문으로 들어가 사주를 넣으면—<br>결제창에서 <b>「체험권으로 전부 열람」</b> 단추가 열린다.
@@ -248,8 +249,9 @@ const sb = window.supabase ? window.supabase.createClient(SUPA_URL, SUPA_KEY) : 
 let mode = 'login';
 
 function show(logged, email){
+  document.getElementById('regBox').style.display = 'none';
   document.getElementById('authBox').style.display = logged ? 'none' : 'block';
-  if (logged){ loadTrialNotice(); maybeShowPwCard(); }
+  if (logged){ loadTrialNotice(); maybeOpenReg(); }
   document.getElementById('claimBox').style.display = 'none';
   document.getElementById('pwLink').style.display = logged ? 'block' : 'none';
   document.getElementById('shelf').style.display = logged ? 'block' : 'none';
@@ -442,7 +444,12 @@ async function claimSession(sid){
               reportPurchases(rows || []);
               await new Promise(res => setTimeout(res, 700));   // 비콘이 나갈 시간
             }catch(e){}
-            location.replace(ch.report + '?p=' + encodeURIComponent(pr.id)); return true;
+            const reportUrl = ch.report + '?p=' + encodeURIComponent(pr.id);
+            // 비밀번호가 없는 새 손님은 여기서 딱 한 번, 서고 등록(비밀번호)을 거친다.
+            // 인앱 브라우저(인스타·카톡)는 세션이 밖으로 안 이어지므로 이 순간이 유일한 기회다.
+            const meta = (v.data && v.data.user && v.data.user.user_metadata) || {};
+            if (!meta.pw_set){ document.getElementById('claimBox').style.display = 'none'; openReg(reportUrl); return true; }
+            location.replace(reportUrl); return true;
           }
           show(true, v.data.user.email); return true;
         }
@@ -496,44 +503,60 @@ async function init(){
     if (m){ m.textContent = '초대 링크가 유효하지 않다 — 보낸 이에게 확인을 청하라.'; m.style.display = 'block'; }
   }
 }
-/* 자동 생성 계정에 비밀번호 달기 — 카드 UI (인앱 브라우저에서 prompt 는 잘 안 보인다) */
-function setPassword(){
-  const card = document.getElementById('pwCard');
-  card.style.display = 'block';
-  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  setTimeout(() => document.getElementById('pwNew').focus(), 400);
+/* ── 서고 등록 게이트 — 결제 이메일이 아이디, 비밀번호만 만들면 가입 완료 ──
+   결제 직후(결과지로 가기 직전)와, 비밀번호 없는 계정의 서고 방문 시 필수로 거친다. */
+let regNext = null;   // 등록 완료 후 이동할 결과지 주소 (결제 직후 흐름일 때)
+function openReg(next){
+  regNext = next || null;
+  ['authBox','claimBox','shelf'].forEach(id => document.getElementById(id).style.display = 'none');
+  const rb = document.getElementById('regBox');
+  rb.style.display = 'block';
+  document.getElementById('regGo').textContent = regNext ? '열쇠 만들고 풀이 열기' : '열쇠 만들기';
+  sb.auth.getSession().then(({ data }) => {
+    if (data && data.session) document.getElementById('regEmail').textContent = data.session.user.email;
+  });
+  setTimeout(() => document.getElementById('regPw').focus(), 300);
 }
-async function maybeShowPwCard(){
-  // 비밀번호를 아직 안 만든 계정에게만 (표식: user_metadata.pw_set / 닫기 기록)
-  try{
-    if (localStorage.getItem('sgs_pw_ok')) return;
-    const { data } = await sb.auth.getSession();
-    const meta = data && data.session && data.session.user ? (data.session.user.user_metadata || {}) : {};
-    if (!meta.pw_set) document.getElementById('pwCard').style.display = 'block';
-  }catch(e){}
+function regErr(m){ const el = document.getElementById('regErr'); el.textContent = m; el.style.display = 'block'; }
+async function finishReg(){
+  const rb = document.getElementById('regBox'); rb.style.display = 'none';
+  if (regNext){ const to = regNext; regNext = null; location.replace(to); return; }
+  const { data } = await sb.auth.getSession();
+  if (data && data.session) show(true, data.session.user.email);
 }
-async function savePassword(){
-  const inp = document.getElementById('pwNew');
-  const msg = document.getElementById('pwCardMsg');
-  const btn = document.getElementById('pwSaveBtn');
-  const pw = inp.value;
-  if (pw.length < 6){ msg.textContent = '여섯 자 이상이어야 한다.'; msg.style.display = 'block'; return; }
-  btn.disabled = true; btn.textContent = '거는 중…';
+async function submitReg(){
+  document.getElementById('regErr').style.display = 'none';
+  const pw = document.getElementById('regPw').value;
+  const pw2 = document.getElementById('regPw2').value;
+  if (pw.length < 6){ regErr('비밀번호는 여섯 자 이상이어야 한다.'); return; }
+  if (pw !== pw2){ regErr('두 번 적은 비밀번호가 서로 다르다.'); return; }
+  const btn = document.getElementById('regGo');
+  btn.disabled = true;
   const { error } = await sb.auth.updateUser({ password: pw, data: { pw_set: true } });
-  btn.disabled = false; btn.textContent = '만들기';
+  btn.disabled = false;
   if (error){
-    msg.textContent = '걸지 못했다 — 잠시 후 다시 시도하라.'; msg.style.display = 'block';
+    // 등록이 열람을 막아선 안 된다 — 실패하면 알리되 길은 열어 둔다
+    regErr('열쇠를 걸지 못했다 — 다시 시도하거나, 아래 「이미 비밀번호가 있어요」로 지나가라.');
     return;
   }
   try{ localStorage.setItem('sgs_pw_ok', '1'); }catch(e){}
-  const card = document.getElementById('pwCard');
-  card.innerHTML = '<b style="color:var(--ember)">🔑 비밀번호를 걸었다.</b><br><span style="color:var(--ink-dim)">이제 어느 기기에서든 <b>simgoksa.com/library</b> 에서<br>지금 이메일 + 방금 만든 비밀번호로 서고가 열린다.</span>';
-  setTimeout(() => { card.style.display = 'none'; }, 6000);
+  await finishReg();
 }
-function dismissPwCard(){
+async function skipReg(){
+  // 예전에 비밀번호를 만든 계정용 — 표식만 남기고 지나간다
+  try{ await sb.auth.updateUser({ data: { pw_set: true } }); }catch(e){}
   try{ localStorage.setItem('sgs_pw_ok', '1'); }catch(e){}
-  document.getElementById('pwCard').style.display = 'none';
+  await finishReg();
 }
+async function maybeOpenReg(){
+  // 비밀번호 없는 계정(표식 pw_set 없음)은 서가 대신 등록부터
+  try{
+    const { data } = await sb.auth.getSession();
+    const meta = data && data.session && data.session.user ? (data.session.user.user_metadata || {}) : {};
+    if (!meta.pw_set) openReg(null);
+  }catch(e){}
+}
+function setPassword(){ openReg(null); }   // 「비밀번호 만들기·바꾸기」 링크
 function toggleMode(){
   mode = mode === 'login' ? 'signup' : 'login';
   document.getElementById('aGo').textContent = mode === 'login' ? '서고 열기 · 로그인' : '열쇠 받기 · 회원가입';
