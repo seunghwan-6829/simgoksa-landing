@@ -455,7 +455,13 @@ async function claimSession(sid){
         }
         break;
       }
-      if (j.error === 'refunded'){ localStorage.removeItem('sgs_sid'); break; }
+      if (j.error === 'refunded'){
+        localStorage.removeItem('sgs_sid');
+        box.style.display = 'none'; show(false);
+        const rm = document.getElementById('oMsg');
+        if (rm){ rm.textContent = '환불 처리된 결제다 — 문의는 simgoksa.com@gmail.com 으로.'; rm.style.display = 'block'; }
+        return false;
+      }
       if (j.error !== 'pending') break;
     }catch(e){}
     if (i === 4) msg.innerHTML = '결제 확인이 조금 늦어진다…<br>문은 열린다, 잠시만.';
@@ -549,10 +555,12 @@ async function skipReg(){
   await finishReg();
 }
 async function maybeOpenReg(){
-  // 비밀번호 없는 계정(표식 pw_set 없음)은 서가 대신 등록부터
+  // 비밀번호 없는 계정(표식 pw_set 없음)은 서가 대신 등록부터 — 관리자는 면제
   try{
     const { data } = await sb.auth.getSession();
-    const meta = data && data.session && data.session.user ? (data.session.user.user_metadata || {}) : {};
+    if (!data || !data.session) return;
+    if (SGS.isAdmin && SGS.isAdmin(data.session.user.email)) return;
+    const meta = data.session.user.user_metadata || {};
     if (!meta.pw_set) openReg(null);
   }catch(e){}
 }
@@ -596,6 +604,8 @@ async function doAuth(){
 }
 async function doLogout(){ if (sb) await sb.auth.signOut(); show(false); }
 document.getElementById('aPw').addEventListener('keydown', e => { if (e.key === 'Enter') doAuth(); });
+document.getElementById('regPw').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('regPw2').focus(); });
+document.getElementById('regPw2').addEventListener('keydown', e => { if (e.key === 'Enter') submitReg(); });
 init();
 </script>
 </body>
