@@ -1979,6 +1979,10 @@ function watchSticky(){
     io.observe(mark);
   }
   window.addEventListener('scroll', check, { passive: true });
+  // 프로그램이 스크롤을 옮긴 경우(되돌아온 사람 → 찢어가기 자리로 점프)엔
+  // 스크롤 이벤트가 안 잡히는 브라우저가 있어, 처음 몇 초는 직접 확인한다.
+  let ticks = 0;
+  const timer = setInterval(() => { check(); if (done || ++ticks > 20) clearInterval(timer); }, 300);
   check();
 }
 
