@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-product="hyunwol">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -862,6 +862,16 @@ footer b{color:#7a6f66}
 .buy-card .b-price{font-family:'Noto Sans KR',sans-serif;font-weight:900;font-size:24px;margin-top:6px}
 .buy-card .b-price s{font-weight:400;font-size:13px;color:#7a6f66;margin-right:8px}
 .buy-card .b-price .pct{color:#8a5e18;font-size:14px;margin-left:6px}
+.modal .g-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#fff;color:#1f1b18;border:1px solid rgba(0,0,0,.12);
+  font-size:14.5px;font-weight:700;letter-spacing:.02em;margin-bottom:4px;
+}
+.modal .m-or{
+  margin:14px 0 10px;text-align:center;font-size:11.5px;color:#6b5f57;letter-spacing:.14em;
+  display:flex;align-items:center;gap:10px;
+}
+.modal .m-or::before,.modal .m-or::after{content:"";flex:1;height:1px;background:rgba(232,224,216,.14)}
 .m-note{font-size:12px;color:#5c534c;text-align:center;line-height:1.8;margin-top:12px;word-break:keep-all}
 /* ── PC/태블릿: 흐린 배경 + 폰 프레임 ── */
 .back-home{
@@ -1563,6 +1573,7 @@ footer b{color:#7a6f66}
       <p class="p-dim rv" style="margin-top:18px">여든여덟 장을 한 번에 다 읽을 여유가 없다면—<br>제일 새는 자리 <b style="color:var(--ink)">한 편만 뜯어 가도 된다.</b><br>차례에서 고르면, 그 편만 네 이름으로 셈해 준다.</p>
 
       <!-- 등급 -->
+      <div id="stickyMark" aria-hidden="true"></div>
       <div class="tiers rv" id="tiers">
         <button class="tier" data-tier="one" onclick="setTier('one')">
           <span class="t-n">한 편</span>
@@ -1645,6 +1656,11 @@ footer b{color:#7a6f66}
     <p class="m-tag">深谷寺 書庫</p>
     <h3 id="authTitle">서고의 열쇠</h3>
     <p class="m-sub" id="authSub">풀이는 네 서고(書庫)에 꽂힌다.<br>열쇠부터 만들어라.</p>
+    <button class="m-btn g-btn" id="authGoogle" type="button" onclick="googleAuth()" style="display:none">
+      <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6c1.9-5.6 7.1-9.7 13.6-9.7z"/><path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9.1h12.4c-.5 2.9-2.2 5.3-4.7 7l7.6 5.9c4.4-4.1 6.8-10.1 6.8-17.4z"/><path fill="#FBBC05" d="M10.4 28.8c-.5-1.4-.8-2.9-.8-4.4s.3-3 .8-4.4l-7.8-6C.9 17.1 0 20.4 0 24s.9 6.9 2.6 10l7.8-5.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.8 2.3-8.3 2.3-6.5 0-11.7-4.1-13.6-9.7l-7.8 5.2C6.5 42.6 14.6 48 24 48z"/></svg>
+      <span>구글로 3초 만에 시작하기</span>
+    </button>
+    <p class="m-or" id="authOr" style="display:none">또는 이메일로</p>
     <div class="m-field"><input type="email" id="authEmail" placeholder="이메일" autocomplete="email"></div>
     <div class="m-field"><input type="password" id="authPw" placeholder="비밀번호 (6자 이상)" autocomplete="new-password"></div>
     <div class="m-field" id="authPw2Wrap"><input type="password" id="authPw2" placeholder="비밀번호 다시 한 번" autocomplete="new-password"></div>
@@ -1670,7 +1686,7 @@ footer b{color:#7a6f66}
       </div>
     </div>
     <button class="m-btn" id="buyGo" onclick="startPay()">결제하기</button>
-    <p class="m-note">회원가입 없이 바로 결제합니다.<br>결제가 끝나면 <b>결제한 이메일</b>이 곧 열쇠가 되어<br><a href="../library/" style="color:var(--ember)">내 서고</a>가 자동으로 열립니다.</p>
+    <p class="m-note">결제는 그로블(주)의 안전결제 창에서 진행됩니다.<br>결제가 끝나면 <b>「내 서고 가기」</b>를 눌러 주세요 —<br>풀이는 <a href="../library/" style="color:var(--ember)">내 서고</a>에 꽂혀 언제든 다시 열립니다.</p>
   </div>
 </div>
 
@@ -1687,6 +1703,7 @@ footer b{color:#7a6f66}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js" integrity="sha384-l8ah+VgaWtk1mvOe9VC+OirC6qHFF4yH7l7mKRidV9MSti3E9F463bMp6ZVN4kuC" crossorigin="anonymous"></script>
+<script src="/assets/sgs-return.js"></script>
 <script>
 /* ───────── state ───────── */
 const user = { name:'', birth:null, gender:'', income:0, save:0 };
@@ -2321,7 +2338,7 @@ function enterSales(){
   document.getElementById('app').classList.remove('shake');
   document.getElementById('sales').style.display = 'block';
   window.scrollTo(0,0);
-  document.getElementById('sticky').classList.add('on');
+  watchSticky();
   bellChime();
   setTimeout(playTsk, 1500); // 선고("쯧쯧…")가 눈에 들어올 즈음 혀 차는 소리
   document.querySelectorAll('#sales video').forEach(v => { v.preload='auto'; v.play().catch(()=>{}); });
@@ -2362,12 +2379,51 @@ if (sb) {
 let authMode = 'signup'; // 'signup' | 'login'
 let afterAuth = null;
 
+
+/* ── 구글 간편가입 — Supabase 에 공급자가 켜져 있을 때만 단추가 보인다 ── */
+let googleOn = null;
+async function checkGoogle(){
+  if (googleOn === null){
+    try{
+      const r = await fetch(SUPA_URL + '/auth/v1/settings', { headers: { apikey: SUPA_KEY } });
+      const j = await r.json();
+      googleOn = !!(j && j.external && j.external.google);
+    }catch(e){ googleOn = false; }
+  }
+  const b = document.getElementById('authGoogle'), o = document.getElementById('authOr');
+  if (b) b.style.display = googleOn ? 'flex' : 'none';
+  if (o) o.style.display = googleOn ? 'flex' : 'none';
+}
+async function googleAuth(){
+  if (!sb) return;
+  track('google_click');
+  saveProgress();
+  try{ localStorage.setItem('sgs_resume', JSON.stringify({ go:'buy', tier: pick.tier, parts: pick.parts, t: Date.now() })); }catch(e){}
+  const back = location.origin + location.pathname + '?resume=buy';
+  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: back } });
+  if (error) authError('구글 문이 열리지 않는다 — 이메일로 진행하라.');
+}
+
+/* 하단 고정 CTA — 「찢어가기」 구간부터 나타난다. 한 번 올라오면 계속 남는다 */
+function watchSticky(){
+  const bar = document.getElementById('sticky');
+  const mark = document.getElementById('stickyMark');
+  if (!bar || !mark) return;
+  const on = () => bar.classList.add('on');
+  if (!('IntersectionObserver' in window)) { on(); return; }
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting || e.boundingClientRect.top < window.innerHeight){ on(); io.disconnect(); } });
+  }, { rootMargin: '0px 0px -10% 0px' });
+  io.observe(mark);
+}
+
 function openAuth(next){
   afterAuth = next || null;
   track('auth_open');
   authDone = false;
   document.getElementById('authErr').style.display = 'none';
   document.getElementById('authModal').classList.add('on');
+  checkGoogle();
   setTimeout(()=>document.getElementById('authEmail').focus(), 300);
 }
 let authDone = false;
@@ -2644,19 +2700,20 @@ async function shareSite(){
 }
 
 /* ───────── CTA ───────── */
-async function goCTA(e){
-  e.preventDefault();
-  track('cta_click', { tier: pick.tier });
-  if (!picksReady()) return;
-  // 회원가입 없이 바로 결제한다. 계정은 결제 이메일로 자동 생성되고(웹훅), 서고가 결제 기기를 알아본다(claim-session).
-  // 로그인 상태면 그 계정에 붙고, 관리자면 결제 없이 연다.
+/* 가입 → 결제. 열쇠(계정)를 먼저 만들게 한다.
+   결제 뒤로 가입을 미루면, 결제한 브라우저를 벗어나는 순간 다시 열 길이 없어진다. */
+async function enterBuy(){
   isAdmin = false;
+  trialLeft = 0;
   try{
-    trialLeft = 0;
     if (sb){
       const { data } = await sb.auth.getSession();
       if (data && data.session){
+        currentUserId = data.session.user.id;   // 이후 리드에 신원이 붙는다 (웹훅이 주문에 계정을 매단다)
         isAdmin = ADMIN_EMAILS.includes((data.session.user.email || '').toLowerCase());
+        // 랜딩에서 열쇠를 만든 사람은 서고에서 또 「열쇠 만들기」를 겪지 않아야 한다
+        const meta = data.session.user.user_metadata || {};
+        if (!meta.pw_set){ try{ await sb.auth.updateUser({ data: { pw_set: true } }); }catch(e){} }
         if (!isAdmin){
           const { data: tc } = await sb.from('trial_credits').select('total,used');
           if (Array.isArray(tc)) trialLeft = tc.reduce((n, r) => n + Math.max(0, (r.total|0) - (r.used|0)), 0);
@@ -2666,6 +2723,50 @@ async function goCTA(e){
   }catch(e){}
   openBuy();
 }
+async function goCTA(e){
+  if (e) e.preventDefault();
+  track('cta_click', { tier: pick.tier });
+  if (!picksReady()) return;
+  saveProgress();
+  let session = null;
+  try{ if (sb){ const { data } = await sb.auth.getSession(); session = data && data.session; } }catch(e){}
+  if (!session){ openAuth(enterBuy); return; }
+  enterBuy();
+}
+
+/* 구글 로그인에서 되돌아온 길 — 입력을 되살리고 곳장 구매창까지 열다 */
+(function resumeAfterAuth(){
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('resume') !== 'buy') return;
+  history.replaceState(null, '', location.pathname);
+  let saved = null;
+  try{ saved = JSON.parse(localStorage.getItem('sgs_resume') || 'null'); }catch(e){}
+  try{ localStorage.removeItem('sgs_resume'); }catch(e){}
+  setTimeout(async () => {
+    const d = loadProgress();
+    if (!d) return;
+    user.name = d.name; user.birth = d.birth; user.gender = d.gender;
+    const gate = document.getElementById('gate'); gate.classList.add('off'); gateClosed = true;
+    order.forEach(id => { const sc = document.getElementById(id); if (sc) sc.style.display = 'none'; });
+    enterSales();
+    document.getElementById('sales').classList.add('show');
+    if (saved && saved.tier){
+      setTier(saved.tier);
+      if (saved.tier !== 'all' && Array.isArray(saved.parts)){
+        pickBoxes().forEach(b => { b.checked = saved.parts.indexOf(+b.value) !== -1; });
+        syncPicks();
+      }
+    }
+    document.getElementById('sticky').classList.add('on');
+    const t = document.getElementById('tiers'); if (t) t.scrollIntoView({ block:'center' });
+    for (let i = 0; i < 12; i++){
+      let session = null;
+      try{ const { data } = await sb.auth.getSession(); session = data && data.session; }catch(e){}
+      if (session){ track('signup'); enterBuy(); return; }
+      await new Promise(r => setTimeout(r, 400));
+    }
+  }, 0);
+})();
 
 </script>
 </body>

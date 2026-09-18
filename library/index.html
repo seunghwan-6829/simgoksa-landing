@@ -76,6 +76,11 @@ header a.back:hover{color:var(--paper)}
   font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:.1em;padding:15px;
 }
 .auth button.go:disabled{opacity:.55}
+.auth button.g-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#fff;color:#1f1b18;border:1px solid rgba(0,0,0,.12);
+  font-size:14.5px;font-weight:700;letter-spacing:.02em;
+}
 .otp-row{margin-bottom:6px}
 .otp-row .err{display:block;color:var(--ink-dim)}
 .auth .or{display:flex;align-items:center;gap:10px;margin:14px 0 12px;color:#5c534c;font-size:11.5px;letter-spacing:.1em}
@@ -187,14 +192,32 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
   <!-- 로그인 폼 -->
   <div class="auth" id="authBox">
     <h3 id="aTitle">서고 열기</h3>
-    <p class="sub" id="aSub"><b style="color:var(--paper)">결제한 기기</b>에서는 문이 절로 열린다.<br>다른 기기라면 비밀번호로 열어라.</p>
+    <p class="sub" id="aSub"><b style="color:var(--paper)">결제한 기기</b>에서는 문이 절로 열린다.<br>다른 기기라면 아래로 열어라.</p>
     <p class="err" id="oMsg"></p>
+    <button class="go g-btn" id="aGoogle" type="button" onclick="googleAuth()" style="display:none">
+      <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6c1.9-5.6 7.1-9.7 13.6-9.7z"/><path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9.1h12.4c-.5 2.9-2.2 5.3-4.7 7l7.6 5.9c4.4-4.1 6.8-10.1 6.8-17.4z"/><path fill="#FBBC05" d="M10.4 28.8c-.5-1.4-.8-2.9-.8-4.4s.3-3 .8-4.4l-7.8-6C.9 17.1 0 20.4 0 24s.9 6.9 2.6 10l7.8-5.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.8 2.3-8.3 2.3-6.5 0-11.7-4.1-13.6-9.7l-7.8 5.2C6.5 42.6 14.6 48 24 48z"/></svg>
+      <span>구글로 열기</span>
+    </button>
+    <p class="or" id="aOr" style="display:none">또는 이메일로</p>
     <input type="email" id="aEmail" placeholder="이메일" autocomplete="email">
     <input type="password" id="aPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password">
     <input type="password" id="aPw2" placeholder="비밀번호 다시 한 번" autocomplete="new-password" style="display:none">
     <p class="err" id="aErr"></p>
     <button class="go" id="aGo" onclick="doAuth()">서고 열기 · 로그인</button>
-    <p class="switch" id="aSwitch">비밀번호를 아직 안 만들었다면 —<br>결제했던 기기로 들어와 「비밀번호 만들기」를 먼저 눌러라.</p>
+    <p class="switch" id="aSwitch">열쇠가 없다면 <a onclick="toggleMode()">회원가입</a></p>
+    <p class="switch" style="margin-top:10px">결제는 했는데 비밀번호가 없는가? <a onclick="openRecover()">주문번호로 열기</a></p>
+  </div>
+
+  <!-- 주문번호로 서고 열기 — 결제한 기기를 잃어버렸을 때의 복구 경로 -->
+  <div class="auth" id="recBox">
+    <h3>주문번호로 서고 열기</h3>
+    <p class="sub">결제 확인 문자·메일에 적힌 <b style="color:var(--paper)">주문번호</b>와<br>결제할 때 쓴 <b style="color:var(--paper)">이메일</b>이면 문이 열린다.<br>비밀번호가 없어도 된다.</p>
+    <input type="email" id="recEmail" placeholder="결제한 이메일" autocomplete="email" inputmode="email">
+    <input type="text" id="recOrder" placeholder="주문번호 (예: 2026091800332621925)" inputmode="numeric" autocomplete="off">
+    <p class="err" id="recErr"></p>
+    <button class="go" id="recGo" onclick="submitRecover()">서고 열기</button>
+    <p class="switch"><a onclick="closeRecover()">← 비밀번호로 돌아가기</a></p>
+    <p class="switch" style="font-size:12px;color:#6b5f57;margin-top:10px">주문번호는 그로블 결제 완료 화면과<br>「결제가 완료되었습니다」 알림에 적혀 있다.<br>찾기 어려우면 simgoksa.com@gmail.com 으로 알려 주면 열어 준다.</p>
   </div>
 
   <!-- 서고 등록 (결제 이메일 = 아이디 · 비밀번호만 만들면 가입 완료) -->
@@ -211,6 +234,7 @@ footer{margin-top:70px;text-align:center;color:#544c46;font-size:11px;line-heigh
   <!-- 서고 -->
   <div class="shelf" id="shelf">
     <h2>꽂혀 있는 풀이</h2>
+    <p class="err" id="shelfErr" style="display:none;text-align:center;margin-bottom:16px"></p>
     <p class="loading-books" id="booksLoading">서가를 살피는 중…</p>
     <div id="trialNotice" style="display:none;margin:0 0 18px;padding:16px 18px;border:1px dashed rgba(208,140,58,.5);border-radius:6px;background:rgba(208,140,58,.06);font-size:13.5px;line-height:2;word-break:keep-all">
       🎁 체험 열람권 <b id="trialNoticeN" style="color:var(--ember,#d08c3a)">—</b>회가 남아 있다.<br>
@@ -248,9 +272,34 @@ const SUPA_URL = SGS.SUPA_URL, SUPA_KEY = SGS.SUPA_KEY;   // /assets/sgs-config.
 const sb = window.supabase ? window.supabase.createClient(SUPA_URL, SUPA_KEY) : null;
 let mode = 'login';
 
+/* 결과지에서 튕겨 온 사유(?err=) — 아무 말 없이 서가만 보이면 구매자는 "안 열린다"고만 느낀다 */
+const ERR_MSG = {
+  not_delivered: '풀이가 아직 준비 중이다 — 다 적히면 이 서고에서 바로 열린다.',
+  forbidden:     '그 풀이는 다른 계정의 것이다 — 결제할 때 쓴 이메일로 열어라.',
+  no_saju:       '주문에 사주가 비어 있다 — simgoksa.com@gmail.com 으로 알리면 곧바로 채워 준다.',
+  no_picks:      '고른 대목이 아직 확인되지 않았다 — simgoksa.com@gmail.com 으로 알리면 바로 열어 준다.',
+  not_found:     '그 주문을 찾지 못했다 — simgoksa.com@gmail.com 으로 알려라.',
+  login_required:'문이 한 번 닫혔다 — 다시 열고 들어가라.',
+  network:       '연결이 잠시 끊겼다 — 잠시 뒤 다시 시도하라.',
+  denied:        '그 풀이를 열 수 없었다 — 결제할 때 쓴 이메일로 로그인했는지 보아라.'
+};
+function pendingErr(){
+  try{
+    const e = new URLSearchParams(location.search).get('err');
+    return e ? (ERR_MSG[e] || ERR_MSG.denied) : null;
+  }catch(e){ return null; }
+}
+
 function show(logged, email){
   document.getElementById('regBox').style.display = 'none';
+  document.getElementById('recBox').style.display = 'none';
   document.getElementById('authBox').style.display = logged ? 'none' : 'block';
+  if (!logged) checkGoogle();
+  const em = pendingErr();
+  if (em){
+    const target = document.getElementById(logged ? 'shelfErr' : 'oMsg');
+    if (target){ target.textContent = em; target.style.display = 'block'; }
+  }
   if (logged){ loadTrialNotice(); maybeOpenReg(); }
   document.getElementById('claimBox').style.display = 'none';
   document.getElementById('pwLink').style.display = logged ? 'block' : 'none';
@@ -470,7 +519,9 @@ async function claimSession(sid){
   box.style.display = 'none';
   show(false);
   const m = document.getElementById('oMsg');
-  m.textContent = '결제 확인이 조금 늦어진다 — 1분쯤 뒤 이 페이지를 새로고침해 보아라.'; m.style.display = 'block';
+  m.innerHTML = '결제 확인이 조금 늦어진다 — 1분쯤 뒤 새로고침해 보아라.<br>' +
+    '급하면 아래 <a onclick="openRecover()" style="color:var(--ember);text-decoration:underline;cursor:pointer">주문번호로 열기</a>로 바로 들어와도 된다.';
+  m.style.display = 'block';
   return false;
 }
 async function init(){
@@ -602,6 +653,89 @@ async function doAuth(){
     show(true, res.data.user.email);
   }catch(e){ err('문이 열리지 않는다. 잠시 후 다시 시도하라.'); btn.disabled = false; }
 }
+/* ── 구글로 열기 — Supabase 에 공급자가 켜져 있을 때만 단추가 보인다 ── */
+let googleOn = null;
+async function checkGoogle(){
+  if (googleOn === null){
+    try{
+      const r = await fetch(SUPA_URL + '/auth/v1/settings', { headers: { apikey: SUPA_KEY } });
+      const j = await r.json();
+      googleOn = !!(j && j.external && j.external.google);
+    }catch(e){ googleOn = false; }
+  }
+  const b = document.getElementById('aGoogle'), o = document.getElementById('aOr');
+  if (b) b.style.display = googleOn ? 'flex' : 'none';
+  if (o) o.style.display = googleOn ? 'flex' : 'none';
+}
+async function googleAuth(){
+  if (!sb) return;
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: location.origin + '/library/' }
+  });
+  if (error) err('구글 문이 열리지 않는다 — 이메일로 열어라.');
+}
+
+/* ── 주문번호로 서고 열기 ──
+   결제한 브라우저(sgs_sid)도, 비밀번호도 없는 구매자의 마지막 문.
+   결제 이메일 + 주문번호를 동시에 아는 사람은 구매 당사자뿐이다. */
+function openRecover(){
+  document.getElementById('authBox').style.display = 'none';
+  document.getElementById('recBox').style.display = 'block';
+  document.getElementById('recErr').style.display = 'none';
+  const em = document.getElementById('aEmail').value.trim();
+  if (em) document.getElementById('recEmail').value = em;
+  setTimeout(() => document.getElementById('recEmail').focus(), 200);
+}
+function closeRecover(){
+  document.getElementById('recBox').style.display = 'none';
+  document.getElementById('authBox').style.display = 'block';
+}
+function recErr(m){ const el = document.getElementById('recErr'); el.textContent = m; el.style.display = 'block'; }
+async function submitRecover(){
+  if (!sb) { recErr('연결에 문제가 생겼다. 잠시 후 다시 시도하라.'); return; }
+  document.getElementById('recErr').style.display = 'none';
+  const email = document.getElementById('recEmail').value.trim();
+  const order = document.getElementById('recOrder').value.trim();
+  if (!/.+@.+\..+/.test(email)){ recErr('이메일이 온전치 않다.'); return; }
+  if (order.replace(/[^A-Za-z0-9]/g, '').length < 8){ recErr('주문번호를 다시 확인하라.'); return; }
+  const btn = document.getElementById('recGo');
+  btn.disabled = true; btn.textContent = '확인하는 중…';
+  try{
+    const r = await fetch(SGS.FN_URL + '/order-unlock', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, order })
+    });
+    const j = await r.json().catch(() => null);
+    if (!j || !j.ok){
+      const e = j && j.error;
+      recErr(e === 'refunded' ? '환불 처리된 주문이다 — 문의는 simgoksa.com@gmail.com 으로.'
+        : e === 'bad_params' ? '이메일 또는 주문번호 형식이 맞지 않는다.'
+        : '주문번호와 이메일이 맞지 않는다 — 결제 확인 알림을 다시 보아라.');
+      btn.disabled = false; btn.textContent = '서고 열기';
+      return;
+    }
+    const v = await sb.auth.verifyOtp({ token_hash: j.token_hash, type: 'magiclink' });
+    if (v.error || !v.data || !v.data.session){
+      recErr('문을 여는 중 어긋났다 — 잠시 뒤 다시 시도하라.');
+      btn.disabled = false; btn.textContent = '서고 열기';
+      return;
+    }
+    try{ localStorage.removeItem('sgs_sid'); }catch(e){}
+    btn.textContent = '열렸다 — 들어가는 중…';
+    const pr = j.purchase, ch = pr && SGS.PRODUCTS[pr.product];
+    if (pr && pr.status === 'delivered' && ch && ch.report){
+      location.replace(ch.report + '?p=' + encodeURIComponent(pr.id));
+      return;
+    }
+    show(true, v.data.user.email);
+  }catch(e){
+    recErr('연결이 끊겼다 — 잠시 뒤 다시 시도하라.');
+    btn.disabled = false; btn.textContent = '서고 열기';
+  }
+}
+document.getElementById('recOrder').addEventListener('keydown', e => { if (e.key === 'Enter') submitRecover(); });
+
 async function doLogout(){ if (sb) await sb.auth.signOut(); show(false); }
 document.getElementById('aPw').addEventListener('keydown', e => { if (e.key === 'Enter') doAuth(); });
 document.getElementById('regPw').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('regPw2').focus(); });
