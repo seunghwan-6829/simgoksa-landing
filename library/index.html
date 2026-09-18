@@ -497,7 +497,7 @@ async function claimSession(sid){
             // 비밀번호가 없는 새 손님은 여기서 딱 한 번, 서고 등록(비밀번호)을 거친다.
             // 인앱 브라우저(인스타·카톡)는 세션이 밖으로 안 이어지므로 이 순간이 유일한 기회다.
             const meta = (v.data && v.data.user && v.data.user.user_metadata) || {};
-            if (!meta.pw_set){ document.getElementById('claimBox').style.display = 'none'; openReg(reportUrl); return true; }
+            if (!meta.pw_set && !hasSocial(v.data.user)){ document.getElementById('claimBox').style.display = 'none'; openReg(reportUrl); return true; }
             location.replace(reportUrl); return true;
           }
           show(true, v.data.user.email); return true;
@@ -605,13 +605,27 @@ async function skipReg(){
   try{ localStorage.setItem('sgs_pw_ok', '1'); }catch(e){}
   await finishReg();
 }
+/* 구글(소셜)로 들어온 사람은 비밀번호가 필요 없다 — 언제든 「구글로 열기」로 다시 열린다.
+   그런 사람에게 「열쇠 만들기」를 요구하면 가입을 두 번 시키는 꼴이 된다. */
+function hasSocial(user){
+  try{
+    if (!user) return false;
+    const p = (user.app_metadata && (user.app_metadata.provider || '')) || '';
+    if (p && p !== 'email') return true;
+    const list = (user.app_metadata && user.app_metadata.providers) || [];
+    if (list.some(x => x && x !== 'email')) return true;
+    return (user.identities || []).some(i => i && i.provider && i.provider !== 'email');
+  }catch(e){ return false; }
+}
 async function maybeOpenReg(){
-  // 비밀번호 없는 계정(표식 pw_set 없음)은 서가 대신 등록부터 — 관리자는 면제
+  // 비밀번호 없는 계정(표식 pw_set 없음)은 서가 대신 등록부터 — 관리자·소셜 로그인은 면제
   try{
     const { data } = await sb.auth.getSession();
     if (!data || !data.session) return;
-    if (SGS.isAdmin && SGS.isAdmin(data.session.user.email)) return;
-    const meta = data.session.user.user_metadata || {};
+    const u = data.session.user;
+    if (SGS.isAdmin && SGS.isAdmin(u.email)) return;
+    if (hasSocial(u)) return;
+    const meta = u.user_metadata || {};
     if (!meta.pw_set) openReg(null);
   }catch(e){}
 }
