@@ -2181,7 +2181,10 @@ function openExternal(){
     order.forEach(id => { const sc = document.getElementById(id); if (sc) sc.style.display = 'none'; });
     enterSales();
     document.getElementById('sales').classList.add('show');
-    setTimeout(() => { const t = document.getElementById('tiers'); if (t) t.scrollIntoView({ block:'center' }); }, 400);
+    // 이미지·영상이 늦게 얹히며 높이가 바뀌므로 몇 번 더 맞춘다
+    [400, 1200, 2500].forEach(ms => setTimeout(() => {
+      const t = document.getElementById('tiers'); if (t) t.scrollIntoView({ block:'center' });
+    }, ms));
   }, 0);
 })();
 
@@ -2219,8 +2222,10 @@ function watchSticky(){
   window.addEventListener('scroll', check, { passive: true });
   // 프로그램이 스크롤을 옮긴 경우(되돌아온 사람 → 찢어가기 자리로 점프)엔
   // 스크롤 이벤트가 안 잡히는 브라우저가 있어, 처음 몇 초는 직접 확인한다.
+  // (스크롤 이벤트가 안 잡히는 경우까지 포함해) 위치를 주기적으로 직접 확인한다.
+  // 바가 올라오면 스스로 멈춘다 — 비용은 0.5초에 좌표 한 번.
   let ticks = 0;
-  const timer = setInterval(() => { check(); if (done || ++ticks > 20) clearInterval(timer); }, 300);
+  const timer = setInterval(() => { check(); if (done || ++ticks > 180) clearInterval(timer); }, 500);
   check();
 }
 
