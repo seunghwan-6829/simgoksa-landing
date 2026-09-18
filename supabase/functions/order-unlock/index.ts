@@ -10,15 +10,48 @@
 //  왜 안전한가: 주문번호(19자리)와 결제 이메일을 동시에 아는 것은 구매 당사자뿐이다.
 //  (claim-session 의 sid 와 같은 급의 증거. 둘 중 하나만으로는 열리지 않는다)
 //
+//  ※ 이 함수는 대시보드에서도 그대로 붙여 넣어 배포할 수 있도록 _shared 를 쓰지 않고
+//    계정 보장/토큰 생성 헬퍼를 안에 둔다. (_shared/auth.ts 와 동작이 같아야 한다)
+//
 //  응답 error:
 //   bad_params   입력이 비었거나 형식이 아님
 //   not_found    주문번호가 없거나 이메일이 다름 (구분하지 않는다 — 존재 여부 노출 방지)
 //   refunded     환불된 주문
 //   token        토큰 생성 실패
 // ════════════════════════════════════════════════════════════════════════════
-import { ensureAuthUser, generateMagic } from "../_shared/auth.ts";
 
 const ORDER_RE = /^[A-Za-z0-9\-_]{8,64}$/;
+
+type AuthHeaders = { apikey: string; Authorization: string };
+
+/** 매직링크 토큰 생성 — 메일을 보내지 않고 hashed_token 만 돌려준다. */
+async function generateMagic(url: string, H: AuthHeaders, email: string) {
+  const r = await fetch(`${url}/auth/v1/admin/generate_link`, {
+    method: "POST",
+    headers: { ...H, "Content-Type": "application/json" },
+    body: JSON.stringify({ type: "magiclink", email: email.trim().toLowerCase() }),
+  });
+  if (!r.ok) { console.error("generate_link failed", r.status, await r.text()); return null; }
+  const j = await r.json();
+  return {
+    userId: j?.user?.id ?? j?.id ?? null,
+    tokenHash: j?.hashed_token ?? j?.properties?.hashed_token ?? null,
+  };
+}
+
+/** 이메일로 사용자를 보장한다 (없으면 생성, 이메일 인증 완료 상태). */
+async function ensureAuthUser(url: string, H: AuthHeaders, email: string): Promise<string | null> {
+  const em = email.trim().toLowerCase();
+  if (!/.+@.+\..+/.test(em)) return null;
+  const c = await fetch(`${url}/auth/v1/admin/users`, {
+    method: "POST",
+    headers: { ...H, "Content-Type": "application/json" },
+    body: JSON.stringify({ email: em, email_confirm: true, user_metadata: { via: "groble" } }),
+  });
+  if (c.ok) { const u = await c.json(); return u?.id ?? null; }
+  const g = await generateMagic(url, H, em);
+  return g?.userId ?? null;
+}
 
 Deno.serve(async (req) => {
   const cors = {

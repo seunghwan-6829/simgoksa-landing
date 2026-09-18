@@ -2030,9 +2030,12 @@ async function checkGoogle(){
   applyGoogle();
 }
 function applyGoogle(){
+  // 인앱 브라우저(인스타·카톡·네이버 등)에서는 구글이 로그인을 막는다 — 이메일 가입만 보인다
+  const inApp = /KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|Line\/|NAVER|DaumApps|Snapchat|Twitter/i.test(navigator.userAgent);
+  const show = googleOn && !inApp;
   const b = document.getElementById('authGoogle'), o = document.getElementById('authOr');
-  if (b) b.style.display = googleOn ? 'flex' : 'none';
-  if (o) o.style.display = googleOn ? 'flex' : 'none';
+  if (b) b.style.display = show ? 'flex' : 'none';
+  if (o) o.style.display = show ? 'flex' : 'none';
 }
 async function googleAuth(){
   if (!sb) return;

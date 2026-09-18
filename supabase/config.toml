@@ -429,3 +429,15 @@ verify_jwt = false
 # 어드민 API — 함수 내부에서 사용자 액세스 토큰을 검증하고 이메일 화이트리스트를 확인한다.
 [functions.admin-api]
 verify_jwt = false
+
+# 결제 직후 자동 입장 — 아직 세션이 없는 사람이 부르는 함수다. sid 자체가 증거.
+[functions.claim-session]
+verify_jwt = false
+
+# 주문번호로 서고 열기 — 세션이 없는 구매자의 복구 경로. 주문번호+결제 이메일이 증거.
+[functions.order-unlock]
+verify_jwt = false
+
+# 체험 초대 링크(?iv=) — 세션 없이 부른다.
+[functions.trial-login]
+verify_jwt = false
